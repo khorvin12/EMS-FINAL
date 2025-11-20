@@ -9,30 +9,3 @@
     <p>{{ message }}</p>
   </div>
 </template>
-
-<script>
-import axios from "axios";
-
-export default {
-  data() {
-    return {
-      email: "",
-      password: "",
-      message: ""
-    };
-  },
-  methods: {
-    async login() {
-      try {
-        const res = await axios.post("/api/login", {
-          email: this.email,
-          password: this.password,
-        });
-        this.message = "Login successful!";
-      } catch (error) {
-        this.message = "Invalid email or password.";
-      }
-    },
-  },
-};
-</script>
