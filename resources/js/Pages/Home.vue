@@ -1,6 +1,8 @@
+<script>
+</script>
 
 <template>
     <div>
-        Hello
+        <h1 class="text-green-500">Hello</h1>
     </div>
 </template>
