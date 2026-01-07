@@ -1,11 +1,64 @@
+<script setup>
+import { useForm } from '@inertiajs/vue3'
+
+const form = useForm({
+  email: '',
+  password: '',
+  remember: false,
+})
+
+function handleLogin() {
+  form.post('/login')
+}
+</script>
+
 <template>
-  <div>
-    <h2>Login</h2>
-    <form @submit.prevent="login">
-      <input type="email" v-model="email" placeholder="Email" required />
-      <input type="password" v-model="password" placeholder="Password" required />
-      <button type="submit">Login</button>
-    </form>
-    <p>{{ message }}</p>
+  <div class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-green-200 to-blue-200 font-sans">
+    <h1 class="text-4xl font-bold text-blue-700 mb-8 drop-shadow">
+      EMPLOYEE MANAGEMENT
+    </h1>
+
+    <div class="bg-gradient-to-r from-green-400 to-lime-300 p-6 rounded-lg w-80 shadow-md">
+      <h2 class="text-xl font-semibold mb-4 text-gray-800">Login</h2>
+
+      <!--  AUTH ERROR -->
+      <div
+        v-if="form.errors.email"
+        class="bg-red-100 text-red-700 p-2 mb-3 rounded text-sm"
+      >
+        {{ form.errors.email }}
+      </div>
+
+      <form @submit.prevent="handleLogin" class="space-y-4">
+        <input
+          type="email"
+          v-model="form.email"
+          placeholder="Enter Email"
+          class="bg-white w-full px-3 py-2 border border-gray-300 rounded"
+          required
+        />
+
+        <input
+          type="password"
+          v-model="form.password"
+          placeholder="Enter Password"
+          class="bg-white w-full px-3 py-2 border border-gray-300 rounded"
+          required
+        />
+
+        <label class="flex items-center space-x-2 text-sm text-gray-700">
+          <input type="checkbox" v-model="form.remember" />
+          <span>Remember me</span>
+        </label>
+
+        <button
+          type="submit"
+          class="w-full bg-blue-600 text-white py-2 rounded font-semibold"
+          :disabled="form.processing"
+        >
+        Login
+        </button>
+      </form>
+    </div>
   </div>
 </template>
