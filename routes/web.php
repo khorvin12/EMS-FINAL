@@ -11,3 +11,6 @@ Route::post('/managedepartment', [AuthController::class, 'managedepartment']);
 
 Route::inertia('/adddepartment', 'Admin/Departments/AddDepartment')->name('adddepartment');
 Route::post('/adddepartment', [AuthController::class, 'adddepartment']);
+
+Route::inertia('/editdepartment', 'Admin/Departments/EditDepartment')->name('editdepartment');
+Route::post('/editdepartment', [AuthController::class, 'editdepartment']);
