@@ -7,13 +7,21 @@ const email = ref('')
 const password = ref('')
 const role = ref('employee')
 
-// Add Employee / HR / Admin
 function addUser() {
-  Inertia.post('/admin/employees', {
+  let url = '/admin/employees'
+
+  if (role.value === 'hr') {
+    url = '/admin/hr'
+  }
+
+  if (role.value === 'admin') {
+    url = '/admin/admins'
+  }
+
+  Inertia.post(url, {
     name: name.value,
     email: email.value,
     password: password.value,
-    role: role.value
   })
 
   name.value = ''
@@ -23,6 +31,7 @@ function addUser() {
 
   alert('User added!')
 }
+
 
 
 

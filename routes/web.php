@@ -32,9 +32,11 @@ Route::middleware(['auth', EmployeeMiddleware::class])->group(function () {
     )->name('employee.dashboard');
 });
 
+
 // HR
 Route::middleware(['auth', HRMiddleware::class])->group(function () {
     Route::get('/hr/dashboard', fn () =>
         Inertia::render('HR/Dashboard')
     )->name('hr.dashboard');
 });
+

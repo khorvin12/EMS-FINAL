@@ -16,7 +16,6 @@ public function store(Request $request)
         'name' => 'required',
         'email' => 'required|email|unique:users,email',
         'password' => 'required|min:6',
-        'role' => 'required|in:employee,hr,admin',
     ]);
 
     // create user
@@ -24,7 +23,7 @@ public function store(Request $request)
         'name' => $validated['name'],
         'email' => $validated['email'],
         'password' => Hash::make($validated['password']),
-        'role' => $validated['role'],
+        'role' => 'hr'
     ]);
 
     // confirm creation
