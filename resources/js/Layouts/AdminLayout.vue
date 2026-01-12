@@ -23,7 +23,7 @@ const isActive = (path) => page.url.startsWith(path)
             <!-- Side Bar -->
             <aside class="bg-gray-800 text-white flex justify-center w-64 py-10 text-xl">
                 <nav class="space-y-8">
-                    <Link href="/admindashboard" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/dashboard')
+                    <Link href="/admindashboard" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/admindashboard')
                         ? 'bg-red-700 font-bold'
                         : 'hover:bg-red-700'">
                         <i class="fa fa-tachometer" />
