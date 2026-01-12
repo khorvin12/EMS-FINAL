@@ -1,5 +1,5 @@
 <script setup>
-
+import { Link } from '@inertiajs/vue3'
 </script>
 
 <template>
@@ -12,17 +12,16 @@
       </h1>
 
       <!-- Search + Button -->
-      <div class="flex justify-between items-center mb-4">
+      <div  class="flex justify-between items-center mb-4">
         <input
           v-model="search"
           type="text"
           placeholder="Search by Employee ID"
           class="px-4 py-2 border rounded-md w-64 focus:ring focus:outline-none"
         />
-
-        <button class="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-md">
-          Add New Employee
-        </button>
+      <div class="text-bold bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-md">
+            <Link href="/addnewemployee"><i aria-hidden="true" /> Add New Employee</Link>
+          </div>
       </div>
 
       <!-- Table -->
@@ -39,25 +38,32 @@
 
           <tbody>
             <tr
-              v-for="employee in filteredEmployees"
-              :key="employee.id"
-              class="border-b"
+              
             >
-              <td class="px-6 py-3">{{ employee.id }}</td>
-              <td class="px-6 py-3">{{ employee.birth }}</td>
-              <td class="px-6 py-3">{{ employee.department }}</td>
+              <td class="px-6 py-3">1</td>
+              <td class="px-6 py-3">2</td>
+              <td class="px-6 py-3">3</td>
 
-              <td class="px-6 py-3 text-center space-x-2">
-                <button class="bg-sky-500 hover:bg-sky-600 text-white px-3 py-1 rounded">
-                  View
-                </button>
-                <button class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded">
-                  Edit
-                </button>
-                <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">
-                  Delete
-                </button>
-              </td>
+            <td class="py-4 px-6">
+            <div class="flex justify-center gap-2">
+             <div class="bg-blue-500 hover:bg-blue-500 text-white px-5 py-2 rounded-md  inline-block">
+             <Link href="/view">
+             View
+           </Link></div>
+
+          <div class="bg-yellow-500 hover:bg-yellow-500 text-white px-5 py-2 rounded-md inline-block">
+           <Link href="/edit">
+            Edit
+          </Link>
+          </div>
+
+           <div class="bg-red-500 hover:bg-red-500 text-white px-5 py-2 rounded-md inline-block">
+          <Link href="/delete">
+           delete
+          </Link>
+        </div>
+</div>
+</td>
             </tr>
           </tbody>
         </table>

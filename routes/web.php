@@ -20,7 +20,7 @@ use App\Http\Middleware\HRMiddleware;
 */
 
 // Login page
-Route::get('/', fn () => Inertia::render('Auth/Login'))->name('login');
+Route::get('/', fn() => Inertia::render('Auth/Login'))->name('login');
 
 // Handle login
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
@@ -43,12 +43,23 @@ Route::middleware(['auth', AdminMiddleware::class])->name('admin.')->group(funct
     Route::inertia('/manageemployees', 'Admin/ManageEmployees/ManageEmployee')
         ->name('manageemployees');
 
+
     Route::post('/employees', [EmployeeController::class, 'store'])
         ->name('employees.store');
 
     // HR management
     Route::post('/hr', [HRController::class, 'store'])
         ->name('hr.store');
+
+    Route::inertia('/addnewemployee', 'Admin/ManageEmployees/AddnewEmployee')
+        ->name('addnewemployee');
+
+    Route::inertia('/view', 'Admin/ManageEmployees/View')
+        ->name('view');
+
+    Route::inertia('/edit', 'Admin/ManageEmployees/Edit')
+        ->name('edit');
+
 });
 
 /*
@@ -58,7 +69,7 @@ Route::middleware(['auth', AdminMiddleware::class])->name('admin.')->group(funct
 */
 Route::middleware(['auth', EmployeeMiddleware::class])->prefix('employee')->name('employee.')->group(function () {
 
-    Route::get('/dashboard', fn () => Inertia::render('Employee/Dashboard'))
+    Route::get('/dashboard', fn() => Inertia::render('Employee/Dashboard'))
         ->name('dashboard');
 });
 
@@ -69,6 +80,6 @@ Route::middleware(['auth', EmployeeMiddleware::class])->prefix('employee')->name
 */
 Route::middleware(['auth', HRMiddleware::class])->prefix('hr')->name('hr.')->group(function () {
 
-    Route::get('/dashboard', fn () => Inertia::render('HR/Dashboard'))
+    Route::get('/dashboard', fn() => Inertia::render('HR/Dashboard'))
         ->name('dashboard');
 });
