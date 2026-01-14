@@ -3,6 +3,4 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Home');
-});
+Route::inertia('/index', 'Employee/Index')->name('index');
