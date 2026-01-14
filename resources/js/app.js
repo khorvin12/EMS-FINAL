@@ -1,18 +1,25 @@
+// app.js
 import './bootstrap'
 import '../css/app.css'
 
 import { createApp, h } from 'vue'
 import { createInertiaApp, Head, Link } from '@inertiajs/vue3'
-import Layout from './Layouts/Layout.vue'
+
+import AdminLayout from './Layouts/Layout.vue' // your current admin layout file
 
 createInertiaApp({
-  resolve: name => {
+  resolve: (name) => {
     const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
     const page = pages[`./Pages/${name}.vue`]
 
-    // ✅ Apply layout ONLY to non-Auth pages
-    if (!name.startsWith('Auth/')) {
-      page.default.layout = Layout
+    if (name.startsWith('Auth/')) {
+      page.default.layout = null
+    } else if (name.startsWith('Admin/')) {
+      page.default.layout = AdminLayout
+    } else if (name.startsWith('Employee/')) {
+      page.default.layout = null // shows ONLY the employee dashboard content
+    } else if (name.startsWith('HR/')) {
+      page.default.layout = null
     }
 
     return page

@@ -53,8 +53,3 @@ function logout() {
     </div>
   </div>
 </template>
-<script>
-export default {
-  layout: null,
-}
-</script>

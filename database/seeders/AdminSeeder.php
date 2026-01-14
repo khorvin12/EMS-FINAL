@@ -16,6 +16,10 @@ class AdminSeeder extends Seeder
                 'name' => 'Admin',
                 'password' => Hash::make('123456'),
                 'role' => 'admin',
+                'employee_id' => 'ADMIN001', // optional, just to fill
+                'dob' => null,
+                'gender' => null,
+                'civil_status' => null,
             ]
         );
     }

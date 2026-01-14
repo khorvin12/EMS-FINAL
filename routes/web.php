@@ -72,7 +72,7 @@ Route::middleware(['auth', EmployeeMiddleware::class])->prefix('employee')->name
     Route::get('/dashboard', fn() => Inertia::render('Employee/Dashboard'))
         ->name('dashboard');
 });
-
+Route::post('/users', [EmployeeController::class, 'store'])->name('users.store');
 /*
 |--------------------------------------------------------------------------
 | HR Routes (Protected)
@@ -83,3 +83,13 @@ Route::middleware(['auth', HRMiddleware::class])->prefix('hr')->name('hr.')->gro
     Route::get('/dashboard', fn() => Inertia::render('HR/Dashboard'))
         ->name('dashboard');
 });
+
+
+
+
+
+
+/* EMPLOYEE */
+
+
+
