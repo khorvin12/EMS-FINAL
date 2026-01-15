@@ -1,5 +1,26 @@
 <script setup>
-import { Link } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
+import { ref, computed } from 'vue';
+
+const props = defineProps({
+    departments: Array
+});
+
+const searchQuery = ref('');
+
+const filteredDepartments = computed(() => {
+    if (!searchQuery.value) return props.departments;
+    
+    return props.departments.filter(dept => 
+        dept.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+    );
+});
+
+const deleteDepartment = (id) => {
+    if (confirm('Are you sure you want to delete this department?')) {
+        router.delete(`/departments/${id}`);
+    }
+};
 </script>
 
 <template>
@@ -7,11 +28,15 @@ import { Link } from '@inertiajs/vue3';
 
     <div class="flex justify-between mb-6">
         <div class="bg-white rounded-md px-4 py-2">
-            <input type="search" placeholder="Search By Department..." />
+            <input 
+                type="search" 
+                v-model="searchQuery"
+                placeholder="Search By Department..." 
+            />
         </div>
 
         <div class="bg-green-500 hover:bg-green-600 rounded-md px-4 py-2">
-            <Link href="/adddepartment">Add New Department</Link>
+            <Link href="/adddepartment" class="text-white">Add New Department</Link>
         </div>
     </div>
 
@@ -26,13 +51,33 @@ import { Link } from '@inertiajs/vue3';
         </thead>
 
         <tbody>
-            <tr class="bg-white-100 w-full p-0 text-center">
-                <td class="px-6 py-4 border-b border-slate-100">1</td>
-                <td class="px-6 py-4 border-b border-slate-100">2</td>
-                <td class="px-6 py-4 border-b border-slate-100">3</td>
+            <tr 
+                v-for="department in filteredDepartments" 
+                :key="department.id"
+                class="bg-white-100 w-full p-0 text-center"
+            >
+                <td class="px-6 py-4 border-b border-slate-100">{{ department.id }}</td>
+                <td class="px-6 py-4 border-b border-slate-100">{{ department.name }}</td>
+                <td class="px-6 py-4 border-b border-slate-100">{{ department.manager_id || 'N/A' }}</td>
                 <td class="px-6 py-4 border-b border-slate-100 space-x-4">
-                    <Link href="/editdepartment" class="bg-yellow-300 rounded-sm px-4 py-1">Edit</Link>
-                    <button class="bg-red-500 rounded-sm px-2 py-1">Delete</button>
+                    <Link 
+                        :href="`/editdepartment/${department.id}`" 
+                        class="bg-yellow-300 rounded-sm px-4 py-1"
+                    >
+                        Edit
+                    </Link>
+                    <button 
+                        @click="deleteDepartment(department.id)"
+                        class="bg-red-500 text-white rounded-sm px-2 py-1"
+                    >
+                        Delete
+                    </button>
+                </td>
+            </tr>
+
+            <tr v-if="!departments || departments.length === 0">
+                <td colspan="4" class="px-6 py-8 text-center text-gray-500">
+                    No departments found
                 </td>
             </tr>
         </tbody>
