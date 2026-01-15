@@ -39,17 +39,9 @@ Route::middleware(['auth', AdminMiddleware::class])->name('admin.')->group(funct
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])
         ->name('dashboard');
 
-    // Employees management
+    // Employee Management Pages
     Route::inertia('/manageemployees', 'Admin/ManageEmployees/ManageEmployee')
         ->name('manageemployees');
-
-
-    Route::post('/employees', [EmployeeController::class, 'store'])
-        ->name('employees.store');
-
-    // HR management
-    Route::post('/hr', [HRController::class, 'store'])
-        ->name('hr.store');
 
     Route::inertia('/addnewemployee', 'Admin/ManageEmployees/AddnewEmployee')
         ->name('addnewemployee');
@@ -60,6 +52,13 @@ Route::middleware(['auth', AdminMiddleware::class])->name('admin.')->group(funct
     Route::inertia('/edit', 'Admin/ManageEmployees/Edit')
         ->name('edit');
 
+    // Employee API Routes
+    Route::post('/employees', [EmployeeController::class, 'store'])
+        ->name('employees.store');
+
+    // HR API Routes
+    Route::post('/hr', [HRController::class, 'store'])
+        ->name('hr.store');
 });
 
 /*
@@ -72,7 +71,7 @@ Route::middleware(['auth', EmployeeMiddleware::class])->prefix('employee')->name
     Route::get('/dashboard', fn() => Inertia::render('Employee/Dashboard'))
         ->name('dashboard');
 });
-Route::post('/users', [EmployeeController::class, 'store'])->name('users.store');
+
 /*
 |--------------------------------------------------------------------------
 | HR Routes (Protected)
@@ -83,13 +82,3 @@ Route::middleware(['auth', HRMiddleware::class])->prefix('hr')->name('hr.')->gro
     Route::get('/dashboard', fn() => Inertia::render('HR/Dashboard'))
         ->name('dashboard');
 });
-
-
-
-
-
-
-/* EMPLOYEE */
-
-
-
