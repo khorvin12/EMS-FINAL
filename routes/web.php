@@ -39,6 +39,12 @@ Route::middleware(['auth', AdminMiddleware::class])->name('admin.')->group(funct
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])
         ->name('dashboard');
 
+    // Department Management
+    Route::inertia('/managedepartment', 'Admin/Departments/ManageDepartment')
+        ->name('managedepartment');
+    
+    Route::post('/managedepartment', [AuthController::class, 'managedepartment']);
+
     // Employee Management Pages
     Route::inertia('/manageemployees', 'Admin/ManageEmployees/ManageEmployee')
         ->name('manageemployees');
@@ -59,6 +65,10 @@ Route::middleware(['auth', AdminMiddleware::class])->name('admin.')->group(funct
     // HR API Routes
     Route::post('/hr', [HRController::class, 'store'])
         ->name('hr.store');
+
+    // Dashboard Stats API
+    Route::get('/api/dashboard/stats', [AdminDashboardController::class, 'getStats'])
+        ->name('dashboard.stats');
 });
 
 /*
@@ -82,6 +92,3 @@ Route::middleware(['auth', HRMiddleware::class])->prefix('hr')->name('hr.')->gro
     Route::get('/dashboard', fn() => Inertia::render('HR/Dashboard'))
         ->name('dashboard');
 });
-
-Route::get('/api/dashboard/stats', [AdminDashboardController::class, 'getStats'])
-    ->name('dashboard.stats');

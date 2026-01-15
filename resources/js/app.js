@@ -1,11 +1,10 @@
-// app.js
-import './bootstrap'
-import '../css/app.css'
+import './bootstrap';
+import '../css/app.css';
 
 import { createApp, h } from 'vue'
 import { createInertiaApp, Head, Link } from '@inertiajs/vue3'
 
-import AdminLayout from './Layouts/Layout.vue' // your current admin layout file
+import AdminLayout from './Layouts/Layout.vue'
 
 createInertiaApp({
   resolve: (name) => {
@@ -17,7 +16,7 @@ createInertiaApp({
     } else if (name.startsWith('Admin/')) {
       page.default.layout = AdminLayout
     } else if (name.startsWith('Employee/')) {
-      page.default.layout = null // shows ONLY the employee dashboard content
+      page.default.layout = null
     } else if (name.startsWith('HR/')) {
       page.default.layout = null
     }
