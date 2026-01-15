@@ -11,9 +11,16 @@ const isActive = (path) => page.url.startsWith(path)
     <div class="flex flex-col h-screen">
         <!-- Top Bar-->
         <header class="bg-red-800 text-white">
-            <nav class="flex items-center justify-between text-2xl p-6 font-bold">
-                <h1 class="ml-14">Admin</h1>
-                <div class="space-x-6">
+            <nav class="flex items-center justify-between p-6 font-bold">
+                <h1 class="ml-14 text-3xl">Admin</h1>
+
+                <div class="ml-auto mr-6">
+                    <button
+                        class="w-8 h-8 overflow-auto rounded-full bg-slate-100 focus:outline-none focus:ring-1 focus:ring-slate-100 focus:ring-offset-2 focus:ring-offset-slate-800"><img
+                            src="https://picsum.photos/200" alt=""></button>
+                </div>
+
+                <div class="bg-red-700 hover:bg-red-600 rounded-md px-2 text-xl">
                     <Link href="/dashboard">Logout</Link>
                 </div>
             </nav>
@@ -26,35 +33,37 @@ const isActive = (path) => page.url.startsWith(path)
                     <Link href="/dashboard" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/dashboard')
                         ? 'bg-red-700 font-bold'
                         : 'hover:bg-red-700'">
-                        <i class="fa fa-tachometer" />
+                        <i class="fa fa-tachometer" aria-hidden="true"></i>
                         <span>Dashboard</span>
                     </Link>
 
                     <Link href="/manageemployee" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/manageemployee')
                         ? 'bg-red-700 font-bold'
                         : 'hover:bg-red-700'">
-                        <i class="fa fa-users" />
+                        <i class="fa fa-users" aria-hidden="true"></i>
                         <span>Employees</span>
                     </Link>
 
                     <Link href="/managedepartment" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/managedepartment')
                         ? 'bg-red-700 font-bold'
                         : 'hover:bg-red-700'">
-                        <i class="fa fa-building" />
+                        <i class="fa fa-building" aria-hidden="true"></i>
                         <span>Departments</span>
                     </Link>
 
                     <Link href="/leaves" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/leaves')
                         ? 'bg-red-700 font-bold'
                         : 'hover:bg-red-700'">
-                        <i class="fa fa-calendar" />
+                        <i class="fa fa-calendar-times-o" aria-hidden="true">&#xf273;</i> 
                         <span>Leaves</span>
                     </Link>
 
-                    <div class="rounded-md p-2 hover:bg-red-700 flex items-center space-x-4 py-2.5 px-8">
-                        <i class="fa fa-cog" aria-hidden="true" />
-                        <Link href="/settings">Settings</Link>
-                    </div>
+                    <Link href="/settings" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/settings')
+                        ? 'bg-red-700 font-bold'
+                        : 'hover:bg-red-700'">
+                        <i class="fa fa-cog" aria-hidden="true"></i>
+                        <span>Settings</span>
+                    </Link>
                 </nav>
             </aside>
 
