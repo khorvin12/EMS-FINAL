@@ -1,4 +1,3 @@
-```php
 <?php
 
 use Illuminate\Support\Facades\Route;
@@ -9,7 +8,6 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\HRController;
 
-<<<<<<< HEAD
 // Middleware
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\EmployeeMiddleware;
@@ -45,6 +43,10 @@ Route::middleware(['auth', AdminMiddleware::class])->name('admin.')->group(funct
     Route::inertia('/departments', 'Admin/Departments/ManageDepartment')
         ->name('departments');
     
+    Route::inertia('/adddepartment', 'Admin/Departments/AddDepartment')
+        ->name('adddepartment');
+    
+    Route::post('/adddepartment', [AuthController::class, 'adddepartment']);
 
     // Employee Management Pages
     Route::inertia('/manageemployees', 'Admin/ManageEmployees/ManageEmployee')
@@ -93,12 +95,3 @@ Route::middleware(['auth', HRMiddleware::class])->prefix('hr')->name('hr.')->gro
     Route::get('/dashboard', fn() => Inertia::render('HR/Dashboard'))
         ->name('dashboard');
 });
-=======
-Route::inertia('/managedepartment', 'Admin/Departments/ManageDepartment')->name('managedepartment');
-Route::post('/managedepartment', [AuthController::class, 'managedepartment']);
-
-Route::inertia('/adddepartment', 'Admin/Departments/AddDepartment')->name('adddepartment');
-Route::post('/adddepartment', [AuthController::class, 'adddepartment']);
->>>>>>> Admin-AddNewDepartment
-
-```
