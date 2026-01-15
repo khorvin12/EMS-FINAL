@@ -82,3 +82,6 @@ Route::middleware(['auth', HRMiddleware::class])->prefix('hr')->name('hr.')->gro
     Route::get('/dashboard', fn() => Inertia::render('HR/Dashboard'))
         ->name('dashboard');
 });
+
+Route::get('/api/dashboard/stats', [AdminDashboardController::class, 'getStats'])
+    ->name('dashboard.stats');
