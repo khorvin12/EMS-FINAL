@@ -4,7 +4,7 @@ import '../css/app.css';
 import { createApp, h } from 'vue'
 import { createInertiaApp, Head, Link } from '@inertiajs/vue3'
 
-import AdminLayout from './Layouts/Layout.vue'
+import AdminLayout from './Layouts/AdminLayout.vue'
 
 createInertiaApp({
   resolve: (name) => {

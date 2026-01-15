@@ -40,10 +40,9 @@ Route::middleware(['auth', AdminMiddleware::class])->name('admin.')->group(funct
         ->name('dashboard');
 
     // Department Management
-    Route::inertia('/managedepartment', 'Admin/Departments/ManageDepartment')
-        ->name('managedepartment');
+    Route::inertia('/departments', 'Admin/Departments/ManageDepartment')
+        ->name('departments');
     
-    Route::post('/managedepartment', [AuthController::class, 'managedepartment']);
 
     // Employee Management Pages
     Route::inertia('/manageemployees', 'Admin/ManageEmployees/ManageEmployee')
