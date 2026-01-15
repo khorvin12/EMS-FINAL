@@ -49,6 +49,11 @@ Route::middleware(['auth', AdminMiddleware::class])->name('admin.')->group(funct
     
     Route::post('/adddepartment', [DepartmentController::class, 'store']);
 
+    Route::get('/editdepartment/{id}', [DepartmentController::class, 'edit'])
+        ->name('editdepartment');
+    
+    Route::put('/editdepartment/{id}', [DepartmentController::class, 'update']);
+
     Route::delete('/departments/{id}', [DepartmentController::class, 'destroy']);
 
     // Employee Management Pages

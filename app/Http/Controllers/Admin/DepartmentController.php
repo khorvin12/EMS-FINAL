@@ -36,4 +36,26 @@ class DepartmentController extends Controller
         Department::findOrFail($id)->delete();
         return redirect()->back()->with('success', 'Department deleted!');
     }
+
+    public function edit($id)
+{
+    $department = Department::findOrFail($id);
+    return Inertia::render('Admin/Departments/EditDepartment', [
+        'department' => $department
+    ]);
+}
+
+public function update(Request $request, $id)
+{
+    $validated = $request->validate([
+        'name' => 'required|string|max:255|unique:departments,name,' . $id,
+        'description' => 'nullable|string',
+        'manager_id' => 'nullable|string'
+    ]);
+
+    Department::findOrFail($id)->update($validated);
+
+    return redirect()->route('admin.departments')
+        ->with('success', 'Department updated successfully!');
+}
 }

@@ -13,12 +13,25 @@ function logout() {
       <nav class="flex items-center justify-between text-3xl p-6 font-bold">
         <h1 class="ml-14">Admin</h1>
 
+<<<<<<< HEAD
         <!-- Logout -->
         <button @click="logout" class="text-white font-bold">
           Logout
         </button>
       </nav>
     </header>
+=======
+        <div class="flex flex-1">
+            <!-- Side Bar -->
+            <aside class="bg-gray-800 text-white flex justify-center w-64 py-10 text-xl">
+                <nav class="space-y-8">
+                    <Link href="/admindashboard" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/admindashboard')
+                        ? 'bg-red-700 font-bold'
+                        : 'hover:bg-red-700'">
+                        <i class="fa fa-tachometer" />
+                        <span>Dashboard</span>
+                    </Link>
+>>>>>>> origin/Admin-EditDepartment
 
     <div class="flex flex-1">
       <!-- Side Bar -->
