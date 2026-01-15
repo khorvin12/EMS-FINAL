@@ -9,7 +9,6 @@ use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\HRController;
 use App\Http\Controllers\Admin\DepartmentController;
 
-
 // Middleware
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\EmployeeMiddleware;
@@ -42,13 +41,15 @@ Route::middleware(['auth', AdminMiddleware::class])->name('admin.')->group(funct
         ->name('dashboard');
 
     // Department Management
-    Route::inertia('/departments', 'Admin/Departments/ManageDepartment')
+    Route::get('/departments', [DepartmentController::class, 'index'])
         ->name('departments');
     
     Route::inertia('/adddepartment', 'Admin/Departments/AddDepartment')
         ->name('adddepartment');
     
-    Route::post('/adddepartment', [AuthController::class, 'adddepartment']);
+    Route::post('/adddepartment', [DepartmentController::class, 'store']);
+
+    Route::delete('/departments/{id}', [DepartmentController::class, 'destroy']);
 
     // Employee Management Pages
     Route::inertia('/manageemployees', 'Admin/ManageEmployees/ManageEmployee')
@@ -97,10 +98,3 @@ Route::middleware(['auth', HRMiddleware::class])->prefix('hr')->name('hr.')->gro
     Route::get('/dashboard', fn() => Inertia::render('HR/Dashboard'))
         ->name('dashboard');
 });
-
-Route::get('/departments', [DepartmentController::class, 'index'])
-    ->name('departments');
-
-Route::post('/adddepartment', [DepartmentController::class, 'store']);
-
-Route::delete('/departments/{id}', [DepartmentController::class, 'destroy']);
