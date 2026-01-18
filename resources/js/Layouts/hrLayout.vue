@@ -12,9 +12,9 @@ const isActive = (path) => page.url.startsWith(path)
         <!-- Top Bar-->
         <header class="bg-blue-800 text-white">
             <nav class="flex items-center justify-between text-2xl p-6 font-bold">
-                <h1 class="ml-14">HR</h1>
+                <h1 class="ml-22">HR</h1>
                 <div class="space-x-6">
-                    <Link href="/dashboard">Logout</Link>
+                    <Link href="/salary">Logout</Link>
                 </div>
             </nav>
         </header>
