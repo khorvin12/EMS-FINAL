@@ -57,17 +57,27 @@ Route::middleware(['auth', AdminMiddleware::class])->name('admin.')->group(funct
     Route::delete('/departments/{id}', [DepartmentController::class, 'destroy']);
 
     // Employee Management Pages
-    Route::inertia('/manageemployees', 'Admin/ManageEmployees/ManageEmployee')
+    // UPDATED: Use controller to fetch data
+    Route::get('/manageemployees', [EmployeeController::class, 'index'])
         ->name('manageemployees');
 
     Route::inertia('/addnewemployee', 'Admin/ManageEmployees/AddnewEmployee')
         ->name('addnewemployee');
 
-    Route::inertia('/view', 'Admin/ManageEmployees/View')
+    // UPDATED: View specific employee
+    Route::get('/view/{id}', [EmployeeController::class, 'show'])
         ->name('view');
 
-    Route::inertia('/edit', 'Admin/ManageEmployees/Edit')
+    // UPDATED: Edit specific employee
+    Route::get('/edit/{id}', [EmployeeController::class, 'edit'])
         ->name('edit');
+    
+    Route::put('/edit/{id}', [EmployeeController::class, 'update'])
+        ->name('employees.update');
+
+    // UPDATED: Delete specific employee
+    Route::delete('/delete/{id}', [EmployeeController::class, 'destroy'])
+        ->name('employees.destroy');
 
     // Employee API Routes
     Route::post('/employees', [EmployeeController::class, 'store'])
