@@ -77,8 +77,8 @@ const formatDate = (dateString) => {
               class="border-b hover:bg-gray-50"
             >
               <td class="px-6 py-3">{{ employee.id }}</td>
-              <td class="px-6 py-3">{{ formatDate(employee.birth_date) }}</td>
-              <td class="px-6 py-3">{{ employee.department }}</td>
+              <td class="px-6 py-3">{{ formatDate(employee.dob) }}</td>
+  <td class="px-6 py-3">{{ employee.department?.name ?? 'N/A' }}</td>
 
               <td class="py-4 px-6">
                 <div class="flex justify-center gap-2">

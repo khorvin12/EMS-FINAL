@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Department;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -43,15 +44,15 @@ Route::middleware(['auth', AdminMiddleware::class])->name('admin.')->group(funct
     // Department Management
     Route::get('/departments', [DepartmentController::class, 'index'])
         ->name('departments');
-    
+
     Route::inertia('/adddepartment', 'Admin/Departments/AddDepartment')
         ->name('adddepartment');
-    
+
     Route::post('/adddepartment', [DepartmentController::class, 'store']);
 
     Route::get('/editdepartment/{id}', [DepartmentController::class, 'edit'])
         ->name('editdepartment');
-    
+
     Route::put('/editdepartment/{id}', [DepartmentController::class, 'update']);
 
     Route::delete('/departments/{id}', [DepartmentController::class, 'destroy']);
@@ -71,7 +72,7 @@ Route::middleware(['auth', AdminMiddleware::class])->name('admin.')->group(funct
     // UPDATED: Edit specific employee
     Route::get('/edit/{id}', [EmployeeController::class, 'edit'])
         ->name('edit');
-    
+
     Route::put('/edit/{id}', [EmployeeController::class, 'update'])
         ->name('employees.update');
 
@@ -113,3 +114,14 @@ Route::middleware(['auth', HRMiddleware::class])->prefix('hr')->name('hr.')->gro
     Route::get('/dashboard', fn() => Inertia::render('HR/Dashboard'))
         ->name('dashboard');
 });
+
+
+Route::get('/addnewemployee', function () {
+    $departments = Department::all(); // fetch departments from DB
+    return Inertia::render('Admin/ManageEmployees/AddnewEmployee', [
+        'departments' => $departments
+    ]);
+})->name('addnewemployee');
+
+
+Route::post('/employees', [EmployeeController::class, 'store'])->name('employees.store');

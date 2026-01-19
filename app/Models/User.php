@@ -50,5 +50,7 @@ class User extends Authenticatable
         return $this->belongsTo(Department::class);
     }
 
+    
+
     // Remove roleRelation() method since Role model doesn't exist
 }
