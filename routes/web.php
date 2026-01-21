@@ -90,7 +90,7 @@ Route::middleware(['auth', AdminMiddleware::class])->name('admin.')->group(funct
 Route::middleware(['auth', EmployeeMiddleware::class])->prefix('employee')->name('employee.')->group(function () {
 
     // Employee Dashboard
-    Route::get('/dashboard', fn() => Inertia::render('Employee/Dashboard'))
+    Route::get('/dashboard', fn() => Inertia::render('Employee/Index'))
         ->name('dashboard');
     
     Route::inertia('/index', 'Employee/Index')->name('index');
