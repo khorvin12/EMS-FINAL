@@ -16,11 +16,7 @@ const filteredDepartments = computed(() => {
     );
 });
 
-const deleteDepartment = (id) => {
-    if (confirm('Are you sure you want to delete this department?')) {
-        router.delete(`/departments/${id}`);
-    }
-};
+
 </script>
 
 <template>
