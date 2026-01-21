@@ -18,20 +18,10 @@ const filteredEmployees = computed(() => {
     return props.employees.data
   }
   return props.employees.data.filter(employee => 
+    employee.name.toLowerCase().includes(search.value.toLowerCase()) ||
     employee.id.toString().includes(search.value)
   )
 })
-
-// Format date helper function
-const formatDate = (dateString) => {
-  if (!dateString) return 'N/A'
-  const date = new Date(dateString)
-  return date.toLocaleDateString('en-US', { 
-    year: 'numeric', 
-    month: 'short', 
-    day: 'numeric' 
-  })
-}
 </script>
 
 <template>
@@ -48,7 +38,7 @@ const formatDate = (dateString) => {
         <input
           v-model="search"
           type="text"
-          placeholder="Search by Employee ID"
+          placeholder="Search by Name or ID"
           class="px-4 py-2 border rounded-md w-64 focus:ring focus:outline-none"
         />
         <div class="text-bold bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-md">
@@ -64,7 +54,7 @@ const formatDate = (dateString) => {
           <thead class="bg-gray-200">
             <tr>
               <th class="px-6 py-3">ID</th>
-              <th class="px-6 py-3">Birth</th>
+              <th class="px-6 py-3">Name</th>
               <th class="px-6 py-3">Department</th>
               <th class="px-6 py-3 text-center">Action</th>
             </tr>
@@ -77,8 +67,8 @@ const formatDate = (dateString) => {
               class="border-b hover:bg-gray-50"
             >
               <td class="px-6 py-3">{{ employee.id }}</td>
-              <td class="px-6 py-3">{{ formatDate(employee.dob) }}</td>
-  <td class="px-6 py-3">{{ employee.department?.name ?? 'N/A' }}</td>
+              <td class="px-6 py-3">{{ employee.name }}</td>
+              <td class="px-6 py-3">{{ employee.department?.name ?? 'N/A' }}</td>
 
               <td class="py-4 px-6">
                 <div class="flex justify-center gap-2">
