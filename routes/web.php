@@ -37,8 +37,8 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['auth', AdminMiddleware::class])->name('admin.')->group(function () {
 
     // Dashboard
-    Route::get('/dashboard', [AdminDashboardController::class, 'index'])
-        ->name('dashboard');
+    Route::get('/admin-dashboard', [AdminDashboardController::class, 'index'])
+        ->name('admin-dashboard');
 
     // Department Management
     Route::get('/departments', [DepartmentController::class, 'index'])
@@ -90,10 +90,8 @@ Route::middleware(['auth', AdminMiddleware::class])->name('admin.')->group(funct
 Route::middleware(['auth', EmployeeMiddleware::class])->prefix('employee')->name('employee.')->group(function () {
 
     // Employee Dashboard
-    Route::get('/dashboard', fn() => Inertia::render('Employee/Dashboard'))
-        ->name('dashboard');
-    
-    Route::inertia('/index', 'Employee/Index')->name('index');
+    Route::get('/employee-dashboard', fn() => Inertia::render('Employee/Index'))
+        ->name('employee-dashboard');
 
     // Employee Leave Routes
     Route::inertia('/leave', 'Employee/Leaves/Index')->name('leave');
@@ -117,6 +115,6 @@ Route::middleware(['auth', EmployeeMiddleware::class])->prefix('employee')->name
 */
 Route::middleware(['auth', HRMiddleware::class])->prefix('hr')->name('hr.')->group(function () {
 
-    Route::get('/dashboard', fn() => Inertia::render('HR/Dashboard'))
+    Route::get('/HR/dashboard', fn() => Inertia::render('HR/Dashboard'))
         ->name('dashboard');
 });
