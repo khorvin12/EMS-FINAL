@@ -1,5 +1,10 @@
 <script setup>
 import { Link } from '@inertiajs/vue3'
+
+defineProps({
+  employees: Object
+})
+
 </script>
 
 <template>
@@ -30,6 +35,7 @@ import { Link } from '@inertiajs/vue3'
           <thead class="bg-gray-200">
             <tr>
               <th class="px-6 py-3">ID</th>
+                <th class="px-6 py-3">Name</th>
               <th class="px-6 py-3">Birth</th>
               <th class="px-6 py-3">Department</th>
               <th class="px-6 py-3 text-center">Action</th>
@@ -41,8 +47,9 @@ import { Link } from '@inertiajs/vue3'
               
             >
               <td class="px-6 py-3">1</td>
-              <td class="px-6 py-3">2</td>
+               <td class="px-6 py-3">2</td>
               <td class="px-6 py-3">3</td>
+              <td class="px-6 py-3">4</td>
 
             <td class="py-4 px-6">
             <div class="flex justify-center gap-2">
