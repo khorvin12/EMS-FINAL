@@ -1,3 +1,34 @@
+<script setup>
+
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+
+// Reactive data
+const stats = ref({
+    totalEmployees: 0,
+    totalDepartments: 0,
+    monthlyPay: 0,
+    leavePending: 0,
+    leaveApproved: 0,
+    leaveRejected: 0
+});
+
+// Fetch dashboard stats
+const fetchDashboardStats = async () => {
+    try {
+        const response = await axios.get('/api/dashboard/stats');
+        stats.value = response.data;
+    } catch (error) {
+        console.error('Error fetching dashboard stats:', error);
+    }
+};
+
+// Load data on component mount
+onMounted(() => {
+    fetchDashboardStats();
+});
+</script>
+
 <template>
     <!-- Contents -->
     <main>
@@ -76,34 +107,3 @@
         </div>
     </main>
 </template>
-
-<script setup>
-
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
-
-// Reactive data
-const stats = ref({
-    totalEmployees: 0,
-    totalDepartments: 0,
-    monthlyPay: 0,
-    leavePending: 0,
-    leaveApproved: 0,
-    leaveRejected: 0
-});
-
-// Fetch dashboard stats
-const fetchDashboardStats = async () => {
-    try {
-        const response = await axios.get('/api/dashboard/stats');
-        stats.value = response.data;
-    } catch (error) {
-        console.error('Error fetching dashboard stats:', error);
-    }
-};
-
-// Load data on component mount
-onMounted(() => {
-    fetchDashboardStats();
-});
-</script>

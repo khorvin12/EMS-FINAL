@@ -1,9 +1,13 @@
 <script setup>
-import { Link, usePage } from '@inertiajs/vue3'
+import { Link, usePage, router } from '@inertiajs/vue3'
 
 const page = usePage()
 
 const isActive = (path) => page.url.startsWith(path)
+
+function logout() {
+  router.post('/logout')
+}
 </script>
 
 
@@ -13,9 +17,11 @@ const isActive = (path) => page.url.startsWith(path)
         <header class="bg-green-600 text-white">
             <nav class="flex items-center justify-between text-2xl p-6 font-bold">
                 <h1 class="ml-14">Employee</h1>
-                <div class="space-x-6">
-                    <Link href="/index">Logout</Link>
-                </div>
+
+                <!-- Logout -->
+                <button @click="logout" class="text-white font-bold">
+                    Logout
+                </button>
             </nav>
         </header>
 
@@ -23,7 +29,7 @@ const isActive = (path) => page.url.startsWith(path)
             <!-- Side Bar -->
             <aside class="bg-gray-800 text-white flex justify-center w-64 py-10 text-xl">
                 <nav class="space-y-8">
-                    <Link href="/employee-dashboard" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/employee-dashboard')
+                    <Link href="/dashboard" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/dashboard')
                         ? 'bg-green-600 font-bold'
                         : 'hover:bg-green-500'">
                         <i class="fa fa-dashboard" aria-hidden="true"></i>
