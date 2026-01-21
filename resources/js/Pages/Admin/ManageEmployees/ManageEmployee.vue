@@ -1,10 +1,54 @@
 <script setup>
+import { Link, usePage } from '@inertiajs/vue3'
+import { ref, watch, computed } from 'vue'
 
+const page = usePage()
+const showSuccess = ref(!!page.props.flash.success)
+
+const search = ref('')
+const employees = ref([])
+
+// Auto-hide success message
+watch(
+  () => page.props.flash.success,
+  (value) => {
+    if (value) {
+      showSuccess.value = true
+      setTimeout(() => {
+        showSuccess.value = false
+      }, 3000)
+    }
+  }
+)
+
+const filteredEmployees = computed(() => {
+  if (!search.value) return employees.value
+  return employees.value.filter(e =>
+    e.id.toString().includes(search.value)
+  )
+})
 </script>
+
 
 <template>
   <div class="flex flex-col h-screen">
     <main class="flex-1 p-8 bg-gray-100 overflow-y-auto">
+    <!-- Success Message -->
+<transition
+  enter-active-class="transition ease-out duration-300"
+  enter-from-class="opacity-0 translate-y-2"
+  enter-to-class="opacity-100 translate-y-0"
+  leave-active-class="transition ease-in duration-300"
+  leave-from-class="opacity-100 translate-y-0"
+  leave-to-class="opacity-0 translate-y-2"
+>
+  <div
+    v-if="showSuccess"
+    class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4"
+  >
+    {{ $page.props.flash.success }}
+  </div>
+</transition>
 
       <!-- Title -->
       <h1 class="text-3xl font-bold text-center mb-6">
@@ -20,9 +64,12 @@
           class="px-4 py-2 border rounded-md w-64 focus:ring focus:outline-none"
         />
 
-        <button class="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-md">
-          Add New Employee
-        </button>
+        <Link href="/employees/create">
+  <button class="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-md">
+    Add New Employee
+  </button>
+</Link>
+
       </div>
 
       <!-- Table -->
