@@ -1,9 +1,6 @@
 <script setup>
-import { Link, usePage } from '@inertiajs/vue3'
-import { ref, computed, watch } from 'vue'
-
-const page = usePage()
-const showSuccess = ref(!!page.props.flash.success)
+import { Link } from '@inertiajs/vue3'
+import { ref, computed } from 'vue'
 
 // Define props to receive data from Laravel controller
 const props = defineProps({
@@ -14,19 +11,6 @@ const props = defineProps({
 })
 
 const search = ref('')
-
-// Auto-hide success message
-watch(
-  () => page.props.flash.success,
-  (value) => {
-    if (value) {
-      showSuccess.value = true
-      setTimeout(() => {
-        showSuccess.value = false
-      }, 3000)
-    }
-  }
-)
 
 // Filter employees based on search
 const filteredEmployees = computed(() => {
@@ -43,23 +27,6 @@ const filteredEmployees = computed(() => {
 <template>
   <div class="flex flex-col h-screen">
     <main class="flex-1 p-8 bg-gray-100 overflow-y-auto">
-    
-    <!-- Success Message -->
-    <transition
-      enter-active-class="transition ease-out duration-300"
-      enter-from-class="opacity-0 translate-y-2"
-      enter-to-class="opacity-100 translate-y-0"
-      leave-active-class="transition ease-in duration-300"
-      leave-from-class="opacity-100 translate-y-0"
-      leave-to-class="opacity-0 translate-y-2"
-    >
-      <div
-        v-if="showSuccess"
-        class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4"
-      >
-        {{ $page.props.flash.success }}
-      </div>
-    </transition>
 
       <!-- Title -->
       <h1 class="text-3xl font-bold text-center mb-6">
@@ -74,10 +41,11 @@ const filteredEmployees = computed(() => {
           placeholder="Search by Name or ID"
           class="px-4 py-2 border rounded-md w-64 focus:ring focus:outline-none"
         />
-
-        <Link href="/addnewemployee" class="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-md">
-          Add New Employee
-        </Link>
+        <div class="text-bold bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-md">
+          <Link href="/addnewemployee">
+            <i aria-hidden="true" /> Add New Employee
+          </Link>
+        </div>
       </div>
 
       <!-- Table -->
@@ -104,17 +72,23 @@ const filteredEmployees = computed(() => {
 
               <td class="py-4 px-6">
                 <div class="flex justify-center gap-2">
-                  <Link :href="`/view/${employee.id}`" class="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-md">
-                    View
-                  </Link>
+                  <div class="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-md inline-block">
+                    <Link :href="`/view/${employee.id}`">
+                      View
+                    </Link>
+                  </div>
 
-                  <Link :href="`/edit/${employee.id}`" class="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded-md">
-                    Edit
-                  </Link>
+                  <div class="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded-md inline-block">
+                    <Link :href="`/edit/${employee.id}`">
+                      Edit
+                    </Link>
+                  </div>
 
-                  <Link :href="`/delete/${employee.id}`" method="delete" as="button" class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-md">
-                    Delete
-                  </Link>
+                  <div class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-md inline-block">
+                    <Link :href="`/delete/${employee.id}`" method="delete" as="button">
+                      Delete
+                    </Link>
+                  </div>
                 </div>
               </td>
             </tr>
