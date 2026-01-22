@@ -31,12 +31,11 @@ onMounted(() => {
 
 <template>
     <!-- Contents -->
-    <main>
         <!-- Title Contents -->
         <h1 class="text-3xl font-bold mb-10">Dashboard Overview</h1>
 
         <!-- Dashboard Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-48">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-48 flex justify-items-center">
 
             <!-- Total Employees Card -->
             <div class="bg-white rounded-md flex items-center gap-4 shadow w-64">
@@ -73,7 +72,7 @@ onMounted(() => {
         <!-- Leave Details -->
         <h2 class="text-2xl font-bold mb-12 text-center">Leave Details</h2>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 flex justify-items-center">
 
             <div class="bg-white rounded-md flex items-center gap-4 shadow w-64">
                 <div class="bg-yellow-400 rounded-md px-5 py-3">
@@ -105,5 +104,4 @@ onMounted(() => {
                 </div>
             </div>
         </div>
-    </main>
 </template>

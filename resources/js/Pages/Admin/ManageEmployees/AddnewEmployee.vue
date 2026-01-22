@@ -1,6 +1,6 @@
 <script setup>
 import { reactive, ref } from 'vue'
-import { Inertia } from '@inertiajs/inertia'
+import { router } from '@inertiajs/vue3'
 
 // Reactive form object
 const form = reactive({
@@ -37,7 +37,7 @@ function submit() {
   if (form.role === 'hr') url = '/hr'; // HR
   if (form.role === 'admin') url = '/admins'; // only if you create this route
 
-  Inertia.post(url, { ...form })
+  router.post(url, { ...form })
 
   // Reset form after submission
   Object.keys(form).forEach(key => form[key] = ''); // Reset all form fields
@@ -47,7 +47,8 @@ function submit() {
 </script>
 
 <template>
-  <div class="max-w-4xl mx-auto bg-white border-4 border-green-500 p-6 rounded">
+  <div class="flex items-center justify-center h-full">
+  <div class="max-w-3xl mx-auto bg-white border-4 border-green-500 p-6 rounded-lg">
 
     <!-- Title -->
     <h2 class="text-xl font-bold mb-6">Add New Employee</h2>
@@ -164,5 +165,6 @@ function submit() {
       </div>
 
     </form>
+  </div>
   </div>
 </template>

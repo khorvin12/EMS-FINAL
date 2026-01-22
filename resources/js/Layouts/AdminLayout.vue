@@ -1,5 +1,9 @@
 <script setup>
-import { Link, router } from '@inertiajs/vue3'
+import { Link, usePage, router } from '@inertiajs/vue3'
+
+const page = usePage()
+
+const isActive = (path) => page.url.startsWith(path)
 
 function logout() {
   router.post('/logout')
@@ -24,25 +28,40 @@ function logout() {
       <!-- Side Bar -->
       <aside class="bg-gray-800 text-white flex justify-center w-64 py-10 text-xl">
         <nav class="space-y-8">
-          <div class="rounded-md px-10 py-2 hover:bg-red-700">
-            <Link href="/dashboard"><i class="fa fa-tachometer" aria-hidden="true" /> Dashboard</Link>
-          </div>
+          <Link href="/dashboard" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/dashboard')
+            ? 'bg-red-600 font-bold'
+            : 'hover:bg-red-700'">
+            <i class="fa fa-tachometer" aria-hidden="true"></i>
+            <span>Dashboard</span>
+          </Link>
 
-          <div class="rounded-md p-2 text-center hover:bg-red-700">
-            <Link href="/manageemployees"><i class="fa fa-users" aria-hidden="true" /> Employees</Link>
-          </div>
+          <Link href="/manageemployees" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/manageemployees')
+            ? 'bg-red-600 font-bold'
+            : 'hover:bg-red-700'">
+            <i class="fa fa-users" aria-hidden="true"></i>
+            <span>Employees</span>
+          </Link>
 
-          <div class="rounded-md p-2 text-center hover:bg-red-700">
-            <Link href="/departments"><i class="fa fa-building" aria-hidden="true" /> Departments</Link>
-          </div>
+          <Link href="/departments" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/departments')
+            ? 'bg-red-600 font-bold'
+            : 'hover:bg-red-700'">
+            <i class="fa fa-building" aria-hidden="true"></i>
+            <span>Departments</span>
+          </Link>
 
-          <div class="rounded-md p-2 text-center hover:bg-red-700">
-            <Link href="/leaves"><i class="fa fa-calendar" aria-hidden="true" /> Leaves</Link>
-          </div>
+          <Link href="/leaves" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/leaves')
+            ? 'bg-red-600 font-bold'
+            : 'hover:bg-red-700'">
+            <i class="fa fa-calendar-times-o" aria-hidden="true">&#xf273;</i>
+            <span>Leaves</span>
+          </Link>
 
-          <div class="rounded-md p-2 text-center hover:bg-red-700">
-            <Link href="/settings"><i class="fa fa-cog" aria-hidden="true" /> Settings</Link>
-          </div>
+          <Link href="/settings" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/settings')
+            ? 'bg-red-600 font-bold'
+            : 'hover:bg-red-700'">
+            <i class="fa fa-cog" aria-hidden="true"></i>
+            <span>Settings</span>
+          </Link>
         </nav>
       </aside>
 

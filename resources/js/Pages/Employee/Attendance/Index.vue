@@ -12,10 +12,10 @@ import { Link } from '@inertiajs/vue3';
     </div>
 
     <table class="w-full shadow-lg overflow-hidden table-fixed bg-white rounded-lg">
-        <thead class="border-slate-200 text-slate-600">
-            <tr class="bg-gray-400 text-black font-medium">
-                <th class="">SNO</th>
-                <th class="p-6">Employee ID</th>
+        <thead class="bg-gray-400 text-black font-medium">
+            <tr class="">
+                <th class="py-6">SNO</th>
+                <th class="">Employee ID</th>
                 <th class="">Date</th>
                 <th class="">Time In</th>
                 <th class="">Time Out</th>

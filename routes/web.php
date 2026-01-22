@@ -44,9 +44,6 @@ Route::middleware(['auth', AdminMiddleware::class])->name('admin.')->group(funct
     Route::get('/departments', [DepartmentController::class, 'index'])
         ->name('departments');
     
-    Route::inertia('/adddepartment', 'Admin/Departments/AddDepartment')
-        ->name('adddepartment');
-    
     Route::post('/adddepartment', [DepartmentController::class, 'store']);
 
     Route::get('/editdepartment/{id}', [DepartmentController::class, 'edit'])
