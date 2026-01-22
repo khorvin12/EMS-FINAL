@@ -14,7 +14,7 @@ const isActive = (path) => page.url.startsWith(path)
             <nav class="flex items-center justify-between text-2xl p-6 font-bold">
                 <h1 class="ml-14">Employee</h1>
                 <div class="space-x-6">
-                    <Link href="/index">Logout</Link>
+                    <Link href="/logout" method="post" as="button">Logout</Link>
                 </div>
             </nav>
         </header>
@@ -23,35 +23,35 @@ const isActive = (path) => page.url.startsWith(path)
             <!-- Side Bar -->
             <aside class="bg-gray-800 text-white flex justify-center w-64 py-10 text-xl">
                 <nav class="space-y-8">
-                    <Link href="/index" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/index')
+                    <Link href="/employee/index" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/employee/index') || isActive('/employee/dashboard')
                         ? 'bg-green-600 font-bold'
                         : 'hover:bg-green-500'">
                         <i class="fa fa-dashboard" aria-hidden="true"></i>
                         <span>Dashboard</span>
                     </Link>
 
-                    <Link href="/attendance" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/attendance')
+                    <Link href="/employee/attendance" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/employee/attendance')
                         ? 'bg-green-600 font-bold'
                         : 'hover:bg-green-500'">
                         <i class="fa fa-calendar-check-o" aria-hidden="true">&#xf274;</i>
                         <span>Attendance</span>
                     </Link>
 
-                    <Link href="/leave" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/leave')
+                    <Link href="/employee/leave" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/employee/leave')
                         ? 'bg-green-600 font-bold'
                         : 'hover:bg-green-500'">
                         <i class="fa fa-calendar-times-o" aria-hidden="true">&#xf273;</i>
                         <span>Leaves</span>
                     </Link>
 
-                    <Link href="/employee-salary" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/employee-salary')
+                    <Link href="/employee/employee-salary" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/employee/employee-salary')
                         ? 'bg-green-600 font-bold'
                         : 'hover:bg-green-500'">
                         <i class="fa fa-dollar" aria-hidden="true"></i>
                         <span>Salary</span>
                     </Link>
 
-                    <Link href="/settings" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/settings')
+                    <Link href="/employee/settings" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/employee/settings')
                         ? 'bg-green-600 font-bold'
                         : 'hover:bg-green-500'">
                         <i class="fa fa-cog" aria-hidden="true"></i>
