@@ -2,7 +2,7 @@
 import { Link } from '@inertiajs/vue3'
 import { ref, computed } from 'vue'
 
-// Define props to receive data from Laravel controller
+// Props from Laravel controller
 const props = defineProps({
   employees: {
     type: Object,
@@ -17,7 +17,8 @@ const filteredEmployees = computed(() => {
   if (!search.value) {
     return props.employees.data
   }
-  return props.employees.data.filter(employee => 
+
+  return props.employees.data.filter(employee =>
     employee.name.toLowerCase().includes(search.value.toLowerCase()) ||
     employee.id.toString().includes(search.value)
   )
@@ -41,9 +42,10 @@ const filteredEmployees = computed(() => {
           placeholder="Search by Name or ID"
           class="px-4 py-2 border rounded-md w-64 focus:ring focus:outline-none"
         />
-        <div class="text-bold bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-md">
+
+        <div class="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-md">
           <Link href="/addnewemployee">
-            <i aria-hidden="true" /> Add New Employee
+            Add New Employee
           </Link>
         </div>
       </div>
@@ -68,27 +70,34 @@ const filteredEmployees = computed(() => {
             >
               <td class="px-6 py-3">{{ employee.id }}</td>
               <td class="px-6 py-3">{{ employee.name }}</td>
-              <td class="px-6 py-3">{{ employee.department?.name ?? 'N/A' }}</td>
+              <td class="px-6 py-3">
+                {{ employee.department?.name ?? 'N/A' }}
+              </td>
 
               <td class="py-4 px-6">
                 <div class="flex justify-center gap-2">
-                  <div class="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-md inline-block">
-                    <Link :href="`/view/${employee.id}`">
-                      View
-                    </Link>
-                  </div>
+                  <Link
+                    :href="`/view/${employee.id}`"
+                    class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
+                  >
+                    View
+                  </Link>
 
-                  <div class="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded-md inline-block">
-                    <Link :href="`/edit/${employee.id}`">
-                      Edit
-                    </Link>
-                  </div>
+                  <Link
+                    :href="`/edit/${employee.id}`"
+                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-md"
+                  >
+                    Edit
+                  </Link>
 
-                  <div class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-md inline-block">
-                    <Link :href="`/delete/${employee.id}`" method="delete" as="button">
-                      Delete
-                    </Link>
-                  </div>
+                  <Link
+                    :href="`/delete/${employee.id}`"
+                    method="delete"
+                    as="button"
+                    class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
+                  >
+                    Delete
+                  </Link>
                 </div>
               </td>
             </tr>
@@ -112,13 +121,6 @@ const filteredEmployees = computed(() => {
         >
           ‹
         </Link>
-        <button
-          v-else
-          disabled
-          class="w-8 h-8 flex items-center justify-center bg-gray-300 text-gray-500 rounded-full cursor-not-allowed"
-        >
-          ‹
-        </button>
 
         <span class="font-semibold">{{ employees.current_page }}</span>
         <span class="text-gray-500">of {{ employees.last_page }}</span>
@@ -130,13 +132,6 @@ const filteredEmployees = computed(() => {
         >
           ›
         </Link>
-        <button
-          v-else
-          disabled
-          class="w-8 h-8 flex items-center justify-center bg-gray-300 text-gray-500 rounded-full cursor-not-allowed"
-        >
-          ›
-        </button>
       </div>
 
     </main>

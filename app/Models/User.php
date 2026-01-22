@@ -10,6 +10,11 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'name',
         'email',
@@ -26,11 +31,19 @@ class User extends Authenticatable
         'salary',
     ];
 
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
+    /**
+     * The attributes that should be cast.
+     */
     protected function casts(): array
     {
         return [
@@ -43,14 +56,10 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the department that the user belongs to.
+     * User belongs to a department
      */
     public function department()
     {
         return $this->belongsTo(Department::class);
     }
-
-    
-
-    // Remove roleRelation() method since Role model doesn't exist
 }

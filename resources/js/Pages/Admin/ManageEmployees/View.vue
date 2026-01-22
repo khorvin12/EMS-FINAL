@@ -1,4 +1,6 @@
 <script setup>
+import { Link } from '@inertiajs/vue3'
+
 defineProps({
   employee: {
     type: Object,
@@ -69,7 +71,9 @@ defineProps({
 
         <div>
           <p class="text-sm font-bold">Salary</p>
-          <p class="mt-1">₱{{ Number(employee.salary).toLocaleString() }}</p>
+          <p class="mt-1">
+            ₱{{ Number(employee.salary).toLocaleString() }}
+          </p>
         </div>
 
       </div>
