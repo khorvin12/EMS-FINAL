@@ -3,7 +3,7 @@ import '../css/app.css';
 
 import { createApp, h } from 'vue'
 import { createInertiaApp, Link } from '@inertiajs/vue3'
-import Layout from './Layouts/hrLayout.vue';
+import Layout from './Layouts/HRLayout.vue';
 
 createInertiaApp({
   resolve: name => {

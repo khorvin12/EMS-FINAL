@@ -26,35 +26,35 @@ const isActive = (path) => page.url.startsWith(path)
                     <Link href="/index" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/index')
                         ? 'bg-blue-700 font-bold'
                         : 'hover:bg-blue-700'">
-                        <i class="fa fa-tachometer" />
+                        <i class="fa fa-dashboard" aria-hidden="true"></i>
                         <span>Dashboard</span>
                     </Link>
 
                     <Link href="/attendance" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/attendance')
                         ? 'bg-blue-700 font-bold'
                         : 'hover:bg-blue-700'">
-                        <i class="fa fa-users" />
+                        <i class="fa fa-calendar-check-o" aria-hidden="true">&#xf274;</i>
                         <span>Attendance</span>
-                    </Link>
-
-                    <Link href="/salary" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/salary')
-                        ? 'bg-blue-700 font-bold'
-                        : 'hover:bg-blue-700'">
-                        <i class="fa fa-building" />
-                        <span>Salary</span>
                     </Link>
 
                     <Link href="/leaves" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/leaves')
                         ? 'bg-blue-700 font-bold'
                         : 'hover:bg-blue-700'">
-                        <i class="fa fa-calendar" />
+                        <i class="fa fa-calendar-times-o" aria-hidden="true">&#xf273;</i>
                         <span>Leaves</span>
+                    </Link>
+
+                    <Link href="/salary" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/salary')
+                        ? 'bg-blue-700 font-bold'
+                        : 'hover:bg-blue-700'">
+                        <i class="fa fa-dollar" aria-hidden="true"></i>
+                        <span>Salary</span>
                     </Link>
 
                     <Link href="/settings" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/settings')
                         ? 'bg-blue-700 font-bold'
                         : 'hover:bg-blue-700'">
-                        <i class="fa fa-cog" aria-hidden="true" />
+                        <i class="fa fa-cog" aria-hidden="true"></i>
                         <span>Settings</span>
                     </Link>
                 </nav>
