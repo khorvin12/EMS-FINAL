@@ -29,26 +29,26 @@ const filteredEmployees = computed(() => {
 })
 </script>
 
-
 <template>
   <div class="flex flex-col h-screen">
     <main class="flex-1 p-8 bg-gray-100 overflow-y-auto">
+    
     <!-- Success Message -->
-<transition
-  enter-active-class="transition ease-out duration-300"
-  enter-from-class="opacity-0 translate-y-2"
-  enter-to-class="opacity-100 translate-y-0"
-  leave-active-class="transition ease-in duration-300"
-  leave-from-class="opacity-100 translate-y-0"
-  leave-to-class="opacity-0 translate-y-2"
->
-  <div
-    v-if="showSuccess"
-    class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4"
-  >
-    {{ $page.props.flash.success }}
-  </div>
-</transition>
+    <transition
+      enter-active-class="transition ease-out duration-300"
+      enter-from-class="opacity-0 translate-y-2"
+      enter-to-class="opacity-100 translate-y-0"
+      leave-active-class="transition ease-in duration-300"
+      leave-from-class="opacity-100 translate-y-0"
+      leave-to-class="opacity-0 translate-y-2"
+    >
+      <div
+        v-if="showSuccess"
+        class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4"
+      >
+        {{ $page.props.flash.success }}
+      </div>
+    </transition>
 
       <!-- Title -->
       <h1 class="text-3xl font-bold text-center mb-6">
@@ -64,12 +64,9 @@ const filteredEmployees = computed(() => {
           class="px-4 py-2 border rounded-md w-64 focus:ring focus:outline-none"
         />
 
-        <Link href="/employees/create">
-  <button class="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-md">
-    Add New Employee
-  </button>
-</Link>
-
+        <Link href="/addnewemployee" class="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-md">
+          Add New Employee
+        </Link>
       </div>
 
       <!-- Table -->
@@ -85,25 +82,25 @@ const filteredEmployees = computed(() => {
           </thead>
 
           <tbody>
-            <tr
-              v-for="employee in filteredEmployees"
-              :key="employee.id"
-              class="border-b"
-            >
-              <td class="px-6 py-3">{{ employee.id }}</td>
-              <td class="px-6 py-3">{{ employee.birth }}</td>
-              <td class="px-6 py-3">{{ employee.department }}</td>
+            <tr>
+              <td class="px-6 py-3">1</td>
+              <td class="px-6 py-3">2</td>
+              <td class="px-6 py-3">3</td>
 
-              <td class="px-6 py-3 text-center space-x-2">
-                <button class="bg-sky-500 hover:bg-sky-600 text-white px-3 py-1 rounded">
-                  View
-                </button>
-                <button class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded">
-                  Edit
-                </button>
-                <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">
-                  Delete
-                </button>
+              <td class="py-4 px-6">
+                <div class="flex justify-center gap-2">
+                  <Link href="/view" class="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-md">
+                    View
+                  </Link>
+
+                  <Link href="/edit" class="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded-md">
+                    Edit
+                  </Link>
+
+                  <Link href="/delete" class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-md">
+                    Delete
+                  </Link>
+                </div>
               </td>
             </tr>
           </tbody>

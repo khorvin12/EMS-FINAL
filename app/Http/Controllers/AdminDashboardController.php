@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
+use App\Models\User;
+use App\Models\Department;
 
 class AdminDashboardController extends Controller
 {
@@ -10,4 +12,12 @@ class AdminDashboardController extends Controller
     {
         return Inertia::render('Admin/Dashboard');
     }
+
+public function getStats()
+{
+    return response()->json([
+        'totalEmployees' => User::where('role', 'employee')->count(),
+        'totalDepartments' => Department::count(),
+    ]);
+}
 }

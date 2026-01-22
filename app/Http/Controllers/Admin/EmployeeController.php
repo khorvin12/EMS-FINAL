@@ -11,27 +11,46 @@ use Inertia\Inertia;
 class EmployeeController extends Controller
 {
     /**
-     * Store a new employee
+     * Store a new employee/user (Employee, HR, or Admin)
      */
     public function store(Request $request)
     {
-        // Validate the input
+        // Validate request
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6',
+            'last_name' => 'required|string|max:255',
+            'first_name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'phone' => 'required|string|max:15',
+            'department_id' => 'required|integer',
+            'role_id' => 'required|integer',
+            'employee_id' => 'required|string|max:50|unique:users,employee_id',
+            'dob' => 'required|date',
+            'gender' => 'required|string',
+            'civil_status' => 'required|string',
+            'role' => 'required|in:employee,hr,admin',
+            'hire_date' => 'required|date',
+            'salary' => 'required|numeric|min:0',
         ]);
 
-        // Create new employee (user with role 'employee')
+        // Create user
         User::create([
-            'name' => $validated['name'],
+            'name' => $validated['first_name'] . ' ' . $validated['last_name'],
             'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-            'role' => 'employee',
+            'phone' => $validated['phone'],
+            'department_id' => $validated['department_id'],
+            'role_id' => $validated['role_id'],
+            'hire_date' => $validated['hire_date'],
+            'salary' => $validated['salary'],
+            'password' => Hash::make($validated['email']), // Password set to email
+            'role' => $validated['role'],
+            'dob' => $validated['dob'],
+            'gender' => $validated['gender'],
+            'civil_status' => $validated['civil_status'],
+            'employee_id' => $validated['employee_id'],
         ]);
 
-        // Redirect back to manage employees page with success message
+        // Redirect back with success message
         return redirect()->route('admin.manageemployees')
-            ->with('success', 'Employee added successfully!');
+            ->with('success', 'User added successfully!');
     }
 }

@@ -1,51 +1,165 @@
 <script setup>
-import { useForm, Link } from '@inertiajs/vue3'
+import { reactive, ref } from 'vue'
+import { Inertia } from '@inertiajs/inertia'
 
-const form = useForm({
-  birth: '',
-  department: '',
+// Reactive form object
+const form = reactive({
+  last_name: '',
+  first_name: '',
+  employee_id: '',
+  dob: '',
+  gender: '',
+  civil_status: '',
+  role: 'employee',
+  email: '',
+  phone: '',
+  department_id: '',
+  role_id: '',
+  hire_date: '',
+  salary: '',
 })
 
-const submit = () => form.post('/employees')
+const errorMessage = ref('');
+
+// Submit function
+function submit() {
+  errorMessage.value = '';
+  
+  // Validate email format
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!form.email.match(emailPattern)) {
+    errorMessage.value = 'Please enter a valid email address';
+    return;
+  }
+
+  // Set URL based on role
+  let url = '/employees'; // default Employee
+  if (form.role === 'hr') url = '/hr';
+
+  Inertia.post(url, { ...form })
+
+  // Reset form after submission
+  Object.keys(form).forEach(key => form[key] = '');
+
+  alert('User added!')
+}
 </script>
 
 <template>
-  <div class="p-8 max-w-xl mx-auto bg-white shadow rounded">
-    <h1 class="text-2xl font-bold mb-6">Add New Employee</h1>
+  <div class="max-w-4xl mx-auto bg-white border-4 border-green-500 p-6 rounded">
 
-    <form @submit.prevent="submit" class="space-y-4">
+    <!-- Title -->
+    <h2 class="text-xl font-bold mb-6">Add New Employee</h2>
 
-      <!-- Birth Date -->
+    <!-- Error Message -->
+    <div v-if="errorMessage" class="text-red-500 mb-4">{{ errorMessage }}</div>
+
+    <!-- Form -->
+    <form @submit.prevent="submit" class="grid grid-cols-2 gap-4">
+
+      <!-- Last Name -->
       <div>
-        <label class="block mb-1 font-semibold">Birth Date</label>
-        <input
-          type="date"
-          v-model="form.birth"
-          class="w-full px-4 py-2 border rounded"
-        />
-        <div v-if="form.errors.birth" class="text-red-500 text-sm">{{ form.errors.birth }}</div>
+        <label class="text-sm font-semibold">Last Name</label>
+        <input type="text" v-model="form.last_name" placeholder="Last Name"
+          class="w-full mt-1 border rounded px-3 py-2" required />
       </div>
 
-      <!-- Department -->
+      <!-- First Name -->
       <div>
-        <label class="block mb-1 font-semibold">Department</label>
-        <input
-          type="text"
-          v-model="form.department"
-          class="w-full px-4 py-2 border rounded"
-        />
-        <div v-if="form.errors.department" class="text-red-500 text-sm">{{ form.errors.department }}</div>
+        <label class="text-sm font-semibold">First Name</label>
+        <input type="text" v-model="form.first_name" placeholder="First Name"
+          class="w-full mt-1 border rounded px-3 py-2" required />
       </div>
 
-      <!-- Buttons -->
-      <div class="flex justify-between">
-        <Link href="/manageemployee" class="text-gray-600 hover:underline">Cancel</Link>
-        <button
-          type="submit"
-          class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded"
-          :disabled="form.processing"
-        >
-          Save
+      <!-- Employee ID -->
+      <div>
+        <label class="text-sm font-semibold">Employee ID</label>
+        <input type="text" v-model="form.employee_id" placeholder="Enter ID"
+          class="w-full mt-1 border rounded px-3 py-2" required />
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label class="text-sm font-semibold">Email</label>
+        <input type="email" v-model="form.email" placeholder="Enter Email"
+          class="w-full mt-1 border rounded px-3 py-2" required />
+      </div>
+
+      <!-- Phone -->
+      <div>
+        <label class="text-sm font-semibold">Phone</label>
+        <input type="text" v-model="form.phone" placeholder="Enter Phone"
+          class="w-full mt-1 border rounded px-3 py-2" required />
+      </div>
+
+      <!-- Department ID -->
+      <div>
+        <label class="text-sm font-semibold">Department ID</label>
+        <input type="number" v-model="form.department_id" placeholder="Department ID"
+          class="w-full mt-1 border rounded px-3 py-2" required />
+      </div>
+
+      <!-- Role ID -->
+      <div>
+        <label class="text-sm font-semibold">Role ID</label>
+        <input type="number" v-model="form.role_id" placeholder="Role ID"
+          class="w-full mt-1 border rounded px-3 py-2" required />
+      </div>
+
+      <!-- Date of Birth -->
+      <div>
+        <label class="text-sm font-semibold">Date of Birth</label>
+        <input type="date" v-model="form.dob" class="w-full mt-1 border rounded px-3 py-2" required />
+      </div>
+
+      <!-- Gender -->
+      <div>
+        <label class="text-sm font-semibold">Gender</label>
+        <select v-model="form.gender" class="w-full mt-1 border rounded px-3 py-2" required>
+          <option value="">Select Gender</option>
+          <option>Male</option>
+          <option>Female</option>
+        </select>
+      </div>
+
+      <!-- Civil Status -->
+      <div>
+        <label class="text-sm font-semibold">Civil Status</label>
+        <select v-model="form.civil_status" class="w-full mt-1 border rounded px-3 py-2" required>
+          <option value="">Select Status</option>
+          <option>Single</option>
+          <option>Married</option>
+        </select>
+      </div>
+
+      <!-- Role -->
+      <div>
+        <label class="text-sm font-semibold">Role</label>
+        <select v-model="form.role" class="w-full mt-1 border rounded px-3 py-2" required>
+          <option value="employee">Employee</option>
+          <option value="hr">HR</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+
+      <!-- Hire Date -->
+      <div>
+        <label class="text-sm font-semibold">Hire Date</label>
+        <input type="date" v-model="form.hire_date" class="w-full mt-1 border rounded px-3 py-2" required />
+      </div>
+
+      <!-- Salary -->
+      <div>
+        <label class="text-sm font-semibold">Salary</label>
+        <input type="number" v-model="form.salary" placeholder="Enter Salary"
+          class="w-full mt-1 border rounded px-3 py-2" required />
+      </div>
+
+      <!-- Submit Button -->
+      <div class="col-span-2 mt-6">
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold">
+          Confirm
         </button>
       </div>
 

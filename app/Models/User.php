@@ -22,6 +22,10 @@ protected $fillable = [
     'email',
     'password',
     'role',
+    'employee_id',
+    'dob',
+    'gender',
+    'civil_status',
 ];
 
 

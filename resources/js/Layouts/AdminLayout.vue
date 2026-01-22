@@ -6,7 +6,6 @@ const page = usePage()
 const isActive = (path) => page.url.startsWith(path)
 </script>
 
-
 <template>
     <div class="flex flex-col h-screen">
         <!-- Top Bar-->
@@ -14,7 +13,7 @@ const isActive = (path) => page.url.startsWith(path)
             <nav class="flex items-center justify-between text-2xl p-6 font-bold">
                 <h1 class="ml-14">Admin</h1>
                 <div class="space-x-6">
-                    <Link href="/dashboard">Logout</Link>
+                    <Link href="/logout" method="post" as="button">Logout</Link>
                 </div>
             </nav>
         </header>
@@ -30,14 +29,14 @@ const isActive = (path) => page.url.startsWith(path)
                         <span>Dashboard</span>
                     </Link>
 
-                    <Link href="/manageemployee" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/manageemployee')
+                    <Link href="/manageemployees" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/manageemployees')
                         ? 'bg-red-700 font-bold'
                         : 'hover:bg-red-700'">
                         <i class="fa fa-users" />
                         <span>Employees</span>
                     </Link>
 
-                    <Link href="/managedepartment" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/managedepartment')
+                    <Link href="/departments" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/departments')
                         ? 'bg-red-700 font-bold'
                         : 'hover:bg-red-700'">
                         <i class="fa fa-building" />
@@ -51,10 +50,12 @@ const isActive = (path) => page.url.startsWith(path)
                         <span>Leaves</span>
                     </Link>
 
-                    <div class="rounded-md p-2 hover:bg-red-700 flex items-center space-x-4 py-2.5 px-8">
+                    <Link href="/adminsettings" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/adminsettings')
+                        ? 'bg-red-700 font-bold'
+                        : 'hover:bg-red-700'">
                         <i class="fa fa-cog" aria-hidden="true" />
-                        <Link href="/adminsettings">Settings</Link>
-                    </div>
+                        <span>Settings</span>
+                    </Link>
                 </nav>
             </aside>
 

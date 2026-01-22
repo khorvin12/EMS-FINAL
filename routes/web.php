@@ -1,12 +1,13 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\HRController;
+use App\Http\Controllers\Admin\DepartmentController;
 
 // Middleware
 use App\Http\Middleware\AdminMiddleware;
@@ -42,19 +43,48 @@ Route::middleware(['auth', AdminMiddleware::class])
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])
             ->name('dashboard');
 
-        // Employees management
-        Route::inertia('/manageemployee', 'Admin/ManageEmployees/ManageEmployee')
+        // Dashboard Stats API
+        Route::get('/api/dashboard/stats', [AdminDashboardController::class, 'getStats'])
+            ->name('dashboard.stats');
+
+        // Department Management
+        Route::get('/departments', [DepartmentController::class, 'index'])
+            ->name('departments');
+        
+        Route::inertia('/adddepartment', 'Admin/Departments/AddDepartment')
+            ->name('adddepartment');
+        
+        Route::post('/adddepartment', [DepartmentController::class, 'store']);
+
+        Route::get('/editdepartment/{id}', [DepartmentController::class, 'edit'])
+            ->name('editdepartment');
+        
+        Route::put('/editdepartment/{id}', [DepartmentController::class, 'update']);
+
+        Route::delete('/departments/{id}', [DepartmentController::class, 'destroy']);
+
+        // Employee Management Pages
+        Route::inertia('/manageemployees', 'Admin/ManageEmployees/ManageEmployee')
             ->name('manageemployees');
 
-        // Show Add New Employee form
+        Route::inertia('/addnewemployee', 'Admin/ManageEmployees/AddnewEmployee')
+            ->name('addnewemployee');
+
+        // Show Add New Employee form (alternative route)
         Route::inertia('/employees/create', 'Admin/ManageEmployees/AddnewEmployee')
             ->name('employees.create');
 
-        // Store new employee
+        Route::inertia('/view', 'Admin/ManageEmployees/View')
+            ->name('view');
+
+        Route::inertia('/edit', 'Admin/ManageEmployees/Edit')
+            ->name('edit');
+
+        // Employee API Routes
         Route::post('/employees', [EmployeeController::class, 'store'])
             ->name('employees.store');
 
-        // HR management
+        // HR API Routes
         Route::post('/hr', [HRController::class, 'store'])
             ->name('hr.store');
 
@@ -79,25 +109,43 @@ Route::middleware(['auth', AdminMiddleware::class])
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', EmployeeMiddleware::class])->prefix('employee')->name('employee.')->group(function () {
+Route::middleware(['auth', EmployeeMiddleware::class])
+    ->prefix('employee')
+    ->name('employee.')
+    ->group(function () {
 
-    Route::get('/dashboard', fn() => Inertia::render('Employee/Dashboard'))
-        ->name('dashboard');
-});
+        // Employee Dashboard
+        Route::get('/dashboard', fn() => Inertia::render('Employee/Dashboard'))
+            ->name('dashboard');
+        
+        Route::inertia('/index', 'Employee/Index')->name('index');
+
+        // Employee Leave Routes
+        Route::inertia('/leave', 'Employee/Leaves/Index')->name('leave');
+        Route::inertia('/create-leave', 'Employee/Leaves/Create')->name('create-leave');
+        Route::inertia('/view-leave', 'Employee/Leaves/View')->name('view-leave');
+
+        // Employee Salary Routes
+        Route::inertia('/employee-salary', 'Employee/Salary/Index')->name('employee-salary');
+
+        // Employee Attendance Route
+        Route::inertia('/attendance', 'Employee/Attendance/Index')->name('attendance');
+
+        // Employee Settings Routes
+        Route::inertia('/settings', 'Employee/Settings/Index')->name('settings');
+    });
 
 /*
 |--------------------------------------------------------------------------
 | HR Routes (Protected)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', HRMiddleware::class])->prefix('hr')->name('hr.')->group(function () {
 
-    Route::get('/dashboard', fn() => Inertia::render('HR/Dashboard'))
-        ->name('dashboard');
-});
+Route::middleware(['auth', HRMiddleware::class])
+    ->prefix('hr')
+    ->name('hr.')
+    ->group(function () {
 
-/*
-|--------------------------------------------------------------------------
-| Admin Leaves Management Routes (Protected)
-|--------------------------------------------------------------------------
-*/
+        Route::get('/dashboard', fn() => Inertia::render('HR/Dashboard'))
+            ->name('dashboard');
+    });
