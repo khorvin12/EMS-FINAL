@@ -26,8 +26,19 @@ const errorMessage = ref('')
 
 function submit() {
   errorMessage.value = ''
+  
+  // Validate email format
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!form.email.match(emailPattern)) {
+    errorMessage.value = 'Please enter a valid email address'
+    return
+  }
 
-  Inertia.post('/employees', { ...form }, {
+  // Set URL based on role
+  let url = '/employees' // default Employee
+  if (form.role === 'hr') url = '/hr'
+
+  Inertia.post(url, { ...form }, {
     onError: errors => {
       errorMessage.value = Object.values(errors).flat().join(', ')
     },

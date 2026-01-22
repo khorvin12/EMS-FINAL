@@ -19,7 +19,7 @@
 import { computed } from 'vue'
 import { usePage, router } from '@inertiajs/vue3'
 
-defineOptions({ layout: null }) // <- disables layout for this page only
+
 
 const page = usePage()
 const user = computed(() => page.props.auth?.user ?? null)

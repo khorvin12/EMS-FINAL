@@ -26,7 +26,7 @@ class EmployeeController extends Controller
     {
         $departments = Department::select('id','name')->orderBy('name')->get();
 
-        return Inertia::render('Admin/ManageEmployees/AddEmployee', [
+        return Inertia::render('Admin/ManageEmployees/AddnewEmployee', [
             'departments' => $departments
         ]);
     }
@@ -73,7 +73,7 @@ class EmployeeController extends Controller
     {
         $employee = User::with('department')->findOrFail($id);
 
-        return Inertia::render('Admin/ManageEmployees/ViewEmployee', [
+        return Inertia::render('Admin/ManageEmployees/View', [
             'employee' => $employee
         ]);
     }
@@ -84,7 +84,7 @@ class EmployeeController extends Controller
         $employee = User::findOrFail($id);
         $departments = Department::select('id','name')->orderBy('name')->get();
 
-        return Inertia::render('Admin/ManageEmployees/EditEmployee', [
+        return Inertia::render('Admin/ManageEmployees/Edit', [
             'employee' => $employee,
             'departments' => $departments
         ]);
