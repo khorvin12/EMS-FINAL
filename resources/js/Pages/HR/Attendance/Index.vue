@@ -11,7 +11,7 @@ import { Link } from '@inertiajs/vue3';
         </div>
 
         <div>
-            <Link href="/attendance/create" class="bg-green-500 text-black px-4 py-2 rounded-md hover:bg-green-400">Add Attendance</Link>
+            <Link href="/create-attendance" class="bg-green-500 text-black px-4 py-2 rounded-md hover:bg-green-400">Add Attendance</Link>
         </div>
     </div>
 
