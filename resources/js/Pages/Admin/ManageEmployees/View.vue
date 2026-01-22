@@ -1,79 +1,89 @@
+<script setup>
+defineProps({
+  employee: {
+    type: Object,
+    required: true
+  }
+})
+</script>
 
 <template>
-    <!-- Contents -->
-    <main>
-        <!-- Title Contents -->
-        <h1 class="text-3xl font-bold mb-10">Addnewemployee</h1>
+  <main class="flex-1 p-8">
+    <div class="bg-white border-4 border-blue-400 rounded-lg p-8 max-w-5xl mx-auto">
 
-        <!-- Dashboard Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-48">
+      <h1 class="text-2xl font-bold mb-6">
+        View Employee
+      </h1>
 
-            <!-- Total Employees Card -->
-            <div class="bg-white rounded-md flex items-center gap-4 shadow w-64">
-                <div class="bg-green-500 rounded-md px-3 py-3">
-                    <i class="fa fa-users fa-2x" />
-                </div>
-                <div>
-                    <p class="text-lg font-medium">Total Employees</p>
-                    <p class="text-center">4</p>
-                </div>
-            </div>
+      <div class="grid grid-cols-2 gap-6 text-gray-800">
 
-            <div class="bg-white rounded-md flex items-center gap-4 shadow w-64">
-                <div class="bg-green-500 rounded-md px-5 py-3">
-                    <i class="fa fa-building fa-2x" />
-                </div>
-                <div>
-                    <p class="text-lg font-medium">Total Departments</p>
-                    <p class="text-center">4</p>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-md flex items-center gap-4 shadow w-64">
-                <div class="bg-green-500 rounded-md px-5 py-3">
-                    <i class="fa fa-usd fa-2x" />
-                </div>
-                <div>
-                    <p class="text-lg font-medium">Monthly Pay</p>
-                    <p class="text-center">4</p>
-                </div>
-            </div>
+        <div>
+          <p class="text-sm font-bold">Employee ID</p>
+          <p class="mt-1">{{ employee.employee_id }}</p>
         </div>
 
-        <!-- Leave Details -->
-        <h2 class="text-2xl font-bold mb-12 text-center">Leave Details</h2>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
-            <div class="bg-white rounded-md flex items-center gap-4 shadow w-64">
-                <div class="bg-yellow-400 rounded-md px-5 py-3">
-                    <i class="fa fa-hourglass-half fa-2x" />
-                </div>
-                <div>
-                    <p class="text-lg font-medium">Leave Pending</p>
-                    <p class="text-center">4</p>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-md flex items-center gap-4 shadow w-64">
-                <div class="bg-green-500 rounded-md px-4 py-3">
-                    <i class="fa fa-check-circle fa-2x" />
-                </div>
-                <div>
-                    <p class="text-lg font-medium">Leave Approved</p>
-                    <p class="text-center">4</p>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-md flex items-center gap-4 shadow w-64">
-                <div class="bg-red-500 rounded-md px-4 py-3">
-                    <i class="fa fa-times-circle fa-2x" />
-                </div>
-                <div>
-                    <p class="text-lg font-medium">Leave Rejected</p>
-                    <p class="text-center">4</p>
-                </div>
-            </div>
+        <div>
+          <p class="text-sm font-bold">Name</p>
+          <p class="mt-1">{{ employee.name }}</p>
         </div>
-    </main>
+
+        <div>
+          <p class="text-sm font-bold">Email</p>
+          <p class="mt-1">{{ employee.email }}</p>
+        </div>
+
+        <div>
+          <p class="text-sm font-bold">Phone</p>
+          <p class="mt-1">{{ employee.phone }}</p>
+        </div>
+
+        <div>
+          <p class="text-sm font-bold">Department</p>
+          <p class="mt-1">{{ employee.department?.name ?? 'N/A' }}</p>
+        </div>
+
+        <div>
+          <p class="text-sm font-bold">Role</p>
+          <p class="mt-1 capitalize">{{ employee.role }}</p>
+        </div>
+
+        <div>
+          <p class="text-sm font-bold">Date of Birth</p>
+          <p class="mt-1">{{ employee.dob }}</p>
+        </div>
+
+        <div>
+          <p class="text-sm font-bold">Gender</p>
+          <p class="mt-1">{{ employee.gender }}</p>
+        </div>
+
+        <div>
+          <p class="text-sm font-bold">Civil Status</p>
+          <p class="mt-1">{{ employee.civil_status }}</p>
+        </div>
+
+        <div>
+          <p class="text-sm font-bold">Hire Date</p>
+          <p class="mt-1">{{ employee.hire_date }}</p>
+        </div>
+
+        <div>
+          <p class="text-sm font-bold">Salary</p>
+          <p class="mt-1">₱{{ Number(employee.salary).toLocaleString() }}</p>
+        </div>
+
+      </div>
+
+      <!-- Back button -->
+      <div class="mt-8">
+        <Link
+          href="/manageemployees"
+          class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-md"
+        >
+          Back to Employees
+        </Link>
+      </div>
+
+    </div>
+  </main>
 </template>

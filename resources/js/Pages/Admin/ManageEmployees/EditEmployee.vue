@@ -254,6 +254,15 @@ onMounted(() => {
             Update Employee
           </button>
         </div>
+           <!-- Back button -->
+      <div class="mt-8">
+        <Link
+          href="/manageemployees"
+          class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-md"
+        >
+          Back to Employees
+        </Link>
+      </div>
       </form>
     </div>
   </main>

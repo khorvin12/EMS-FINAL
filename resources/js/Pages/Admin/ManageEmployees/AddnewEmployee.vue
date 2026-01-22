@@ -40,7 +40,7 @@ function submit() {
 </script>
 
 <template>
-  <div class="max-w-4xl mx-auto bg-white p-6 rounded shadow">
+  <div class="max-w-4xl mx-auto bg-white border-4 border-green-500 p-6 rounded">
     <h2 class="text-xl font-bold mb-4">Add New Employee</h2>
 
     <div v-if="errorMessage" class="text-red-500 mb-4">{{ errorMessage }}</div>

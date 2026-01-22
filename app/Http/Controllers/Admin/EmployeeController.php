@@ -24,7 +24,7 @@ class EmployeeController extends Controller
     // Show Add Employee page
     public function create()
     {
-        $departments = Department::select('id','name')->orderBy('name')->get();
+        $departments = Department::select('id', 'name')->orderBy('name')->get();
 
         return Inertia::render('Admin/ManageEmployees/AddEmployee', [
             'departments' => $departments
@@ -50,7 +50,7 @@ class EmployeeController extends Controller
         ]);
 
         User::create([
-            'name' => $validated['first_name'].' '.$validated['last_name'],
+            'name' => $validated['first_name'] . ' ' . $validated['last_name'],
             'email' => $validated['email'],
             'phone' => $validated['phone'],
             'department_id' => $validated['department_id'],
@@ -73,7 +73,7 @@ class EmployeeController extends Controller
     {
         $employee = User::with('department')->findOrFail($id);
 
-        return Inertia::render('Admin/ManageEmployees/ViewEmployee', [
+        return Inertia::render('Admin/ManageEmployees/View', [
             'employee' => $employee
         ]);
     }
@@ -82,7 +82,7 @@ class EmployeeController extends Controller
     public function edit($id)
     {
         $employee = User::findOrFail($id);
-        $departments = Department::select('id','name')->orderBy('name')->get();
+        $departments = Department::select('id', 'name')->orderBy('name')->get();
 
         return Inertia::render('Admin/ManageEmployees/EditEmployee', [
             'employee' => $employee,
@@ -111,7 +111,7 @@ class EmployeeController extends Controller
         ]);
 
         $employee->update([
-            'name' => $validated['first_name'].' '.$validated['last_name'],
+            'name' => $validated['first_name'] . ' ' . $validated['last_name'],
             'email' => $validated['email'],
             'phone' => $validated['phone'],
             'department_id' => $validated['department_id'],

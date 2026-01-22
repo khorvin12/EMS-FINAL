@@ -72,6 +72,7 @@ Route::middleware(['auth', AdminMiddleware::class])->name('admin.')->group(funct
     // UPDATED: Edit specific employee
     Route::get('/edit/{id}', [EmployeeController::class, 'edit'])
         ->name('edit');
+    
 
     Route::put('/edit/{id}', [EmployeeController::class, 'update'])
         ->name('employees.update');
