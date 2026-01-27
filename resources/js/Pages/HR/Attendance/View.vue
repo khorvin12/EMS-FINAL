@@ -6,7 +6,7 @@
     </div>
     <div class="flex justify-between mb-6">
         <div class="bg-white rounded-md p-2">
-            <input type="date">
+            <input type="date" name="date">
         </div>
     </div>
 

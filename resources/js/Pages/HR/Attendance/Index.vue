@@ -17,7 +17,7 @@ import { Link } from '@inertiajs/vue3';
 
     <table class="w-full shadow-lg overflow-hidden table-fixed bg-white rounded-lg">
         <thead>
-            <tr class="bg-gray-400 text-black font-medium">
+            <tr class="bg-gray-400 text-black font-medium text-lg">
                 <th class="p-6">Serial No.</th>
                 <th class="p-6">Employee ID</th>
                 <th class="p-6">Name</th>
@@ -69,12 +69,13 @@ import { Link } from '@inertiajs/vue3';
                 <td class="p-4">33333</td>
                 <td class="p-4">Mark</td>
                 <td class="p-4">
-                    <input type="date" name="date" class="bg-gray-200 rounded-md px-1"></td>
-                <td class="p-4">
-                    <input type="time" name="timein" class="bg-gray-200 rounded-md px-1">
+                    <input type="date" name="date" class="bg-gray-200 rounded-md px-2 py-1">
                 </td>
                 <td class="p-4">
-                    <input type="time" name="timeout" class="bg-gray-200 rounded-md px-1">
+                    <input type="time" name="timein" class="bg-gray-200 rounded-md px-2 py-1">
+                </td>
+                <td class="p-4">
+                    <input type="time" name="timeout" class="bg-gray-200 rounded-md px-2 py-1">
                 </td>
                 <td class="p-4">
                     <button>Absent</button>
@@ -91,12 +92,13 @@ import { Link } from '@inertiajs/vue3';
                 <td class="p-4">44444</td>
                 <td class="p-4">Khorvin</td>
                 <td class="p-4">
-                    <input type="date" name="date" class="bg-gray-200 rounded-md px-1"></td>
-                <td class="p-4">
-                    <input type="time" name="timein" class="bg-gray-200 rounded-md px-1">
+                    <input type="date" name="date" class="bg-gray-200 rounded-md px-2 py-1">
                 </td>
                 <td class="p-4">
-                    <input type="time" name="timeout" class="bg-gray-200 rounded-md px-1">
+                    <input type="time" name="timein" class="bg-gray-200 rounded-md px-2 py-1">
+                </td>
+                <td class="p-4">
+                    <input type="time" name="timeout" class="bg-gray-200 rounded-md px-2 py-1">
                 </td>
                 <td class="p-4">
                     <button>On Leave</button>
@@ -112,12 +114,13 @@ import { Link } from '@inertiajs/vue3';
                 <td class="p-4">55555</td>
                 <td class="p-4">Nico</td>
                 <td class="p-4">
-                    <input type="date" name="date" class="bg-gray-200 rounded-md px-1"></td>
-                <td class="p-4">
-                    <input type="time" name="timein" class="bg-gray-200 rounded-md px-1">
+                    <input type="date" name="date" class="bg-gray-200 rounded-md px-2 py-1">
                 </td>
                 <td class="p-4">
-                    <input type="time" name="timeout" class="bg-gray-200 rounded-md px-1">
+                    <input type="time" name="timein" class="bg-gray-200 rounded-md px-2 py-1">
+                </td>
+                <td class="p-4">
+                    <input type="time" name="timeout" class="bg-gray-200 rounded-md px-2 py-1">
                 </td>
                 <td class="p-4">
                     <button>On Leave</button>
