@@ -3,40 +3,47 @@ import { Link } from '@inertiajs/vue3';
 </script>
 
 <template>
-    <h1 class="text-center text-3xl font-bold mb-12">January 2026</h1>
+    <h1 class="text-center text-4xl font-bold mb-12">Salary Details</h1>
 
     <div class="flex justify-between mb-6">
-        <div class="bg-white rounded-md px-4 py-2">
-            <input type="search" placeholder="Search By Employee ID" />
-        </div>
+        <input type="search" placeholder="Search By Employee ID" class="bg-white p-2 border border-gray-300 rounded-md
+           focus:outline-none focus:border-indigo-600" />
     </div>
 
-    <table class="w-full rounded-md shadow-lg overflow-hidden mb-6 table-fixed bg-white">
-        <thead class="border-b border-slate-100 text-slate-600 text-center">
-            <tr class="bg-gray-400 text-black font-medium">
-                <th class="px-6 py-4">ID</th>
-                <th>Name</th>
-                <th>Pay Period</th>
-                <th>Full Salary</th>
-                <th>Deduction</th>
-                <th>Salary</th>
+    <table class="w-full shadow-lg overflow-hidden table-fixed bg-white rounded-lg">
+        <thead>
+            <tr class="bg-gray-400 text-black font-medium text-lg text-left">
+                <th class="p-6">Serial No</th>
+                <th class="p-6">Employee ID</th>
+                <th class="p-6">Month</th>
+                <th class="p-6">Basic Salary</th>
+                <th class="p-6">Deductions</th>
+                <th class="p-6">Net Salary</th>
             </tr>
         </thead>
 
         <tbody>
-            <tr class="bg-white-100 w-full p-0 text-center">
-                <td class="px-6 py-4 border-b border-slate-100">1</td>
-                <td class="px-6 py-4 border-b border-slate-100">James</td>
-                <td class="px-6 py-4 border-b border-slate-100">January</td>
-                <td class="px-6 py-4 border-b border-slate-100">$12,000,000</td>
-                <td class="px-6 py-4 border-b border-slate-100">$15,000,000</td>
-                <td class="px-6 py-4 border-b border-slate-100 flex justify-center">
-                    <p class="ml-15 mr-4 font-bold">$1,000,000</p>
-                    <div>
-                        <Link href="/editdepartment" class="bg-yellow-300 rounded-sm px-4 py-1">Edit</Link>
+            <tr class="border-t-4 border-gray-200">
+                <td class="p-6">1</td>
+                <td class="p-6">11111</td>
+
+                <td class="p-6">
+                    February 1, 2026
+                </td>
+
+                <td class="p-6">$12,000,000</td>
+                <td class="p-6">$15,000,000</td>
+
+                <td class="p-6">
+                    <div class="flex items-center justify-between">
+                        <span>$1,000,000</span>
+                        <Link href="/editdepartment" class="bg-yellow-300 rounded-sm px-4 py-1">
+                            Edit
+                        </Link>
                     </div>
                 </td>
             </tr>
         </tbody>
     </table>
+
 </template>
