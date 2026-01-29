@@ -1,0 +1,22 @@
+[90m= [39m[34;4mApp\Models\User[39;24m {#6582
+    [34mid[39m: [35m2[39m,
+    [34memployee_id[39m: "[32m52[39m",
+    [34mdob[39m: "[32m2026-01-22[39m",
+    [34mgender[39m: "[32mMale[39m",
+    [34mcivil_status[39m: "[32mSingle[39m",
+    [34mdepartment[39m: [36mnull[39m,
+    [34mname[39m: "[32mmark12 mar12121[39m",
+    [34memail[39m: "[32mmark1112@gmail.com[39m",
+    [34mphone[39m: "[32m12121221[39m",
+    [34mdepartment_id[39m: [35m1[39m,
+    [34mrole_id[39m: [36mnull[39m,
+    [34mhire_date[39m: "[32m2026-01-19[39m",
+    [34msalary[39m: "[32m1212.00[39m",
+    [34memail_verified_at[39m: [36mnull[39m,
+    #[33mpassword[39m: "[32m$2y$12$IOitfcTsRvTWjlP.FgvPsOBGM/TMXMuRyGUf76/J4Neg8pcC5kenW[39m",
+    [34mrole[39m: "[32memployee[39m",
+    #[33mremember_token[39m: [36mnull[39m,
+    [34mcreated_at[39m: "[32m2026-01-22 08:23:36[39m",
+    [34mupdated_at[39m: "[32m2026-01-22 08:23:36[39m",
+  }
+

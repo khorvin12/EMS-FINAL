@@ -1,13 +1,12 @@
 <script setup>
-import { reactive, ref } from 'vue'
-import { Inertia } from '@inertiajs/inertia'
+import { useForm } from '@inertiajs/vue3'
+import { computed } from 'vue'
 
-// Props from controller
 const props = defineProps({
   departments: Array
 })
 
-const form = reactive({
+const form = useForm({
   first_name: '',
   last_name: '',
   employee_id: '',
@@ -22,112 +21,135 @@ const form = reactive({
   salary: ''
 })
 
-const errorMessage = ref('')
+const submitUrl = computed(() => {
+  return form.role === 'hr' ? '/hr' : '/employees'
+})
 
 function submit() {
-  errorMessage.value = ''
-  
-  // Validate email format
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  if (!form.email.match(emailPattern)) {
-    errorMessage.value = 'Please enter a valid email address'
-    return
-  }
-
-  // Set URL based on role
-  let url = '/employees' // default Employee
-  if (form.role === 'hr') url = '/hr'
-
-  Inertia.post(url, { ...form }, {
-    onError: errors => {
-      errorMessage.value = Object.values(errors).flat().join(', ')
-    },
+  form.post(submitUrl.value, {
     onSuccess: () => {
-      Object.keys(form).forEach(key => form[key] = '')
+      form.reset()
       alert('Employee added successfully!')
     }
   })
 }
+
+const formFields = [
+  { name: 'last_name', label: 'Last Name', type: 'text', placeholder: 'Last Name' },
+  { name: 'first_name', label: 'First Name', type: 'text', placeholder: 'First Name' },
+  { name: 'employee_id', label: 'Employee ID', type: 'text', placeholder: 'Enter ID' },
+  { name: 'email', label: 'Email', type: 'email', placeholder: 'Enter Email' },
+  { name: 'phone', label: 'Phone', type: 'text', placeholder: 'Enter Phone' },
+  { 
+    name: 'department_id', 
+    label: 'Department', 
+    type: 'select',
+    options: computed(() => props.departments),
+    placeholder: 'Select Department'
+  },
+  { name: 'dob', label: 'Date of Birth', type: 'date' },
+  { 
+    name: 'gender', 
+    label: 'Gender', 
+    type: 'select',
+    options: ['Male', 'Female'],
+    placeholder: 'Select Gender'
+  },
+  { 
+    name: 'civil_status', 
+    label: 'Civil Status', 
+    type: 'select',
+    options: ['Single', 'Married'],
+    placeholder: 'Select Status'
+  },
+  { 
+    name: 'role', 
+    label: 'Role', 
+    type: 'select',
+    options: [
+      { value: 'employee', label: 'Employee' },
+      { value: 'hr', label: 'HR' },
+      { value: 'admin', label: 'Admin' }
+    ]
+  },
+  { name: 'hire_date', label: 'Hire Date', type: 'date' },
+  { name: 'salary', label: 'Salary', type: 'number', placeholder: 'Enter Salary' }
+]
 </script>
 
 <template>
-  <div class="max-w-4xl mx-auto bg-white p-6 rounded shadow">
-    <h2 class="text-xl font-bold mb-4">Add New Employee</h2>
+  <div class="max-w-4xl mx-auto bg-white border-4 border-green-500 p-6 rounded">
+    
+    <h2 class="text-xl font-bold mb-6">Add New Employee</h2>
 
-    <div v-if="errorMessage" class="text-red-500 mb-4">{{ errorMessage }}</div>
+    <!-- Error Message -->
+    <div v-if="form.errors && Object.keys(form.errors).length" class="text-red-500 mb-4 p-3 bg-red-50 rounded">
+      <ul class="list-disc list-inside">
+        <li v-for="(error, field) in form.errors" :key="field">{{ error }}</li>
+      </ul>
+    </div>
 
     <form @submit.prevent="submit" class="grid grid-cols-2 gap-4">
-      <div>
-        <label>First Name</label>
-        <input type="text" v-model="form.first_name" required class="w-full border rounded px-2 py-1"/>
-      </div>
-      <div>
-        <label>Last Name</label>
-        <input type="text" v-model="form.last_name" required class="w-full border rounded px-2 py-1"/>
-      </div>
-      <div>
-        <label>Employee ID</label>
-        <input type="text" v-model="form.employee_id" required class="w-full border rounded px-2 py-1"/>
-      </div>
-      <div>
-        <label>Email</label>
-        <input type="email" v-model="form.email" required class="w-full border rounded px-2 py-1"/>
-      </div>
-      <div>
-        <label>Phone</label>
-        <input type="text" v-model="form.phone" required class="w-full border rounded px-2 py-1"/>
-      </div>
-      <div>
-        <label>Department</label>
-        <select v-model="form.department_id" required class="w-full border rounded px-2 py-1">
-          <option value="">Select Department</option>
-          <option v-for="dept in departments" :key="dept.id" :value="dept.id">
-            {{ dept.name }}
-          </option>
+      
+      <!-- Dynamic Form Fields -->
+      <div v-for="field in formFields" :key="field.name">
+        <label class="text-sm font-semibold">{{ field.label }}</label>
+        
+        <!-- Text/Email/Number/Date Inputs -->
+        <input 
+          v-if="['text', 'email', 'number', 'date'].includes(field.type)"
+          :type="field.type"
+          v-model="form[field.name]"
+          :placeholder="field.placeholder"
+          class="w-full mt-1 border rounded px-3 py-2"
+          :class="{ 'border-red-500': form.errors[field.name] }"
+          required 
+        />
+        
+        <!-- Select Inputs -->
+        <select 
+          v-else-if="field.type === 'select'"
+          v-model="form[field.name]"
+          class="w-full mt-1 border rounded px-3 py-2"
+          :class="{ 'border-red-500': form.errors[field.name] }"
+          required
+        >
+          <option v-if="field.placeholder" value="">{{ field.placeholder }}</option>
+          
+          <!-- For department options (array of objects) -->
+          <template v-if="field.name === 'department_id'">
+            <option v-for="dept in field.options.value" :key="dept.id" :value="dept.id">
+              {{ dept.name }}
+            </option>
+          </template>
+          
+          <!-- For role options (array of objects with value/label) -->
+          <template v-else-if="field.name === 'role'">
+            <option v-for="opt in field.options" :key="opt.value" :value="opt.value">
+              {{ opt.label }}
+            </option>
+          </template>
+          
+          <!-- For simple string arrays (gender, civil_status) -->
+          <template v-else>
+            <option v-for="opt in field.options" :key="opt" :value="opt">
+              {{ opt }}
+            </option>
+          </template>
         </select>
-      </div>
-      <div>
-        <label>Date of Birth</label>
-        <input type="date" v-model="form.dob" required class="w-full border rounded px-2 py-1"/>
-      </div>
-      <div>
-        <label>Gender</label>
-        <select v-model="form.gender" required class="w-full border rounded px-2 py-1">
-          <option value="">Select Gender</option>
-          <option>Male</option>
-          <option>Female</option>
-        </select>
-      </div>
-      <div>
-        <label>Civil Status</label>
-        <select v-model="form.civil_status" required class="w-full border rounded px-2 py-1">
-          <option value="">Select Status</option>
-          <option>Single</option>
-          <option>Married</option>
-        </select>
-      </div>
-      <div>
-        <label>Role</label>
-        <select v-model="form.role" required class="w-full border rounded px-2 py-1">
-          <option value="employee">Employee</option>
-          <option value="hr">HR</option>
-          <option value="admin">Admin</option>
-        </select>
-      </div>
-      <div>
-        <label>Hire Date</label>
-        <input type="date" v-model="form.hire_date" required class="w-full border rounded px-2 py-1"/>
-      </div>
-      <div>
-        <label>Salary</label>
-        <input type="number" v-model="form.salary" required class="w-full border rounded px-2 py-1"/>
       </div>
 
-      <div class="col-span-2">
-        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded mt-4 hover:bg-blue-700">
-          Add Employee
+      <!-- Submit Button -->
+      <div class="col-span-2 mt-6">
+        <button 
+          type="submit" 
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold disabled:opacity-50"
+          :disabled="form.processing"
+        >
+          {{ form.processing ? 'Submitting...' : 'Confirm' }}
         </button>
       </div>
+
     </form>
   </div>
 </template>

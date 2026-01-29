@@ -3,15 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Department;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
 class EmployeeController extends Controller
 {
-    // Show employee list
+    /**
+     * Display employee list
+     */
     public function index()
     {
         $employees = User::with('department')->paginate(10);
@@ -21,54 +23,31 @@ class EmployeeController extends Controller
         ]);
     }
 
-    // Show Add Employee page
+    /**
+     * Show create employee form
+     */
     public function create()
     {
-        $departments = Department::select('id','name')->orderBy('name')->get();
-
         return Inertia::render('Admin/ManageEmployees/AddnewEmployee', [
-            'departments' => $departments
+            'departments' => $this->getDepartments()
         ]);
     }
 
-    // Store new employee
+    /**
+     * Store new employee
+     */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'phone' => 'required|string|max:15',
-            'department_id' => 'required|exists:departments,id',
-            'employee_id' => 'required|string|max:50|unique:users,employee_id',
-            'dob' => 'required|date',
-            'gender' => 'required|string',
-            'civil_status' => 'required|string',
-            'role' => 'required|in:employee,hr,admin',
-            'hire_date' => 'required|date',
-            'salary' => 'required|numeric|min:0',
-        ]);
+        $validated = $this->validateEmployee($request);
 
-        User::create([
-            'name' => $validated['first_name'].' '.$validated['last_name'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'],
-            'department_id' => $validated['department_id'],
-            'hire_date' => $validated['hire_date'],
-            'salary' => $validated['salary'],
-            'password' => Hash::make($validated['email']), // default password
-            'role' => $validated['role'],
-            'dob' => $validated['dob'],
-            'gender' => $validated['gender'],
-            'civil_status' => $validated['civil_status'],
-            'employee_id' => $validated['employee_id'],
-        ]);
+        User::create($this->prepareEmployeeData($validated));
 
-        return redirect()->route('admin.manageemployees')
-            ->with('success', 'Employee added successfully!');
+        return $this->redirectWithSuccess('Employee added successfully!');
     }
 
-    // Show single employee (for View page)
+    /**
+     * Display single employee
+     */
     public function show($id)
     {
         $employee = User::with('department')->findOrFail($id);
@@ -78,30 +57,62 @@ class EmployeeController extends Controller
         ]);
     }
 
-    // Show Edit Employee page
+    /**
+     * Show edit employee form
+     */
     public function edit($id)
     {
-        $employee = User::findOrFail($id);
-        $departments = Department::select('id','name')->orderBy('name')->get();
-
-        return Inertia::render('Admin/ManageEmployees/Edit', [
-            'employee' => $employee,
-            'departments' => $departments
+        return Inertia::render('Admin/ManageEmployees/EditEmployee', [
+            'employee' => User::findOrFail($id),
+            'departments' => $this->getDepartments()
         ]);
     }
 
-    // Update employee
+    /**
+     * Update employee
+     */
     public function update(Request $request, $id)
     {
         $employee = User::findOrFail($id);
+        $validated = $this->validateEmployee($request, $id);
 
-        $validated = $request->validate([
+        $employee->update($this->prepareEmployeeData($validated, false));
+
+        return $this->redirectWithSuccess('Employee updated successfully!');
+    }
+
+    /**
+     * Delete employee
+     */
+    public function destroy($id)
+    {
+        User::findOrFail($id)->delete();
+
+        return $this->redirectWithSuccess('Employee deleted successfully!');
+    }
+
+    /**
+     * Get departments for dropdown
+     */
+    private function getDepartments()
+    {
+        return Department::select('id', 'name')
+            ->orderBy('name')
+            ->get();
+    }
+
+    /**
+     * Validate employee data
+     */
+    private function validateEmployee(Request $request, $id = null)
+    {
+        return $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id,
+            'email' => 'required|email|unique:users,email' . ($id ? ",$id" : ''),
             'phone' => 'required|string|max:15',
             'department_id' => 'required|exists:departments,id',
-            'employee_id' => 'required|string|max:50|unique:users,employee_id,' . $id,
+            'employee_id' => 'required|string|max:50|unique:users,employee_id' . ($id ? ",$id" : ''),
             'dob' => 'required|date',
             'gender' => 'required|string',
             'civil_status' => 'required|string',
@@ -109,32 +120,42 @@ class EmployeeController extends Controller
             'hire_date' => 'required|date',
             'salary' => 'required|numeric|min:0',
         ]);
+    }
 
-        $employee->update([
-            'name' => $validated['first_name'].' '.$validated['last_name'],
+    /**
+     * Prepare employee data for create/update
+     */
+    private function prepareEmployeeData(array $validated, $isNew = true)
+    {
+        $data = [
+            'name' => $validated['first_name'] . ' ' . $validated['last_name'],
             'email' => $validated['email'],
             'phone' => $validated['phone'],
             'department_id' => $validated['department_id'],
-            'hire_date' => $validated['hire_date'],
-            'salary' => $validated['salary'],
-            'role' => $validated['role'],
+            'employee_id' => $validated['employee_id'],
             'dob' => $validated['dob'],
             'gender' => $validated['gender'],
             'civil_status' => $validated['civil_status'],
-            'employee_id' => $validated['employee_id'],
-        ]);
+            'role' => $validated['role'],
+            'hire_date' => $validated['hire_date'],
+            'salary' => $validated['salary'],
+        ];
 
-        return redirect()->route('admin.manageemployees')
-            ->with('success', 'Employee updated successfully!');
+        // Only set password for new employees
+        if ($isNew) {
+            $data['password'] = Hash::make($validated['email']);
+        }
+
+        return $data;
     }
 
-    // Delete employee
-    public function destroy($id)
+    /**
+     * Redirect to employee list with success message
+     */
+    private function redirectWithSuccess($message)
     {
-        $employee = User::findOrFail($id);
-        $employee->delete();
-
-        return redirect()->route('admin.manageemployees')
-            ->with('success', 'Employee deleted successfully!');
+        return redirect()
+            ->route('admin.manageemployees')
+            ->with('success', $message);
     }
 }

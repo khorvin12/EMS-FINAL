@@ -8,6 +8,8 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\HRController;
 use App\Http\Controllers\Admin\DepartmentController;
+use App\Http\Controllers\Admin\ManageLeavesController;
+use App\Http\Controllers\Employee\LeaveController;
 
 // Middleware
 use App\Http\Middleware\AdminMiddleware;
@@ -50,15 +52,15 @@ Route::middleware(['auth', AdminMiddleware::class])
         // Department Management
         Route::get('/departments', [DepartmentController::class, 'index'])
             ->name('departments');
-        
+
         Route::inertia('/adddepartment', 'Admin/Departments/AddDepartment')
             ->name('adddepartment');
-        
+
         Route::post('/adddepartment', [DepartmentController::class, 'store']);
 
         Route::get('/editdepartment/{id}', [DepartmentController::class, 'edit'])
             ->name('editdepartment');
-        
+
         Route::put('/editdepartment/{id}', [DepartmentController::class, 'update']);
 
         Route::delete('/departments/{id}', [DepartmentController::class, 'destroy']);
@@ -99,14 +101,17 @@ Route::middleware(['auth', AdminMiddleware::class])
             ->name('adminsettings');
 
         // Admin Leaves Management
-        Route::inertia('/manageleaves', 'Admin/ManageLeaves/Leaves')
-            ->name('manageleaves');
+        Route::get('/manageleaves/leaves', [ManageLeavesController::class, 'index'])
+            ->name('manageleaves.index');
 
-        // Leaves Buttons
-        Route::inertia(
-            '/AdminLeavesReview',
-            'Admin/ManageLeaves/LeavesButton/LeavesReview'
-        )->name('ReviewLeaves');
+        Route::get('/manageleaves/leaves/review/{leave}', [ManageLeavesController::class, 'review'])
+            ->name('manageleaves.review');
+
+        Route::post('/manageleaves/leaves/{leave}/approve', [ManageLeavesController::class, 'approve'])
+            ->name('manageleaves.approve');
+
+        Route::post('/manageleaves/leaves/{leave}/reject', [ManageLeavesController::class, 'reject'])
+            ->name('manageleaves.reject');
     });
 
 /*
@@ -123,7 +128,7 @@ Route::middleware(['auth', EmployeeMiddleware::class])
         // Employee Dashboard
         Route::get('/dashboard', fn() => Inertia::render('Employee/Dashboard'))
             ->name('dashboard');
-        
+
         Route::inertia('/index', 'Employee/Index')->name('index');
 
         // Employee Leave Routes
@@ -155,3 +160,13 @@ Route::middleware(['auth', HRMiddleware::class])
         Route::get('/dashboard', fn() => Inertia::render('HR/Dashboard'))
             ->name('dashboard');
     });
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('employee')->group(function () {
+        Route::get('/leaves', [LeaveController::class, 'index']);
+        Route::get('/leaves/create', [LeaveController::class, 'create']);
+        Route::post('/leaves', [LeaveController::class, 'store']);
+        Route::get('/leaves/{leave}', [LeaveController::class, 'show']);
+    });
+});

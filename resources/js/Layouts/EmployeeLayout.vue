@@ -37,7 +37,7 @@ const isActive = (path) => page.url.startsWith(path)
                         <span>Attendance</span>
                     </Link>
 
-                    <Link href="/employee/leave" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/employee/leave')
+                    <Link href="/employee/leaves" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/employee/leaves')
                         ? 'bg-green-600 font-bold'
                         : 'hover:bg-green-500'">
                         <i class="fa fa-calendar-times-o" aria-hidden="true">&#xf273;</i>

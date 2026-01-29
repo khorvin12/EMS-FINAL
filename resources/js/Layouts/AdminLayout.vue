@@ -43,7 +43,7 @@ const isActive = (path) => page.url.startsWith(path)
                         <span>Departments</span>
                     </Link>
 
-                    <Link href="/manageleaves" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/manageleaves')
+                    <Link href="/manageleaves/leaves" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/manageleaves')
                         ? 'bg-red-700 font-bold'
                         : 'hover:bg-red-700'">
                         <i class="fa fa-calendar" />
