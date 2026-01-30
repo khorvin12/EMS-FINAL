@@ -7,7 +7,11 @@ import { Link } from '@inertiajs/vue3';
 
     <div class="flex justify-between mb-6">
         <input type="search" placeholder="Search By Employee ID" class="bg-white p-2 border border-gray-300 rounded-md
-           focus:outline-none focus:border-indigo-600" />
+           focus:outline-none focus:border-blue-400" />
+
+        <Link href="/addsalary" class="bg-green-500 text-black font-medium px-4 py-2 rounded-md hover:bg-green-600">
+            Salary Report
+        </Link>
     </div>
 
     <table class="w-full shadow-lg overflow-hidden table-fixed bg-white rounded-lg">
@@ -37,7 +41,8 @@ import { Link } from '@inertiajs/vue3';
                 <td class="p-6">
                     <div class="flex items-center justify-between">
                         <span>$1,000,000</span>
-                        <Link href="/editdepartment" class="bg-yellow-300 rounded-sm px-4 py-1">
+                        <Link href="/editdepartment"
+                            class="bg-yellow-400 hover:bg-yellow-500 rounded-sm px-4 py-1 font-medium text-black">
                             Edit
                         </Link>
                     </div>
