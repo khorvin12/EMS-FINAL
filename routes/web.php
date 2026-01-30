@@ -159,6 +159,8 @@ Route::middleware(['auth', HRMiddleware::class])
 
         Route::get('/dashboard', fn() => Inertia::render('HR/Dashboard'))
             ->name('dashboard');
+        
+        Route::inertia('/index', 'HR/Index')->name('index');
     });
 
 

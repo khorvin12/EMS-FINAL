@@ -2,9 +2,10 @@ import './bootstrap';
 import '../css/app.css';
 
 import { createApp, h } from 'vue'
-import { createInertiaApp } from '@inertiajs/vue3'
+import { createInertiaApp, Link } from '@inertiajs/vue3'
 import AdminLayout from './Layouts/AdminLayout.vue';
 import EmployeeLayout from './Layouts/EmployeeLayout.vue';
+import HRLayout from './Layouts/HRLayout.vue';
 
 createInertiaApp({
   resolve: name => {
@@ -17,8 +18,9 @@ createInertiaApp({
         page.default.layout = AdminLayout
       } else if (name.startsWith('Employee/')) {
         page.default.layout = EmployeeLayout
+      } else if (name.startsWith('HR/')) {
+        page.default.layout = HRLayout
       }
-      // HR layout will be added when needed
     }
     
     return page
@@ -27,6 +29,7 @@ createInertiaApp({
   setup({ el, App, props, plugin }) {
     createApp({ render: () => h(App, props) })
       .use(plugin)
+      .component('Link', Link)
       .mount(el)
   },
 })
