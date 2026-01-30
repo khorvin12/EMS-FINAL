@@ -7,7 +7,11 @@ import { Link } from '@inertiajs/vue3';
 
     <div class="flex justify-between mb-6">
         <input type="search" placeholder="Search By Employee ID" class="bg-white p-2 border border-gray-300 rounded-md
-           focus:outline-none focus:border-indigo-600" />
+            focus:outline-none focus:border-blue-500" />
+
+        <button class="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition">
+            Save All Changes
+        </button>
     </div>
 
     <table class="w-full shadow-lg overflow-hidden table-fixed bg-white rounded-lg">
@@ -18,7 +22,6 @@ import { Link } from '@inertiajs/vue3';
                 <th class="p-6">Month</th>
                 <th class="p-6">Basic Salary</th>
                 <th class="p-6">Deductions</th>
-                <th class="p-6">Net Salary</th>
             </tr>
         </thead>
 
@@ -28,22 +31,21 @@ import { Link } from '@inertiajs/vue3';
                 <td class="p-6">11111</td>
 
                 <td class="p-6">
-                    February 1, 2026
+                    <input type="date" name="payment_date" class="bg-slate-100 border border-slate-200 rounded-md p-1" />
                 </td>
 
-                <td class="p-6">$12,000,000</td>
-                <td class="p-6">$15,000,000</td>
+                <td class="p-6">
+                    <label class="mr-2">$</label>
+                    <input type="number" name="basic_salary" step="0.01" min="0" placeholder="0.00"
+                        class="border border-slate-200 rounded-md p-1 focus:outline-none">
+                </td>
 
                 <td class="p-6">
-                    <div class="flex items-center justify-between">
-                        <span>$1,000,000</span>
-                        <Link href="/editdepartment" class="bg-yellow-300 rounded-sm px-4 py-1">
-                            Edit
-                        </Link>
-                    </div>
+                    <label class="mr-2">$</label>
+                    <input type="number" name="deductions" step="0.01" min="0" placeholder="0.00"
+                        class="border border-slate-200 rounded-md p-1 focus:outline-none">
                 </td>
             </tr>
         </tbody>
     </table>
-
 </template>
