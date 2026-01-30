@@ -21,15 +21,11 @@ const form = useForm({
   salary: ''
 })
 
-const submitUrl = computed(() => {
-  return form.role === 'hr' ? '/hr' : '/employees'
-})
-
 function submit() {
-  form.post(submitUrl.value, {
+  form.post('/employees', {
+    preserveScroll: true,
     onSuccess: () => {
-      form.reset()
-      alert('Employee added successfully!')
+
     }
   })
 }
@@ -81,6 +77,11 @@ const formFields = [
   <div class="max-w-4xl mx-auto bg-white border-4 border-green-500 p-6 rounded">
     
     <h2 class="text-xl font-bold mb-6">Add New Employee</h2>
+
+    <!-- Success Message -->
+    <div v-if="$page.props.flash?.success" class="text-green-500 mb-4 p-3 bg-green-50 rounded">
+      {{ $page.props.flash.success }}
+    </div>
 
     <!-- Error Message -->
     <div v-if="form.errors && Object.keys(form.errors).length" class="text-red-500 mb-4 p-3 bg-red-50 rounded">

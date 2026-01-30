@@ -6,7 +6,6 @@ use Inertia\Inertia;
 
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Admin\EmployeeController;
-use App\Http\Controllers\Admin\HRController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\ManageLeavesController;
 use App\Http\Controllers\Employee\LeaveController;
@@ -88,13 +87,9 @@ Route::middleware(['auth', AdminMiddleware::class])
         Route::delete('/delete/{id}', [EmployeeController::class, 'destroy'])
             ->name('employees.destroy');
 
-        // Employee API Routes
+        // Employee API Routes (handles both employees and HR)
         Route::post('/employees', [EmployeeController::class, 'store'])
             ->name('employees.store');
-
-        // HR API Routes
-        Route::post('/hr', [HRController::class, 'store'])
-            ->name('hr.store');
 
         // Admin Settings
         Route::inertia('/adminsettings', 'Admin/Settings/adminsettings')
@@ -132,9 +127,10 @@ Route::middleware(['auth', EmployeeMiddleware::class])
         Route::inertia('/index', 'Employee/Index')->name('index');
 
         // Employee Leave Routes
-        Route::inertia('/leave', 'Employee/Leaves/Index')->name('leave');
-        Route::inertia('/create-leave', 'Employee/Leaves/Create')->name('create-leave');
-        Route::inertia('/view-leave', 'Employee/Leaves/View')->name('view-leave');
+        Route::get('/leaves', [LeaveController::class, 'index'])->name('leaves');
+        Route::get('/leaves/create', [LeaveController::class, 'create'])->name('create-leave');
+        Route::post('/leaves', [LeaveController::class, 'store'])->name('leaves.store');
+        Route::get('/leaves/{leave}', [LeaveController::class, 'show'])->name('view-leave');
 
         // Employee Salary Routes
         Route::inertia('/employee-salary', 'Employee/Salary/Index')->name('employee-salary');
@@ -162,13 +158,3 @@ Route::middleware(['auth', HRMiddleware::class])
         
         Route::inertia('/index', 'HR/Index')->name('index');
     });
-
-
-Route::middleware(['auth'])->group(function () {
-    Route::prefix('employee')->group(function () {
-        Route::get('/leaves', [LeaveController::class, 'index']);
-        Route::get('/leaves/create', [LeaveController::class, 'create']);
-        Route::post('/leaves', [LeaveController::class, 'store']);
-        Route::get('/leaves/{leave}', [LeaveController::class, 'show']);
-    });
-});

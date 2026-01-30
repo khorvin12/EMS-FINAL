@@ -33,7 +33,7 @@ class AuthController extends Controller
         }
 
         if ($user->role === 'hr') {
-            return redirect()->route('hr.dashboard');
+            return redirect()->route('hr.index');
         }
 
         Auth::logout();

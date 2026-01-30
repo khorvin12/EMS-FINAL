@@ -14,7 +14,7 @@ const isActive = (path) => page.url.startsWith(path)
             <nav class="flex items-center justify-between text-2xl p-6 font-bold">
                 <h1 class="ml-14">HR</h1>
                 <div class="space-x-6">
-                    <Link href="/dashboard">Logout</Link>
+                    <Link href="/logout" method="post" as="button">Logout</Link>
                 </div>
             </nav>
         </header>
@@ -23,7 +23,7 @@ const isActive = (path) => page.url.startsWith(path)
             <!-- Side Bar -->
             <aside class="bg-gray-800 text-white flex justify-center w-64 py-10 text-xl">
                 <nav class="space-y-8">
-                    <Link href="/index" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/index')
+                    <Link href="/hr/index" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/hr/index')
                         ? 'bg-blue-600 font-bold'
                         : 'hover:bg-blue-700'">
                         <i class="fa fa-dashboard" aria-hidden="true"></i>
