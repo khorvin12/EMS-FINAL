@@ -18,7 +18,7 @@ const handleLogout = () => {
 
 <template>
     <div class="flex flex-col h-screen overflow-hidden">
-        <header class="bg-red-800 text-white shadow-md z-20">
+        <header class="bg-red-700 text-white shadow-md z-20">
             <nav class="flex items-center justify-between p-6 font-bold">
                 <h1 class="text-3xl">Admin Panel</h1>
 
@@ -59,7 +59,7 @@ const handleLogout = () => {
                         { name: 'Settings', href: '/settings', icon: 'fa-cog' },
                     ]" :key="item.href" :href="item.href"
                         class="flex items-center space-x-4 py-3 px-6 rounded-md transition-all"
-                        :class="isActive(item.href) ? 'bg-red-600 font-bold shadow-md' : 'hover:bg-red-700/50'">
+                        :class="isActive(item.href) ? 'bg-red-600 font-bold shadow-md' : 'hover:bg-red-700'">
                         <i :class="['fa w-6', item.icon]" aria-hidden="true"></i>
                         <span>{{ item.name }}</span>
                     </Link>
