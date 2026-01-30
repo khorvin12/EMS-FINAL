@@ -30,36 +30,36 @@ const isActive = (path) => page.url.startsWith(path)
             <!-- Side Bar -->
             <aside class="bg-gray-800 text-white flex justify-center w-64 py-10 text-xl">
                 <nav class="space-y-8">
-                    <Link href="/dashboard" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/dashboard')
-                        ? 'bg-red-700 font-bold'
+                    <Link href="/home" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/home')
+                        ? 'bg-red-600 font-bold'
                         : 'hover:bg-red-700'">
                         <i class="fa fa-tachometer" aria-hidden="true"></i>
                         <span>Dashboard</span>
                     </Link>
 
                     <Link href="/manageemployee" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/manageemployee')
-                        ? 'bg-red-700 font-bold'
+                        ? 'bg-red-600 font-bold'
                         : 'hover:bg-red-700'">
                         <i class="fa fa-users" aria-hidden="true"></i>
                         <span>Employees</span>
                     </Link>
 
                     <Link href="/managedepartment" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/managedepartment')
-                        ? 'bg-red-700 font-bold'
+                        ? 'bg-red-600 font-bold'
                         : 'hover:bg-red-700'">
                         <i class="fa fa-building" aria-hidden="true"></i>
                         <span>Departments</span>
                     </Link>
 
                     <Link href="/leaves" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/leaves')
-                        ? 'bg-red-700 font-bold'
+                        ? 'bg-red-600 font-bold'
                         : 'hover:bg-red-700'">
                         <i class="fa fa-calendar-times-o" aria-hidden="true">&#xf273;</i> 
                         <span>Leaves</span>
                     </Link>
 
                     <Link href="/settings" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/settings')
-                        ? 'bg-red-700 font-bold'
+                        ? 'bg-red-600 font-bold'
                         : 'hover:bg-red-700'">
                         <i class="fa fa-cog" aria-hidden="true"></i>
                         <span>Settings</span>
@@ -68,7 +68,7 @@ const isActive = (path) => page.url.startsWith(path)
             </aside>
 
             <!-- Main Content -->
-            <main class="flex-1 overflow-y-auto bg-gray-100 p-8">
+            <main class="flex-1 overflow-y-auto bg-gray-100 p-16">
                 <slot />
             </main>
         </div>
