@@ -50,7 +50,7 @@ const handleLogout = () => {
 
         <div class="flex flex-1 overflow-hidden">
             <aside class="bg-gray-900 text-white w-64 py-10 text-xl hidden md:block shadow-lg">
-                <nav class="space-y-6 px-4">
+                <nav class="space-y-8 px-4">
                     <Link v-for="item in [
                         { name: 'Dashboard', href: '/home', icon: 'fa-tachometer' },
                         { name: 'Employees', href: '/manageemployee', icon: 'fa-users' },
