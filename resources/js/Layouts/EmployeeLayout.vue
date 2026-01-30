@@ -24,44 +24,44 @@ const isActive = (path) => page.url.startsWith(path)
             <aside class="bg-gray-800 text-white flex justify-center w-64 py-10 text-xl">
                 <nav class="space-y-8">
                     <Link href="/index" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/index')
-                        ? 'bg-green-700 font-bold'
+                        ? 'bg-green-600 font-bold'
                         : 'hover:bg-green-700'">
-                        <i class="fa fa-tachometer" />
+                        <i class="fa fa-tachometer" aria-hidden="true"></i>
                         <span>Dashboard</span>
                     </Link>
 
                     <Link href="/attendance" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/attendance')
-                        ? 'bg-green-700 font-bold'
+                        ? 'bg-green-600 font-bold'
                         : 'hover:bg-green-700'">
                         <i class="fa fa-calendar-check-o" aria-hidden="true">&#xf274;</i>
                         <span>Attendance</span>
                     </Link>
 
                     <Link href="/leaves" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/leaves')
-                        ? 'bg-green-700 font-bold'
+                        ? 'bg-green-600 font-bold'
                         : 'hover:bg-green-700'">
                         <i class="fa fa-calendar-times-o" aria-hidden="true">&#xf273;</i>
                         <span>Leaves</span>
                     </Link>
                     
                     <Link href="/salary" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/salary')
-                        ? 'bg-green-700 font-bold'
+                        ? 'bg-green-600 font-bold'
                         : 'hover:bg-green-700'">
-                        <i class="fa fa-user" />
+                        <i class="fa fa-user" aria-hidden="true"></i>
                         <span>Salary</span>
                     </Link>
 
                     <Link href="/settings" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/settings')
-                        ? 'bg-green-700 font-bold'
+                        ? 'bg-green-600 font-bold'
                         : 'hover:bg-green-700'">
-                        <i class="fa fa-cog" aria-hidden="true" />
+                        <i class="fa fa-cog" aria-hidden="true"></i>
                         <span>Settings</span>
                     </Link>
                 </nav>
             </aside>
 
             <!-- Main Content -->
-            <main class="flex-1 overflow-y-auto bg-gray-100 p-8">
+            <main class="flex-1 overflow-y-auto bg-gray-100 p-16">
                 <slot />
             </main>
         </div>
