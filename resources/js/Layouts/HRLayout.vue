@@ -6,7 +6,6 @@ const page = usePage()
 const isActive = (path) => page.url.startsWith(path)
 </script>
 
-
 <template>
     <div class="flex flex-col h-screen">
         <!-- Top Bar-->
@@ -30,28 +29,28 @@ const isActive = (path) => page.url.startsWith(path)
                         <span>Dashboard</span>
                     </Link>
 
-                    <Link href="/attendance" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/attendance')
+                    <Link href="/hr/attendance" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/hr/attendance')
                         ? 'bg-blue-600 font-bold'
                         : 'hover:bg-blue-700'">
                         <i class="fa fa-calendar-check-o" aria-hidden="true">&#xf274;</i>
                         <span>Attendance</span>
                     </Link>
 
-                    <Link href="/leaves" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/leaves')
+                    <Link href="/hr/leaves" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/hr/leaves')
                         ? 'bg-blue-600 font-bold'
                         : 'hover:bg-blue-700'">
                         <i class="fa fa-calendar-times-o" aria-hidden="true">&#xf273;</i>
                         <span>Leaves</span>
                     </Link>
 
-                    <Link href="/salary" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/salary')
+                    <Link href="/hr/salary" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/hr/salary')
                         ? 'bg-blue-600 font-bold'
                         : 'hover:bg-blue-700'">
                         <i class="fa fa-dollar" aria-hidden="true"></i>
                         <span>Salary</span>
                     </Link>
 
-                    <Link href="/settings" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/settings')
+                    <Link href="/hr/settings" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/hr/settings')
                         ? 'bg-blue-600 font-bold'
                         : 'hover:bg-blue-700'">
                         <i class="fa fa-cog" aria-hidden="true"></i>

@@ -157,4 +157,6 @@ Route::middleware(['auth', HRMiddleware::class])
             ->name('dashboard');
         
         Route::inertia('/index', 'HR/Index')->name('index');
+        
+        Route::inertia('/attendance', 'HR/Attendance/Index')->name('attendance');
     });

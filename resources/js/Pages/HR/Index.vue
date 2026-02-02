@@ -1,6 +1,6 @@
 <template>
   <div class="p-6">
-    <h1 class="text-2xl font-bold mb-4">Welcome HR!</h1>
+    <h1 class="text-3xl font-bold mb-8">Welcome back HR</h1>
     
     <p v-if="user">You are logged in as: {{ user.name }}</p>
     <p v-else>Loading...</p>
@@ -19,11 +19,8 @@
 import { computed } from 'vue'
 import { usePage, router } from '@inertiajs/vue3'
 
-
-
 const page = usePage()
 const user = computed(() => page.props.auth?.user ?? null)
-
 
 function logout() {
   router.post('/logout')
