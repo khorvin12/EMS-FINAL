@@ -20,8 +20,9 @@ const handleLogout = () => {
     <!-- Top Bar -->
     <div class="flex flex-col h-screen">
         <header class="bg-green-600 text-white shadow-md">
-            <nav class="flex items-center justify-between text-3xl p-6 font-bold">
-                <h1 class="">Employee</h1>
+            <nav class="flex items-center justify-between p-6 font-bold">
+
+                <h1 class="text-3xl">Employee</h1>
 
                 <div class="mr-6 relative">
                     <!-- Dropdown menu button -->
@@ -67,13 +68,15 @@ const handleLogout = () => {
                     <Link v-for="item in [
                         { name: 'Dashboard', href: '/index', icon: 'fa-tachometer' },
                         { name: 'Attendance', href: '/attendance', icon: 'fa-calendar-check' },
-                        { name: 'Leaves', href: '/leaves', icon: 'fa-calendar-times' },
+                        { name: 'Leaves', href: '/leaves', icon: 'fa-calendar-xmark' },
                         { name: 'Salary', href: '/salary', icon: 'fa-dollar' },
                         { name: 'Settings', href: '/settings', icon: 'fa-cog' },
                     ]" :key="item.href" :href="item.href"
                         class="flex items-center space-x-4 py-2.5 px-6 rounded-md transition-colors"
                         :class="isActive(item.href) ? 'bg-green-500 font-bold' : 'hover:bg-green-600'">
+
                         <i :class="['fa', item.icon]" aria-hidden="true"></i>
+
                         <span>{{ item.name }}</span>
                     </Link>
                 </nav>
@@ -81,8 +84,11 @@ const handleLogout = () => {
 
             <!-- Main Contents -->
             <main class="flex-1 overflow-y-auto bg-gray-100 p-8 md:p-16">
-                <slot />
+                <div class="max-w-7xl mx-auto">
+                    <slot />
+                </div>
             </main>
+            
         </div>
     </div>
 </template>
