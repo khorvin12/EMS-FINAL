@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Employee\SalaryController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -133,7 +134,7 @@ Route::middleware(['auth', EmployeeMiddleware::class])
         Route::get('/leaves/{leave}', [LeaveController::class, 'show'])->name('view-leave');
 
         // Employee Salary Routes
-        Route::inertia('/employee-salary', 'Employee/Salary/Index')->name('employee-salary');
+        Route::get('/employee-salary', [SalaryController::class, 'index'])->name('employee-salary');
 
         // Employee Attendance Route
         Route::inertia('/attendance', 'Employee/Attendance/Index')->name('attendance');
