@@ -67,7 +67,7 @@ const handleLogout = () => {
                 <nav class="space-y-8 px-4">
                     <Link v-for="item in [
                         { name: 'Dashboard', href: '/index', icon: 'fa-tachometer' },
-                        { name: 'Attendance', href: '/attendance', icon: 'fa-calendar-check' },
+                        { name: 'Attendance', href: '/employee/attendance', icon: 'fa-calendar-check' },
                         { name: 'Leaves', href: '/leaves', icon: 'fa-calendar-xmark' },
                         { name: 'Salary', href: '/salary', icon: 'fa-dollar' },
                         { name: 'Settings', href: '/settings', icon: 'fa-cog' },
