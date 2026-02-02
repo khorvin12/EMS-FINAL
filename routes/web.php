@@ -5,4 +5,4 @@ use Inertia\Inertia;
 
 Route::inertia('/index', 'Employee/Index')->name('index');
 
-Route::inertia('/employee/leave/create', 'Employee/Leaves/Create')->name('/employee/leave/create');
+Route::inertia('/employee/leave/view', 'Employee/Leaves/View')->name('/employee/leave/view');
