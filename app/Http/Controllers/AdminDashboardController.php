@@ -17,7 +17,7 @@ class AdminDashboardController extends Controller
     public function getStats()
     {
         return response()->json([
-            'totalEmployees' => User::where('role', 'employee')->count(),
+            'totalEmployees' => User::whereIn('role', ['employee','hr'])->count(),
             'totalDepartments' => Department::count(),
             'monthlyPay' => 0, // You can calculate this based on your needs
             'leavePending' => Leave::where('status', 'pending')->count(),
