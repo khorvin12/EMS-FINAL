@@ -71,21 +71,26 @@ const handleLogout = () => {
                         { name: 'Dashboard', href: '/home', icon: 'fa-tachometer' },
                         { name: 'Employees', href: '/manageemployee', icon: 'fa-users' },
                         { name: 'Departments', href: '/managedepartment', icon: 'fa-building' },
-                        { name: 'Leaves', href: '/leaves', icon: 'fa-calendar-check-o' },
+                        { name: 'Leaves', href: '/leaves', icon: 'fa-calendar-xmark' },
                         { name: 'Settings', href: '/settings', icon: 'fa-cog' },
                     ]" :key="item.href" :href="item.href"
                         class="flex items-center space-x-4 py-3 px-6 rounded-md transition-all"
                         :class="isActive(item.href) ? 'bg-red-600 font-bold shadow-md' : 'hover:bg-red-700'">
+
                         <i :class="['fa w-6', item.icon]" aria-hidden="true"></i>
+
                         <span>{{ item.name }}</span>
                     </Link>
                 </nav>
             </aside>
 
             <!-- Main Contents -->
-            <main class="flex-1 overflow-y-auto bg-gray-100 p-8 md:p-16">
-                <slot />
+            <main class="flex-1 overflow-y-auto bg-slate-50 p-8 md:p-12">
+                <div class="max-w-7xl mx-auto">
+                    <slot />
+                </div>
             </main>
+
         </div>
     </div>
 </template>
