@@ -6,12 +6,13 @@ const page = usePage()
 const isActive = (path) => page.url.startsWith(path)
 </script>
 
+
 <template>
     <div class="flex flex-col h-screen">
         <!-- Top Bar-->
-        <header class="bg-blue-700 text-white">
+        <header class="bg-green-600 text-white">
             <nav class="flex items-center justify-between text-2xl p-6 font-bold">
-                <h1 class="ml-14">HR</h1>
+                <h1 class="ml-14">Employee</h1>
                 <div class="space-x-6">
                     <Link href="/logout" method="post" as="button">Logout</Link>
                 </div>
@@ -22,37 +23,37 @@ const isActive = (path) => page.url.startsWith(path)
             <!-- Side Bar -->
             <aside class="bg-gray-800 text-white flex justify-center w-64 py-10 text-xl">
                 <nav class="space-y-8">
-                    <Link href="/hr/index" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/hr/index')
-                        ? 'bg-blue-600 font-bold'
-                        : 'hover:bg-blue-700'">
+                    <Link href="/employee/index" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/employee/index') || isActive('/employee/dashboard')
+                        ? 'bg-green-600 font-bold'
+                        : 'hover:bg-green-500'">
                         <i class="fa fa-dashboard" aria-hidden="true"></i>
                         <span>Dashboard</span>
                     </Link>
 
-                    <Link href="/hr/attendance" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/hr/attendance')
-                        ? 'bg-blue-600 font-bold'
-                        : 'hover:bg-blue-700'">
+                    <Link href="/employee/attendance" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/employee/attendance')
+                        ? 'bg-green-600 font-bold'
+                        : 'hover:bg-green-500'">
                         <i class="fa fa-calendar-check-o" aria-hidden="true">&#xf274;</i>
                         <span>Attendance</span>
                     </Link>
 
-                    <Link href="/hr/leaves" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/hr/leaves')
-                        ? 'bg-blue-600 font-bold'
-                        : 'hover:bg-blue-700'">
+                    <Link href="/employee/leaves" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/employee/leaves')
+                        ? 'bg-green-600 font-bold'
+                        : 'hover:bg-green-500'">
                         <i class="fa fa-calendar-times-o" aria-hidden="true">&#xf273;</i>
                         <span>Leaves</span>
                     </Link>
 
-                    <Link href="/hr/salary" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/hr/salary')
-                        ? 'bg-blue-600 font-bold'
-                        : 'hover:bg-blue-700'">
+                    <Link href="/employee/employee-salary" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/employee/employee-salary')
+                        ? 'bg-green-600 font-bold'
+                        : 'hover:bg-green-500'">
                         <i class="fa fa-dollar" aria-hidden="true"></i>
                         <span>Salary</span>
                     </Link>
 
-                    <Link href="/hr/settings" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/hr/settings')
-                        ? 'bg-blue-600 font-bold'
-                        : 'hover:bg-blue-700'">
+                    <Link href="/employee/settings" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/employee/settings')
+                        ? 'bg-green-600 font-bold'
+                        : 'hover:bg-green-500'">
                         <i class="fa fa-cog" aria-hidden="true"></i>
                         <span>Settings</span>
                     </Link>

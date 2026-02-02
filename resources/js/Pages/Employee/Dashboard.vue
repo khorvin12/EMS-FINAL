@@ -1,6 +1,6 @@
 <template>
   <div class="p-6">
-    <h1 class="text-2xl font-bold mb-4">Welcome HR!</h1>
+    <h1 class="text-2xl font-bold mb-4">Welcome Employee!</h1>
     
     <p v-if="user">You are logged in as: {{ user.name }}</p>
     <p v-else>Loading...</p>
