@@ -8,11 +8,10 @@ import { Link } from '@inertiajs/vue3'
 
   <!-- Search + Button -->
   <div class="flex justify-between mb-6">
-    <div class="bg-white rounded-md p-2">
-      <input type="search" v-model="searchQuery" placeholder="Search By Department" />
-    </div>
+    <input type="search" v-model="searchQuery" placeholder="Search By Employee ID" class="bg-white p-2 border border-gray-300 rounded-md
+           focus:outline-none focus:border-blue-400" />
 
-    <div class="text-bold bg-green-600 hover:bg-green-500 text-black px-4 py-2 rounded-md">
+    <div class="text-bold bg-green-500 hover:bg-green-600 text-black px-4 py-2 rounded-md">
       <Link href="/addnewemployee"><i aria-hidden="true" /> Add New Employee</Link>
     </div>
   </div>
@@ -21,18 +20,30 @@ import { Link } from '@inertiajs/vue3'
     <table class="w-full rounded-lg shadow-lg overflow-hidden table-fixed bg-white">
       <thead class="bg-gray-400 text-black font-medium">
         <tr>
-          <th class="py-6">ID</th>
-          <th class="py-6">Birth</th>
+          <th class="py-6">Employee ID</th>
+          <th class="py-6">Firstname</th>
+          <th class="py-6">Lastname</th>
+          <th class="py-6">Email</th>
+          <th class="py-6">Phone</th>
           <th class="py-6">Department</th>
+          <th class="py-6">Role</th>
+          <th class="py-6">Hire Date</th>
+          <th class="py-6">Salary</th>
           <th class="py-6 text-center">Action</th>
         </tr>
       </thead>
 
       <tbody class="bg-white-100 text-center border-slate-200 border-t-4">
         <tr>
-          <td class="py-4">1</td>
-          <td class="py-4">2</td>
-          <td class="py-4">3</td>
+          <td class="py-4">12345</td>
+          <td class="py-4">Khorvin</td>
+          <td class="py-4">Gay</td>
+          <td class="py-4">KhorvinGay@gmail.com</td>
+          <td class="py-4">09876543210</td>
+          <td class="py-4">IT</td>
+          <td class="py-4">Employee</td>
+          <td class="py-4">2050</td>
+          <td class="py-4">10,000</td>
 
           <td class="p-4">
             <div class="flex justify-center gap-2">

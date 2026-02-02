@@ -43,12 +43,12 @@ Route::middleware(['auth', AdminMiddleware::class])->name('admin.')->group(funct
     // Department Management
     Route::get('/departments', [DepartmentController::class, 'index'])
         ->name('departments');
-    
+
     Route::post('/adddepartment', [DepartmentController::class, 'store']);
 
     Route::get('/editdepartment/{id}', [DepartmentController::class, 'edit'])
         ->name('editdepartment');
-    
+
     Route::put('/editdepartment/{id}', [DepartmentController::class, 'update']);
 
     Route::delete('/departments/{id}', [DepartmentController::class, 'destroy']);
@@ -65,6 +65,15 @@ Route::middleware(['auth', AdminMiddleware::class])->name('admin.')->group(funct
 
     Route::inertia('/edit', 'Admin/ManageEmployees/Edit')
         ->name('edit');
+
+    // Leaves
+    Route::inertia('/leaves', 'Admin/Leaves/Index')
+        ->name('leaves');
+
+    Route::inertia('/settings', 'Admin/Settings/Index')
+        ->name('/settings');
+
+
 
     // Employee API Routes
     Route::post('/employees', [EmployeeController::class, 'store'])

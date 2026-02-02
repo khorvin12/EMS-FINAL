@@ -6,9 +6,8 @@ import { Link } from '@inertiajs/vue3';
     <h1 class="text-center text-3xl font-bold mb-12">Your Leave Schedules</h1>
 
     <div class="flex justify-between mb-6">
-        <div class="bg-white rounded-md p-2">
-            <input type="search" placeholder="Search By SNO" />
-        </div>
+        <input type="search" v-model="searchQuery" placeholder="Search By Employee ID" class="bg-white p-2 border border-gray-300 rounded-md
+           focus:outline-none focus:border-blue-400" />
 
         <div class="bg-green-500 hover:bg-green-600 rounded-md px-4 py-2">
             <Link href="/create-leave">Add Leave</Link>
