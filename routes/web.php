@@ -158,7 +158,16 @@ Route::middleware(['auth', HRMiddleware::class])
         
         Route::inertia('/index', 'HR/Index')->name('index');
         
-        Route::inertia('/leaves', 'HR/Leaves/Index')->name('leaves.index');
-        
-        Route::inertia('/leaves/view', 'HR/Leaves/View')->name('leaves.view');
+        // HR Leaves Management - NOW USING THE SAME CONTROLLER AS ADMIN
+        Route::get('/leaves', [ManageLeavesController::class, 'index'])
+            ->name('leaves.index');
+
+        Route::get('/leaves/review/{leave}', [ManageLeavesController::class, 'review'])
+            ->name('leaves.review');
+
+        Route::post('/leaves/{leave}/approve', [ManageLeavesController::class, 'approve'])
+            ->name('leaves.approve');
+
+        Route::post('/leaves/{leave}/reject', [ManageLeavesController::class, 'reject'])
+            ->name('leaves.reject');
     });
