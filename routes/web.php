@@ -173,4 +173,7 @@ Route::middleware(['auth', HRMiddleware::class])
 
         Route::post('/leaves/{leave}/reject', [ManageLeavesController::class, 'reject'])
             ->name('leaves.reject');
+        
+        // HR Attendance
+        Route::inertia('/attendance', 'HR/Attendance/Index')->name('attendance');
     });
