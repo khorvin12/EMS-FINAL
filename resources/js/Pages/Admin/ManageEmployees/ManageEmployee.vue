@@ -11,9 +11,8 @@ import { Link } from '@inertiajs/vue3'
     <input type="search" v-model="searchQuery" placeholder="Search By Employee ID" class="bg-white p-2 border border-gray-300 rounded-md
            focus:outline-none focus:border-blue-400" />
 
-    <div class="text-bold bg-green-500 hover:bg-green-600 text-black px-4 py-2 rounded-md">
-      <Link href="/addnewemployee"><i aria-hidden="true" /> Add New Employee</Link>
-    </div>
+    <Link href="/addnewemployee" class="text-bold bg-green-500 hover:bg-green-600 text-black px-4 py-2 rounded-md"> Add
+      New Employee</Link>
   </div>
 
   <!-- Table -->

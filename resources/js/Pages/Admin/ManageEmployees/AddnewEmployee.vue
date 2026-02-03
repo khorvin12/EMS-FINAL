@@ -48,76 +48,76 @@ function submit() {
 
 <template>
   <div class="flex items-center justify-center h-full">
-  <div class="max-w-3xl mx-auto bg-white border-4 border-green-500 p-6 rounded-lg">
+  <div class="max-w-3xl mx-auto bg-white border-4 border-red-600 p-6 rounded-lg">
 
     <!-- Title -->
     <h2 class="text-xl font-bold mb-6">Add New Employee</h2>
-
+ 
     <!-- Error Message -->
     <div v-if="errorMessage" class="text-red-500 mb-4">{{ errorMessage }}</div>
 
     <!-- Form -->
-    <form @submit.prevent="submit" class="grid grid-cols-2 gap-4">
+    <form @submit.prevent="submit" class="grid grid-cols-2 gap-2">
 
       <!-- Last Name -->
       <div>
         <label class="text-sm font-semibold">Last Name</label>
         <input type="text" v-model="form.last_name" placeholder="Last Name"
-          class="w-full mt-1 border rounded px-3 py-2" required />
+          class="w-full mt-1 border rounded px-3 py-2 focus:outline-none focus:border-blue-400" required />
       </div>
 
       <!-- First Name -->
       <div>
         <label class="text-sm font-semibold">First Name</label>
         <input type="text" v-model="form.first_name" placeholder="First Name"
-          class="w-full mt-1 border rounded px-3 py-2" required />
+          class="w-full mt-1 border rounded px-3 py-2 focus:outline-none focus:border-blue-400" required />
       </div>
 
       <!-- Employee ID -->
       <div>
         <label class="text-sm font-semibold">Employee ID</label>
         <input type="text" v-model="form.employee_id" placeholder="Enter ID"
-          class="w-full mt-1 border rounded px-3 py-2" required />
+          class="w-full mt-1 border rounded px-3 py-2 focus:outline-none focus:border-blue-400" required />
       </div>
 
       <!-- Email -->
       <div>
         <label class="text-sm font-semibold">Email</label>
         <input type="email" v-model="form.email" placeholder="Enter Email"
-          class="w-full mt-1 border rounded px-3 py-2" required />
+          class="w-full mt-1 border rounded px-3 py-2 focus:outline-none focus:border-blue-400" required />
       </div>
 
       <!-- Phone -->
       <div>
         <label class="text-sm font-semibold">Phone</label>
         <input type="text" v-model="form.phone" placeholder="Enter Phone"
-          class="w-full mt-1 border rounded px-3 py-2" required />
+          class="w-full mt-1 border rounded px-3 py-2 focus:outline-none focus:border-blue-400" required />
       </div>
 
       <!-- Department ID -->
       <div>
         <label class="text-sm font-semibold">Department ID</label>
         <input type="number" v-model="form.department_id" placeholder="Department ID"
-          class="w-full mt-1 border rounded px-3 py-2" required />
+          class="w-full mt-1 border rounded px-3 py-2 focus:outline-none focus:border-blue-400" required />
       </div>
 
       <!-- Role ID -->
       <div>
         <label class="text-sm font-semibold">Role ID</label>
         <input type="number" v-model="form.role_id" placeholder="Role ID"
-          class="w-full mt-1 border rounded px-3 py-2" required />
+          class="w-full mt-1 border rounded px-3 py-2 focus:outline-none focus:border-blue-400" required />
       </div>
 
       <!-- Date of Birth -->
       <div>
         <label class="text-sm font-semibold">Date of Birth</label>
-        <input type="date" v-model="form.dob" class="w-full mt-1 border rounded px-3 py-2" required />
+        <input type="date" v-model="form.dob" class="w-full mt-1 border rounded px-3 py-2 focus:outline-none" required />
       </div>
 
       <!-- Gender -->
       <div>
         <label class="text-sm font-semibold">Gender</label>
-        <select v-model="form.gender" class="w-full mt-1 border rounded px-3 py-2" required>
+        <select v-model="form.gender" class="w-full mt-1 border rounded px-3 py-2 focus:outline-none" required>
           <option value="">Select Gender</option>
           <option>Male</option>
           <option>Female</option>
@@ -127,7 +127,7 @@ function submit() {
       <!-- Civil Status -->
       <div>
         <label class="text-sm font-semibold">Civil Status</label>
-        <select v-model="form.civil_status" class="w-full mt-1 border rounded px-3 py-2" required>
+        <select v-model="form.civil_status" class="w-full mt-1 border rounded px-3 py-2 focus:outline-none" required>
           <option value="">Select Status</option>
           <option>Single</option>
           <option>Married</option>
@@ -137,7 +137,7 @@ function submit() {
       <!-- Role -->
       <div>
         <label class="text-sm font-semibold">Role</label>
-        <select v-model="form.role" class="w-full mt-1 border rounded px-3 py-2" required>
+        <select v-model="form.role" class="w-full mt-1 border rounded px-3 py-2 focus:outline-none" required>
           <option value="employee">Employee</option>
           <option value="hr">HR</option>
           <option value="admin">Admin</option>
@@ -147,19 +147,19 @@ function submit() {
       <!-- Hire Date -->
       <div>
         <label class="text-sm font-semibold">Hire Date</label>
-        <input type="date" v-model="form.hire_date" class="w-full mt-1 border rounded px-3 py-2" required />
+        <input type="date" v-model="form.hire_date" class="w-full mt-1 border rounded px-3 py-2 focus:outline-none" required />
       </div>
 
       <!-- Salary -->
       <div>
         <label class="text-sm font-semibold">Salary</label>
         <input type="number" v-model="form.salary" placeholder="Enter Salary"
-          class="w-full mt-1 border rounded px-3 py-2" required />
+          class="w-full mt-1 border rounded px-3 py-2 focus:outline-none" required />
       </div>
 
       <!-- Submit Button -->
       <div class="col-span-2 mt-6">
-        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold">
+        <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded font-semibold">
           Confirm
         </button>
       </div>

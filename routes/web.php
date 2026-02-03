@@ -78,7 +78,6 @@ Route::middleware(['auth', AdminMiddleware::class])->name('admin.')->group(funct
         ->name('settings');
 
 
-
     // Employee API Routes
     Route::post('/employees', [EmployeeController::class, 'store'])
         ->name('employees.store');
@@ -133,6 +132,6 @@ Route::middleware(['auth', EmployeeMiddleware::class])->prefix('employee')->name
 */
 Route::middleware(['auth', HRMiddleware::class])->prefix('hr')->name('hr.')->group(function () {
 
-    Route::get('/HR/dashboard', fn() => Inertia::render('HR/Dashboard'))
+    Route::get('/dashboard', fn() => Inertia::render('HR/Index'))
         ->name('dashboard');
 });

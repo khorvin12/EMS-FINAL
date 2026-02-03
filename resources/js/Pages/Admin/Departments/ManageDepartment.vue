@@ -27,15 +27,14 @@ const filteredDepartments = computed(() => {
         <input type="search" v-model="searchQuery" placeholder="Search By Employee ID" class="bg-white p-2 border border-gray-300 rounded-md
            focus:outline-none focus:border-blue-400" />
 
-        <div class="bg-green-600 hover:bg-green-500 rounded-md px-4 py-2">
-            <Link href="/adddepartment" class="text-black">Add New Department</Link>
-        </div>
+        <Link href="/adddepartment" class="text-black bg-green-500 hover:bg-green-600 rounded-md px-4 py-2">Add New
+            Department</Link>
     </div>
 
     <table class="w-full rounded-lg shadow-lg overflow-hidden table-fixed bg-white">
         <thead class="bg-gray-400 text-black font-medium">
             <tr>
-                <th class="py-6">ID NO</th>
+                <th class="py-6">Serial No</th>
                 <th>Department</th>
                 <th>Manager ID</th>
                 <th>Action</th>
