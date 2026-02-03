@@ -5,16 +5,13 @@ import { Link } from '@inertiajs/vue3';
 <template>
     <h1 class="text-center text-3xl font-bold mb-12">Your Salary Details</h1>
 
-    <div class="flex justify-between mb-6">
-        <div class="bg-white rounded-md p-2">
-            <input type="search" placeholder="Search By SNO" />
-        </div>
-    </div>
+    <input type="search" v-model="searchQuery" placeholder="Search By Employee ID" class="bg-white p-2 border border-gray-300 rounded-md
+           focus:outline-none focus:border-blue-400 flex justify-start mb-6" />
 
     <table class="w-full shadow-lg overflow-hidden table-fixed bg-white rounded-lg">
         <thead class="border-slate-200 text-slate-600">
             <tr class="bg-gray-400 text-black font-medium">
-                <th class="p-6">SNO</th>
+                <th class="p-6">Serial No</th>
                 <th class="">Employee ID</th>
                 <th class="">Month</th>
                 <th class="">Full Salary</th>

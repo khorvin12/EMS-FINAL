@@ -66,11 +66,11 @@ const handleLogout = () => {
             <aside class="bg-gray-800 text-white w-64 py-10 text-xl hidden md:block">
                 <nav class="space-y-8 px-4">
                     <Link v-for="item in [
-                        { name: 'Dashboard', href: '/index', icon: 'fa-tachometer' },
-                        { name: 'Attendance', href: '/attendance', icon: 'fa-calendar-check' },
-                        { name: 'Leaves', href: '/leaves', icon: 'fa-calendar-xmark' },
-                        { name: 'Salary', href: '/salary', icon: 'fa-dollar' },
-                        { name: 'Settings', href: '/settings', icon: 'fa-cog' },
+                        { name: 'Dashboard', href: '/employee/dashboard', icon: 'fa-tachometer' },
+                        { name: 'Attendance', href: '/employee/attendance', icon: 'fa-calendar-check' },
+                        { name: 'Leaves', href: '/employee/leave', icon: 'fa-calendar-xmark' },
+                        { name: 'Salary', href: '/employee/salary', icon: 'fa-dollar' },
+                        { name: 'Settings', href: '/employee/settings', icon: 'fa-cog' },
                     ]" :key="item.href" :href="item.href"
                         class="flex items-center space-x-4 py-2.5 px-6 rounded-md transition-colors"
                         :class="isActive(item.href) ? 'bg-green-500 font-bold' : 'hover:bg-green-600'">
@@ -84,7 +84,7 @@ const handleLogout = () => {
 
             <!-- Main Contents -->
             <main class="flex-1 overflow-y-auto bg-gray-100 p-8 md:p-16">
-                <div class="max-w-7xl mx-auto">
+                <div class="max-w-8xl mx-auto">
                     <slot />
                 </div>
             </main>

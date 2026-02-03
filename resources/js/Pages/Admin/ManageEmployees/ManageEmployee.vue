@@ -17,58 +17,58 @@ import { Link } from '@inertiajs/vue3'
   </div>
 
   <!-- Table -->
-    <table class="w-full rounded-lg shadow-lg overflow-hidden table-fixed bg-white">
-      <thead class="bg-gray-400 text-black font-medium">
-        <tr>
-          <th class="py-6">Employee ID</th>
-          <th class="py-6">Firstname</th>
-          <th class="py-6">Lastname</th>
-          <th class="py-6">Email</th>
-          <th class="py-6">Phone</th>
-          <th class="py-6">Department</th>
-          <th class="py-6">Role</th>
-          <th class="py-6">Hire Date</th>
-          <th class="py-6">Salary</th>
-          <th class="py-6 text-center">Action</th>
-        </tr>
-      </thead>
+  <table class="w-full rounded-lg shadow-lg overflow-hidden table-auto bg-white">
+    <thead class="bg-gray-400 text-black font-medium">
+      <tr>
+        <th class="py-6">Employee ID</th>
+        <th class="py-6">Firstname</th>
+        <th class="py-6">Lastname</th>
+        <th class="py-6">Email</th>
+        <th class="py-6">Phone</th>
+        <th class="py-6">Department</th>
+        <th class="py-6">Role</th>
+        <th class="py-6">Hire Date</th>
+        <th class="py-6">Salary</th>
+        <th class="py-6 text-center">Action</th>
+      </tr>
+    </thead>
 
-      <tbody class="bg-white-100 text-center border-slate-200 border-t-4">
-        <tr>
-          <td class="py-4">12345</td>
-          <td class="py-4">Khorvin</td>
-          <td class="py-4">Gay</td>
-          <td class="py-4">KhorvinGay@gmail.com</td>
-          <td class="py-4">09876543210</td>
-          <td class="py-4">IT</td>
-          <td class="py-4">Employee</td>
-          <td class="py-4">2050</td>
-          <td class="py-4">10,000</td>
+    <tbody class="bg-white-100 text-center border-slate-200 border-t-4">
+      <tr>
+        <td class="p-4">12345</td>
+        <td class="p-4">Khorvin</td>
+        <td class="p-4">Gay</td>
+        <td class="p-4">KhorvinGay@gmail.com</td>
+        <td class="p-4">09876543210</td>
+        <td class="p-4">IT</td>
+        <td class="p-4">Employee</td>
+        <td class="p-4">2050</td>
+        <td class="p-4">10,000</td>
 
-          <td class="p-4">
-            <div class="flex justify-center gap-2">
-              <div class="bg-blue-500 hover:bg-blue-400 text-black px-5 py-2 rounded-md  inline-block">
-                <Link href="/view">
-                  View
-                </Link>
-              </div>
-
-              <div class="bg-yellow-400 hover:bg-yellow-300 text-black px-6 py-2 rounded-md inline-block">
-                <Link href="/edit">
-                  Edit
-                </Link>
-              </div>
-
-              <div class="bg-red-600 hover:bg-red-500 text-black px-4 py-2 rounded-md inline-block">
-                <Link href="/delete">
-                  delete
-                </Link>
-              </div>
+        <td class="p-4">
+          <div class="flex justify-center gap-2">
+            <div class="bg-blue-500 hover:bg-blue-600 text-black px-5 py-2 rounded-md  inline-block">
+              <Link href="/view">
+                View
+              </Link>
             </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+
+            <div class="bg-yellow-400 hover:bg-yellow-500 text-black px-6 py-2 rounded-md inline-block">
+              <Link href="/edit">
+                Edit
+              </Link>
+            </div>
+
+            <div class="bg-red-500 hover:bg-red-600 text-black px-4 py-2 rounded-md inline-block">
+              <Link href="/delete">
+                delete
+              </Link>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
   <!-- Pagination -->
   <div class="flex justify-end items-center mt-4 space-x-2">

@@ -84,7 +84,7 @@ const handleLogout = () => {
 
       <!-- Main Contents -->
       <main class="flex-1 overflow-y-auto bg-slate-50 p-8 md:p-12">
-        <div class="max-w-7xl mx-auto">
+        <div class="max-w-8xl mx-auto">
           <slot />
         </div>
       </main>

@@ -1,28 +1,29 @@
 <template>
-    <div class="flex items-center justify-center h-full">
+    <div class="flex items-center justify-center h-176">
         <div class="bg-white w-full max-w-lg px-6 py-4 rounded-md shadow-md border-5 border-green-600">
             <h1 class="text-xl font-bold mb-6 text-center">Request for Leave</h1>
 
             <div class="grid grid-cols-2 mb-6 gap-4">
-                <div>
-                    <label for="departmentName" class="mb-1">From</label>
-                    <input type="text" name="departmentName" id="departmentName" placeholder="Select Date"
-                        class="p-2 rounded-md border border-gray-300" />
+                <div class="flex flex-col">
+                    <label for="start_date" class="mb-1">From</label>
+                    <input type="date" name="start_date" placeholder="Select Date"
+                        class="p-2 rounded-md border border-gray-300 focus:outline-none" />
                 </div>
 
-                <div class="">
-                    <label for="departmentName" class="mb-1">To</label>
-                    <input type="text" name="departmentName" id="departmentName" placeholder="Select Date"
-                        class="p-2 rounded-md border border-gray-300" />
+                <div class="flex flex-col">
+                    <label for="end_date" class="mb-1">To</label>
+                    <input type="date" name="end_date" placeholder="Select Date"
+                        class="p-2 rounded-md border border-gray-300 focus:outline-none" />
                 </div>
             </div>
 
             <div class="grid grid-cols-1 gap-1">
                 <label for="description">Reason</label>
                 <input type="text" name="departmentName" id="departmentName" placeholder="Title"
-                    class="p-2 rounded-md border border-gray-300" />
+                    class="p-2 rounded-md border border-gray-300 focus:outline-none" />
+
                 <textarea name="description" rows="6" id="description" placeholder="Description"
-                    class="p-2 rounded-md border border-gray-300"></textarea>
+                    class="p-2 rounded-md border border-gray-300 focus:outline-none"></textarea>
             </div>
 
             <div class="mt-6 text-white font-bold text-center space-x-4">

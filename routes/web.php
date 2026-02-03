@@ -70,8 +70,12 @@ Route::middleware(['auth', AdminMiddleware::class])->name('admin.')->group(funct
     Route::inertia('/leaves', 'Admin/Leaves/Index')
         ->name('leaves');
 
+    Route::inertia('/leave/view', 'Admin/Leaves/Index')
+        ->name('leaves');
+
+    // Settings
     Route::inertia('/settings', 'Admin/Settings/Index')
-        ->name('/settings');
+        ->name('settings');
 
 
 
@@ -99,19 +103,27 @@ Route::middleware(['auth', EmployeeMiddleware::class])->prefix('employee')->name
     Route::get('/dashboard', fn() => Inertia::render('Employee/Index'))
         ->name('dashboard');
 
-    // Employee Leave Routes
-    Route::inertia('/leave', 'Employee/Leaves/Index')->name('leave');
-    Route::inertia('/create-leave', 'Employee/Leaves/Create')->name('create-leave');
-    Route::inertia('/view-leave', 'Employee/Leaves/View')->name('view-leave');
+    // URL: /employee/attendance | Name: employee.attendance
+    Route::inertia('/attendance', 'Employee/Attendance/Index')
+        ->name('attendance');
 
-    // Employee Salary Routes
-    Route::inertia('/employee-salary', 'Employee/Salary/Index')->name('employee-salary');
+    // URL: /employee/leave | Name: employee.leave
+    Route::inertia('/leave', 'Employee/Leaves/Index')
+        ->name('leave');
 
-    // Employee Attendance Route
-    Route::inertia('/attendance', 'Employee/Attendance/Index')->name('attendance');
+    Route::inertia('/leave/create', 'Employee/Leaves/Create')
+        ->name('leave.create');
 
-    // Employee Settings Routes
-    Route::inertia('/settings', 'Employee/Settings/Index')->name('settings');
+    Route::inertia('/leave/view', 'Employee/Leaves/View')
+        ->name('view.leave');
+
+    // URL: /employee/salary | Name: employee.salary
+    Route::inertia('/salary', 'Employee/Salary/Index')
+        ->name('salary');
+
+    // URL: /employee/settings | Name: employee.settings
+    Route::inertia('/settings', 'Employee/Settings/Index')
+        ->name('settings');
 });
 
 /*

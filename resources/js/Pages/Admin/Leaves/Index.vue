@@ -5,23 +5,17 @@ import { Link } from '@inertiajs/vue3';
 <template>
     <h1 class="text-center text-3xl font-bold mb-12">Your Leave Schedules</h1>
 
-    <div class="flex justify-between mb-6">
-        <input type="search" v-model="searchQuery" placeholder="Search By Employee ID" class="bg-white p-2 border border-gray-300 rounded-md
-           focus:outline-none focus:border-blue-400" />
-
-        <div class="bg-green-500 hover:bg-green-600 rounded-md px-4 py-2">
-            <Link href="/create-leave">Add Leave</Link>
-        </div>
-    </div>
+    <input type="search" v-model="searchQuery" placeholder="Search By Employee ID" class="bg-white p-2 border border-gray-300 rounded-md
+           focus:outline-none focus:border-blue-400 flex justify-start mb-6" />
 
     <table class="w-full shadow-lg overflow-hidden table-fixed bg-white rounded-lg">
         <thead class="border-slate-200 text-slate-600">
             <tr class="bg-gray-400 text-black font-medium">
-                <th class="p-6">SNO</th>
-                <th class="">Reason</th>
-                <th class="">Date</th>
-                <th class="">Status</th>
-                <th class="">Action</th>
+                <th class="p-6">Serial No</th>
+                <th class="p-6">Reason</th>
+                <th class="p-6">Date</th>
+                <th class="p-6">Status</th>
+                <th class="p-6">Action</th>
             </tr>
         </thead>
 
