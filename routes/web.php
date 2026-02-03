@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Employee\SalaryController;
+use App\Http\Controllers\Employee\AttendanceController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -136,8 +137,9 @@ Route::middleware(['auth', EmployeeMiddleware::class])
         // Employee Salary Routes
         Route::get('/employee-salary', [SalaryController::class, 'index'])->name('employee-salary');
 
-        // Employee Attendance Route
-        Route::inertia('/attendance', 'Employee/Attendance/Index')->name('attendance');
+        // Employee Attendance Routes
+        Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance');
+        Route::post('/attendance/record', [AttendanceController::class, 'record'])->name('attendance.record');
 
         // Employee Settings Routes
         Route::inertia('/settings', 'Employee/Settings/Index')->name('settings');

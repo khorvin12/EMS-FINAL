@@ -1,85 +1,243 @@
 <script setup>
-import { Link } from '@inertiajs/vue3';
+import { ref, computed } from 'vue';
+import { Head, router, usePage } from '@inertiajs/vue3';
+
+const page = usePage();
+
+const props = defineProps({
+    employee: {
+        type: Object,
+        required: true
+    },
+    todayAttendance: {
+        type: Object,
+        default: null
+    },
+    attendanceHistory: {
+        type: Array,
+        default: () => []
+    }
+});
+
+const processing = ref(false);
+
+const currentTime = ref(new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }));
+const currentDate = ref(new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }));
+
+// Update time every second
+setInterval(() => {
+    currentTime.value = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+}, 1000);
+
+const canTimeIn = computed(() => !props.todayAttendance || !props.todayAttendance.time_in);
+const canTimeOut = computed(() => props.todayAttendance && props.todayAttendance.time_in && !props.todayAttendance.time_out);
+
+const timeIn = () => {
+    processing.value = true;
+    
+    router.post('/employee/attendance/record', {
+        type: 'time_in'
+    }, {
+        preserveScroll: true,
+        onSuccess: () => {
+            processing.value = false;
+        },
+        onError: (errors) => {
+            processing.value = false;
+            console.error('Error:', errors);
+            alert('Failed to clock in. Check console for details.');
+        },
+        onFinish: () => {
+            processing.value = false;
+        }
+    });
+};
+
+const timeOut = () => {
+    processing.value = true;
+    
+    router.post('/employee/attendance/record', {
+        type: 'time_out'
+    }, {
+        preserveScroll: true,
+        onSuccess: () => {
+            processing.value = false;
+        },
+        onError: (errors) => {
+            processing.value = false;
+            console.error('Error:', errors);
+            alert('Failed to clock out. Check console for details.');
+        },
+        onFinish: () => {
+            processing.value = false;
+        }
+    });
+};
+
+const getStatusColor = (status) => {
+    const colors = {
+        'present': 'bg-green-100 text-green-800',
+        'late': 'bg-yellow-100 text-yellow-800',
+        'absent': 'bg-red-100 text-red-800',
+        'on_leave': 'bg-blue-100 text-blue-800'
+    };
+    return colors[status] || 'bg-gray-100 text-gray-800';
+};
+
+const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+};
+
+const formatTime = (timeString) => {
+    if (!timeString) return '--';
+    return new Date('2000-01-01 ' + timeString).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+};
 </script>
 
 <template>
-    <h1 class="text-center text-3xl font-bold mb-12">Your Attendance</h1>
+    <Head title="Attendance" />
 
-    <div class="flex justify-between mb-6">
-        <div class="bg-white rounded-md p-2">
-            <input type="search" placeholder="Search By SNO" />
+    <div class="max-w-7xl mx-auto">
+        <!-- Header Section -->
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 mb-2">Attendance Tracker</h2>
+            <p class="text-gray-600">{{ currentDate }}</p>
+        </div>
+
+        <!-- Clock In/Out Card -->
+        <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Left Side - Employee Info & Time -->
+                <div>
+                    <div class="bg-gray-50 rounded-lg p-6 mb-6">
+                        <p class="text-sm text-gray-600 mb-1">Employee ID</p>
+                        <p class="text-xl font-bold text-gray-900 mb-4">{{ employee.employee_id }}</p>
+                        
+                        <p class="text-sm text-gray-600 mb-1">Name</p>
+                        <p class="text-xl font-bold text-gray-900">{{ employee.name }}</p>
+                    </div>
+
+                    <div class="text-center bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-6">
+                        <p class="text-sm text-gray-600 mb-2">Current Time</p>
+                        <p class="text-5xl font-bold text-gray-900">{{ currentTime }}</p>
+                    </div>
+                </div>
+
+                <!-- Right Side - Attendance Actions -->
+                <div class="flex flex-col justify-center">
+                    <!-- Today's Status -->
+                    <div v-if="todayAttendance" class="bg-gray-50 rounded-lg p-6 mb-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Today's Attendance</h3>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-xs text-gray-600 uppercase mb-1">Time In</p>
+                                <p class="text-2xl font-bold text-green-600">
+                                    {{ todayAttendance.time_in ? formatTime(todayAttendance.time_in) : '--' }}
+                                </p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-600 uppercase mb-1">Time Out</p>
+                                <p class="text-2xl font-bold text-red-600">
+                                    {{ todayAttendance.time_out ? formatTime(todayAttendance.time_out) : '--' }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="mt-4" v-if="todayAttendance.hours">
+                            <p class="text-xs text-gray-600 uppercase mb-1">Hours Worked</p>
+                            <p class="text-xl font-bold text-gray-900">{{ todayAttendance.hours }} hours</p>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="space-y-4">
+                        <button
+                            v-if="canTimeIn"
+                            @click="timeIn"
+                            :disabled="processing"
+                            class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                        >
+                            <span v-if="!processing">
+                                <i class="fa fa-sign-in mr-2"></i>
+                                Clock In
+                            </span>
+                            <span v-else>
+                                Recording...
+                            </span>
+                        </button>
+
+                        <button
+                            v-if="canTimeOut"
+                            @click="timeOut"
+                            :disabled="processing"
+                            class="w-full bg-gradient-to-r from-red-500 to-red-600 text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                        >
+                            <span v-if="!processing">
+                                <i class="fa fa-sign-out mr-2"></i>
+                                Clock Out
+                            </span>
+                            <span v-else>
+                                Recording...
+                            </span>
+                        </button>
+
+                        <div v-if="!canTimeIn && !canTimeOut" class="text-center p-6 bg-gray-50 rounded-lg">
+                            <i class="fa fa-check-circle text-green-500 text-4xl mb-2"></i>
+                            <p class="text-gray-700 font-medium">Attendance completed for today!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attendance History -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <div class="p-6 bg-gray-50 border-b border-gray-200">
+                <h3 class="text-xl font-bold text-gray-900">Attendance History</h3>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-100 border-b border-gray-200">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Time In</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Time Out</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Hours</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        <tr v-for="record in attendanceHistory" :key="record.id" class="hover:bg-gray-50 transition">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                                {{ formatDate(record.date) }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                {{ formatTime(record.time_in) }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                {{ formatTime(record.time_out) }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-semibold">
+                                {{ record.hours || 0 }} hrs
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span :class="getStatusColor(record.status)" class="px-3 py-1 rounded-full text-xs font-semibold uppercase">
+                                    {{ record.status }}
+                                </span>
+                            </td>
+                        </tr>
+
+                        <tr v-if="attendanceHistory.length === 0">
+                            <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+                                <i class="fa fa-calendar-times-o text-4xl mb-3 block"></i>
+                                <p>No attendance records found</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-
-    <table class="w-full shadow-lg overflow-hidden table-fixed bg-white rounded-lg">
-        <thead class="border-slate-200 text-slate-600">
-            <tr class="bg-gray-400 text-black font-medium">
-                <th class="">SNO</th>
-                <th class="p-6">Employee ID</th>
-                <th class="">Date</th>
-                <th class="">Time In</th>
-                <th class="">Time Out</th>
-                <th class="">Hours</th>
-                <th class="">Status</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            <tr class="bg-white-100 text-center border-slate-200 border-t-4">
-                <td class="p-4">1</td>
-                <td class="p-4">11111</td>
-                <td class="p-4">1/30/2026</td>
-                <td class="p-4">8:00 AM</td>
-                <td class="p-4">5:00 PM</td>
-                <td class="p-4">9</td>
-                <td class="p-4">
-                    <button class="bg-green-500 rounded-sm px-2 py-1">Present</button>
-                </td>
-            </tr>
-            <tr class="bg-white-100 text-center border-slate-200 border-t-4">
-                <td class="p-4">2</td>
-                <td class="p-4">22222</td>
-                <td class="p-4">2/20/2026</td>
-                <td class="p-4">9:00 AM</td>
-                <td class="p-4">5:00 PM</td>
-                <td class="p-4">8</td>
-                <td class="p-4">
-                    <button class="bg-yellow-300 rounded-sm px-2 py-1">Late</button>
-                </td>
-            </tr>
-            <tr class="bg-white-100 text-center border-slate-200 border-t-4">
-                <td class="p-4">3</td>
-                <td class="p-4">33333</td>
-                <td class="p-4">3/10/2026</td>
-                <td class="p-4">--</td>
-                <td class="p-4">--</td>
-                <td class="p-4">0</td>
-                <td class="p-4">
-                    <button class="bg-red-500 rounded-sm px-2 py-1">Absent</button>
-                </td>
-            </tr>
-            <tr class="bg-white-100 text-center border-slate-200 border-t-4">
-                <td class="p-4">4</td>
-                <td class="p-4">44444</td>
-                <td class="p-4">4/20/2026</td>
-                <td class="p-4">--</td>
-                <td class="p-4">--</td>
-                <td class="p-4">0</td>
-                <td class="p-4">
-                    <button class="bg-blue-400 rounded-sm px-2 py-1">On Leave</button>
-                </td>
-            </tr>
-            <tr class="bg-white-100 text-center border-slate-200 border-t-4">
-                <td class="p-4">5</td>
-                <td class="p-4">55555</td>
-                <td class="p-4">5/20/2026</td>
-                <td class="p-4">10:00 AM</td>
-                <td class="p-4">5:00 PM</td>
-                <td class="p-4">7</td>
-                <td class="p-4">
-                    <button class="bg-green-500 rounded-sm px-2 py-1">Present</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
 </template>
