@@ -34,7 +34,8 @@ return new class extends Migration
             }
 
             if (!Schema::hasColumn('users', 'employee_id')) {
-                $table->string('employee_id')->nullable()->unique()->after('id');
+                $table->string('employee_id')->nullable()->after('id');
+                $table->unique('employee_id');
             }
 
             if (!Schema::hasColumn('users', 'dob')) {
@@ -54,6 +55,12 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
+
+            if (Schema::hasColumn('users', 'employee_id')) {
+                $table->dropUnique('users_employee_id_unique');
+                $table->dropColumn('employee_id');
+            }
+
             if (Schema::hasColumn('users', 'phone')) {
                 $table->dropColumn('phone');
             }
@@ -76,10 +83,6 @@ return new class extends Migration
 
             if (Schema::hasColumn('users', 'role')) {
                 $table->dropColumn('role');
-            }
-
-            if (Schema::hasColumn('users', 'employee_id')) {
-                $table->dropColumn('employee_id');
             }
 
             if (Schema::hasColumn('users', 'dob')) {

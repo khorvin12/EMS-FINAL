@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\ManageLeavesController;
 use App\Http\Controllers\Employee\LeaveController;
+use App\Http\Controllers\HR\AttendanceController as HRAttendanceController;
 
 // Middleware
 use App\Http\Middleware\AdminMiddleware;
@@ -158,9 +159,11 @@ Route::middleware(['auth', HRMiddleware::class])
 
         Route::get('/dashboard', fn() => Inertia::render('HR/Dashboard'))
             ->name('dashboard');
-        
+
         Route::inertia('/index', 'HR/Index')->name('index');
-        
+
+        Route::inertia('/salary', 'HR/Salaries/Salary')->name('salary');
+
         // HR Leaves Management - NOW USING THE SAME CONTROLLER AS ADMIN
         Route::get('/leaves', [ManageLeavesController::class, 'index'])
             ->name('leaves.index');
@@ -173,7 +176,8 @@ Route::middleware(['auth', HRMiddleware::class])
 
         Route::post('/leaves/{leave}/reject', [ManageLeavesController::class, 'reject'])
             ->name('leaves.reject');
-        
-        // HR Attendance
-        Route::inertia('/attendance', 'HR/Attendance/Index')->name('attendance');
+
+        // HR Attendance - NOW USING CONTROLLER TO FETCH DATA
+        Route::get('/attendance', [HRAttendanceController::class, 'index'])->name('attendance');
+        Route::delete('/attendance/{id}', [HRAttendanceController::class, 'destroy'])->name('attendance.destroy');
     });

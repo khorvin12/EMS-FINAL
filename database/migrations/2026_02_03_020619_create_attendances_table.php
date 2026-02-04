@@ -10,18 +10,15 @@ return new class extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->string('employee_id')->nullable();
+            $table->string('employee_id');
             $table->date('date');
-            $table->time('time_in')->nullable();
-            $table->time('time_out')->nullable();
-            $table->integer('hours')->default(0);
+            $table->time('check_in')->nullable();
+            $table->time('check_out')->nullable();
             $table->enum('status', ['present', 'late', 'absent', 'on_leave'])->default('present');
             $table->timestamps();
 
             // Indexes
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->unique(['user_id', 'date']); // One attendance record per user per day
+            $table->unique(['employee_id', 'date']); // One attendance record per employee per day
         });
     }
 

@@ -29,8 +29,9 @@ setInterval(() => {
     currentTime.value = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
 }, 1000);
 
-const canTimeIn = computed(() => !props.todayAttendance || !props.todayAttendance.time_in);
-const canTimeOut = computed(() => props.todayAttendance && props.todayAttendance.time_in && !props.todayAttendance.time_out);
+// FIXED: Changed time_in/time_out to check_in/check_out
+const canTimeIn = computed(() => !props.todayAttendance || !props.todayAttendance.check_in);
+const canTimeOut = computed(() => props.todayAttendance && props.todayAttendance.check_in && !props.todayAttendance.check_out);
 
 const timeIn = () => {
     processing.value = true;
@@ -90,7 +91,12 @@ const formatDate = (dateString) => {
 
 const formatTime = (timeString) => {
     if (!timeString) return '--';
-    return new Date('2000-01-01 ' + timeString).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+    // Handle HH:MM:SS format from database
+    const [hours, minutes] = timeString.toString().split(':');
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour % 12 || 12;
+    return `${displayHour.toString().padStart(2, '0')}:${minutes} ${ampm}`;
 };
 </script>
 
@@ -133,13 +139,13 @@ const formatTime = (timeString) => {
                             <div>
                                 <p class="text-xs text-gray-600 uppercase mb-1">Time In</p>
                                 <p class="text-2xl font-bold text-green-600">
-                                    {{ todayAttendance.time_in ? formatTime(todayAttendance.time_in) : '--' }}
+                                    {{ todayAttendance.check_in ? formatTime(todayAttendance.check_in) : '--' }}
                                 </p>
                             </div>
                             <div>
                                 <p class="text-xs text-gray-600 uppercase mb-1">Time Out</p>
                                 <p class="text-2xl font-bold text-red-600">
-                                    {{ todayAttendance.time_out ? formatTime(todayAttendance.time_out) : '--' }}
+                                    {{ todayAttendance.check_out ? formatTime(todayAttendance.check_out) : '--' }}
                                 </p>
                             </div>
                         </div>
@@ -214,10 +220,10 @@ const formatTime = (timeString) => {
                                 {{ formatDate(record.date) }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                {{ formatTime(record.time_in) }}
+                                {{ formatTime(record.check_in) }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                {{ formatTime(record.time_out) }}
+                                {{ formatTime(record.check_out) }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-semibold">
                                 {{ record.hours || 0 }} hrs
