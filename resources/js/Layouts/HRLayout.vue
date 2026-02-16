@@ -43,7 +43,7 @@ const isActive = (path) => page.url.startsWith(path)
                         <span>Leaves</span>
                     </Link>
 
-                    <Link href="/hr/salary" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/hr/salary')
+                    <Link href="/hr/salaries" class="flex items-center space-x-4 py-2.5 px-8 rounded-md" :class="isActive('/hr/salaries')
                         ? 'bg-blue-600 font-bold'
                         : 'hover:bg-blue-700'">
                         <i class="fa fa-dollar" aria-hidden="true"></i>

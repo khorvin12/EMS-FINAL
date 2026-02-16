@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\ManageLeavesController;
 use App\Http\Controllers\Employee\LeaveController;
 use App\Http\Controllers\HR\AttendanceController as HRAttendanceController;
+use App\Http\Controllers\HR\SalaryController as HRSalaryController; // Add this line
 
 // Middleware
 use App\Http\Middleware\AdminMiddleware;
@@ -162,7 +163,13 @@ Route::middleware(['auth', HRMiddleware::class])
 
         Route::inertia('/index', 'HR/Index')->name('index');
 
-        Route::inertia('/salary', 'HR/Salaries/Salary')->name('salary');
+        // HR Salary Routes - ADD THESE LINES
+        Route::get('/salaries', [HRSalaryController::class, 'index'])->name('salaries.index');
+        Route::get('/salaries/{employeeId}', [HRSalaryController::class, 'view'])->name('salaries.view');
+        Route::post('/salaries/{employeeId}/generate-payroll', [HRSalaryController::class, 'generatePayroll'])->name('salaries.generatePayroll');
+
+        // Remove or comment out this old route if it exists
+        // Route::inertia('/salary', 'HR/Salaries/Salary')->name('salary');
 
         // HR Leaves Management - NOW USING THE SAME CONTROLLER AS ADMIN
         Route::get('/leaves', [ManageLeavesController::class, 'index'])
