@@ -17,13 +17,13 @@ class SalaryController extends Controller
     public function index()
     {
         $currentMonth = Carbon::now()->format('F Y');
-        
+
         // Get all employees with their salary information and payroll data
         $salaries = DB::table('users')
             ->leftJoin('departments', 'users.department_id', '=', 'departments.id')
-            ->leftJoin('payrolls', function($join) use ($currentMonth) {
-                $join->on(DB::raw('users.employee_id COLLATE utf8mb4_0900_ai_ci'), '=', DB::raw('payrolls.employee_id COLLATE utf8mb4_0900_ai_ci'))
-                     ->where('payrolls.month', '=', $currentMonth);
+            ->leftJoin('payrolls', function ($join) use ($currentMonth) {
+                $join->on('users.employee_id', '=', 'payrolls.employee_id')
+                    ->where('payrolls.month', '=', $currentMonth);
             })
             ->select(
                 'users.id',
