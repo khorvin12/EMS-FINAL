@@ -170,7 +170,7 @@ Route::middleware(['auth', HRMiddleware::class])
 
         // Remove or comment out this old route if it exists
         // Route::inertia('/salary', 'HR/Salaries/Salary')->name('salary');
-
+    
         // HR Leaves Management - NOW USING THE SAME CONTROLLER AS ADMIN
         Route::get('/leaves', [ManageLeavesController::class, 'index'])
             ->name('leaves.index');
@@ -185,6 +185,9 @@ Route::middleware(['auth', HRMiddleware::class])
             ->name('leaves.reject');
 
         // HR Attendance - NOW USING CONTROLLER TO FETCH DATA
+        Route::get('/attendance/employees', [HRAttendanceController::class, 'employees'])->name('attendance.employees'); // ← ADD FIRST
         Route::get('/attendance', [HRAttendanceController::class, 'index'])->name('attendance');
+        Route::get('/attendance/{id}/edit', [HRAttendanceController::class, 'edit'])->name('attendance.edit');
+        Route::put('/attendance/{id}', [HRAttendanceController::class, 'update'])->name('attendance.update');
         Route::delete('/attendance/{id}', [HRAttendanceController::class, 'destroy'])->name('attendance.destroy');
     });
