@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements CanResetPassword
 {
     use HasFactory, Notifiable;
 
@@ -14,6 +15,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'profile_photo_path',
         'role',
         'employee_id',
         'dob',
@@ -24,6 +26,7 @@ class User extends Authenticatable
         'role_id',
         'hire_date',
         'salary',
+
     ];
 
     protected $hidden = [
@@ -49,8 +52,6 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Department::class);
     }
-
-    
 
     // Remove roleRelation() method since Role model doesn't exist
 }

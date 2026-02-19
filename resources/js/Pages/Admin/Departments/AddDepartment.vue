@@ -17,7 +17,7 @@ const submitDepartment = () => {
 </script>
 
 <template>
-    <div class="flex items-center justify-center h-full">
+    <div class="flex items-center justify-center h-176">
         <div class="bg-white w-full max-w-sm px-6 py-4 rounded-md shadow-md border-5 border-green-600">
             <h1 class="text-xl font-bold mb-6 text-center">Add New Department</h1>
 
@@ -29,7 +29,7 @@ const submitDepartment = () => {
                         v-model="form.name"
                         id="departmentName" 
                         placeholder="Department Name"
-                        class="p-2 rounded-md border border-gray-300"
+                        class="p-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-400"
                         required
                     />
                     <span v-if="form.errors.name" class="text-red-500 text-sm">{{ form.errors.name }}</span>
@@ -42,7 +42,7 @@ const submitDepartment = () => {
                         rows="5" 
                         id="description" 
                         placeholder="Description"
-                        class="p-2 rounded-md border border-gray-300"
+                        class="p-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-400"
                     ></textarea>
                     <span v-if="form.errors.description" class="text-red-500 text-sm">{{ form.errors.description }}</span>
                 </div>
@@ -54,7 +54,7 @@ const submitDepartment = () => {
                         v-model="form.manager_id"
                         id="managerId" 
                         placeholder="Manager ID (Optional)"
-                        class="p-2 rounded-md border border-gray-300"
+                        class="p-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-400"
                     />
                     <span v-if="form.errors.manager_id" class="text-red-500 text-sm">{{ form.errors.manager_id }}</span>
                 </div>

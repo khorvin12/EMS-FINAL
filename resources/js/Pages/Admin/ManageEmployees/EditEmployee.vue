@@ -120,7 +120,7 @@ function submit() {
 </script>
 
 <template>
-    <main class="flex-1 p-8">
+    <main class="flex-1">
         <!-- Success Notification -->
         <Transition name="fade">
             <div

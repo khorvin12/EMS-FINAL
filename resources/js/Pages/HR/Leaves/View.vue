@@ -61,7 +61,7 @@ const getStatusColor = (status) => {
 </script>
 
 <template>
-    <div class="flex items-center justify-center h-full bg-gray-100">
+    <div class="flex items-center justify-center h-172 bg-gray-100">
 
         <!-- OUTER MODAL -->
         <div class="w-full max-w-2xl bg-sky-400 rounded-lg shadow-lg border-4 border-blue-500">
@@ -183,7 +183,3 @@ const getStatusColor = (status) => {
         </div>
     </div>
 </template>
-
-<style scoped>
-/* Add any additional styles if needed */
-</style>

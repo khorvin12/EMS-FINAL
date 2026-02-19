@@ -4,7 +4,7 @@ import { ref, computed } from 'vue';
 
 // Receive data from controller
 const props = defineProps({
-    leaves: Array,
+    leaves: Object,
     stats: Object
 });
 
@@ -14,39 +14,39 @@ const dateFilter = ref('');
 
 // Filtered leaves based on search and date
 const filteredLeaves = computed(() => {
-    let result = props.leaves || [];
-    
+    let result = props.leaves?.data || [];
+
     // Search by employee name or ID
     if (searchQuery.value) {
-        result = result.filter(leave => 
+        result = result.filter(leave =>
             leave.user.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
             leave.id.toString().includes(searchQuery.value)
         );
     }
-    
+
     // Filter by date
     if (dateFilter.value) {
-        result = result.filter(leave => 
+        result = result.filter(leave =>
             leave.start_date <= dateFilter.value && leave.end_date >= dateFilter.value
         );
     }
-    
+
     return result;
 });
 
 // Format date helper
 const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
     });
 };
 
 // Status badge color
 const getStatusColor = (status) => {
-    switch(status) {
+    switch (status) {
         case 'approved': return 'bg-green-500 text-white';
         case 'rejected': return 'bg-red-500 text-white';
         case 'pending': return 'bg-yellow-500 text-white';
@@ -61,22 +61,13 @@ const getStatusColor = (status) => {
 
     <div class="flex items-center justify-between mb-6">
         <!-- Search -->
-        <input 
-            v-model="searchQuery"
-            type="search" 
-            placeholder="Search By Name or ID" 
-            class="bg-white rounded-md p-2 border border-gray-300" 
-        />
+        <input v-model="searchQuery" type="search" placeholder="Search By Name or ID"
+            class="bg-white rounded-md p-2 border border-gray-300 focus:outline-none focus:border-blue-400" />
 
         <!-- Date Filter -->
         <div class="flex items-center gap-2">
             <label class="text-sm font-medium">Filter by Date</label>
-            <input 
-                v-model="dateFilter"
-                type="date" 
-                name="date" 
-                class="bg-white rounded-md p-2 border border-gray-300"
-            >
+            <input v-model="dateFilter" type="date" name="date" class="bg-white rounded-md p-2 border border-gray-300 focus:outline-none focus:border-blue-400">
         </div>
     </div>
 
@@ -123,30 +114,22 @@ const getStatusColor = (status) => {
             </tr>
 
             <!-- Display each leave request -->
-            <tr 
-                v-for="(leave, index) in filteredLeaves" 
-                :key="leave.id"
-                class="bg-white-100 text-center border-slate-200 border-t-4"
-            >
+            <tr v-for="(leave, index) in filteredLeaves" :key="leave.id"
+                class="bg-white-100 text-center border-slate-200 border-t-4">
                 <td class="p-4">{{ index + 1 }}</td>
-                <td class="p-4">{{ leave.user.id || 'N/A' }}</td>
-                <td class="p-4">{{ leave.user.name }}</td>
+                <td class="p-4">{{ leave.user?.id || 'N/A' }}</td>
+                <td class="p-4">{{ leave.user?.name || 'Unknown' }}</td>
                 <td class="p-4">{{ formatDate(leave.start_date) }}</td>
                 <td class="p-4">{{ formatDate(leave.end_date) }}</td>
                 <td class="p-4">{{ leave.reason }}</td>
                 <td class="p-4">
-                    <span 
-                        :class="getStatusColor(leave.status)"
-                        class="px-3 py-1 rounded-full text-sm font-semibold"
-                    >
+                    <span :class="getStatusColor(leave.status)" class="px-3 py-1 rounded-full text-sm font-semibold">
                         {{ leave.status.toUpperCase() }}
                     </span>
                 </td>
                 <td class="p-4 space-x-4 inline-flex">
-                    <Link 
-                        :href="`/hr/leaves/review/${leave.id}`" 
-                        class="bg-blue-500 hover:bg-blue-400 rounded-sm px-4 py-1 text-white"
-                    >
+                    <Link :href="`/hr/leaves/review/${leave.id}`"
+                        class="bg-blue-500 hover:bg-blue-600 rounded-sm px-4 py-1 text-white">
                         View
                     </Link>
                 </td>

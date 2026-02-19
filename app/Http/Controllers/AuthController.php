@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
+
 
 class AuthController extends Controller
 {
@@ -33,11 +36,33 @@ class AuthController extends Controller
         }
 
         if ($user->role === 'hr') {
-            return redirect()->route('hr.index');
+            return redirect()->route('hr.dashboard');
         }
 
         Auth::logout();
         return redirect('/')->withErrors(['email' => 'Role not recognized']);
+    }
+
+    // Change Password
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => ['required'],
+            'password' => ['required', 'min:8', 'confirmed'],
+        ]);
+
+        $user = User::findOrFail(Auth::id());
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors([
+                'current_password' => 'Current password is incorrect.'
+            ]);
+        }
+
+        $user->password = $request->password; // hashed automatically
+        $user->save();
+
+        return back()->with('success', 'Password changed successfully.');
     }
 
     // Logout

@@ -6,13 +6,11 @@ import { Link } from '@inertiajs/vue3';
     <h1 class="text-center text-3xl font-bold mb-12">Your Attendance</h1>
 
     <div class="flex justify-between mb-6">
-        <div class="bg-white rounded-md p-2">
-            <input type="search" placeholder="Search By SNO" />
-        </div>
+        <input type="search" placeholder="Search By Name or ID"
+            class="bg-white rounded-md p-2 border border-gray-300 focus:outline-none focus:border-blue-400" />
 
-        <div>
-            <Link href="/attendance/create" class="bg-green-500 text-black px-4 py-2 rounded-md hover:bg-green-400">Add Attendance</Link>
-        </div>
+        <Link href="/attendance/create" class="bg-green-500 text-black px-4 py-2 rounded-md hover:bg-green-600">Add
+            Attendance</Link>
     </div>
 
     <table class="w-full shadow-lg overflow-hidden table-fixed bg-white rounded-lg">
@@ -42,9 +40,9 @@ import { Link } from '@inertiajs/vue3';
                 </td>
                 <td class="p-4 space-x-4 inline-flex">
 
-                    <Link href="/edit" class="bg-yellow-400 hover:bg-yellow-300 rounded-sm px-4 py-1">Edit</Link>
+                    <Link href="/edit" class="bg-yellow-400 hover:bg-yellow-500 rounded-sm px-4 py-1">Edit</Link>
 
-                    <button class="bg-red-500 hover:bg-red-400 text-black rounded-sm px-2 py-1">Delete</button>
+                    <button class="bg-red-500 hover:bg-red-600 text-black rounded-sm px-2 py-1">Delete</button>
                 </td>
             </tr>
             <tr class="bg-white-100 text-center border-slate-200 border-t-4">
@@ -59,9 +57,9 @@ import { Link } from '@inertiajs/vue3';
                 </td>
                 <td class="p-4 space-x-4 inline-flex">
 
-                    <Link href="/edit" class="bg-yellow-400 hover:bg-yellow-300 rounded-sm px-4 py-1">Edit</Link>
+                    <Link href="/edit" class="bg-yellow-400 hover:bg-yellow-500 rounded-sm px-4 py-1">Edit</Link>
 
-                    <button class="bg-red-500 hover:bg-red-400 text-black rounded-sm px-2 py-1">Delete</button>
+                    <button class="bg-red-500 hover:bg-red-600 text-black rounded-sm px-2 py-1">Delete</button>
                 </td>
             </tr>
             <tr class="bg-white-100 text-center border-slate-200 border-t-4">
@@ -75,10 +73,9 @@ import { Link } from '@inertiajs/vue3';
                     <button class="bg-red-500 rounded-sm px-2 py-1">Absent</button>
                 </td>
                 <td class="p-4 space-x-4 inline-flex">
+                    <Link href="/edit" class="bg-yellow-400 hover:bg-yellow-500 rounded-sm px-4 py-1">Edit</Link>
 
-                    <Link href="/edit" class="bg-yellow-400 hover:bg-yellow-300 rounded-sm px-4 py-1">Edit</Link>
-
-                    <button class="bg-red-500 hover:bg-red-400 text-black rounded-sm px-2 py-1">Delete</button>
+                    <button class="bg-red-500 hover:bg-red-600 text-black rounded-sm px-2 py-1">Delete</button>
                 </td>
             </tr>
             <tr class="bg-white-100 text-center border-slate-200 border-t-4">
@@ -93,8 +90,8 @@ import { Link } from '@inertiajs/vue3';
                 </td>
                 <td class="p-4 space-x-4 inline-flex">
 
-                    <Link href="/edit" class="bg-yellow-400 hover:bg-yellow-300 rounded-sm px-4 py-1">Edit</Link>
-                    <button class="bg-red-500 hover:bg-red-400 text-black rounded-sm px-2 py-1">Delete</button>
+                    <Link href="/edit" class="bg-yellow-400 hover:bg-yellow-500 rounded-sm px-4 py-1">Edit</Link>
+                    <button class="bg-red-500 hover:bg-red-600 text-black rounded-sm px-2 py-1">Delete</button>
                 </td>
             </tr>
             <tr class="bg-white-100 text-center border-slate-200 border-t-4">
@@ -109,8 +106,8 @@ import { Link } from '@inertiajs/vue3';
                 </td>
                 <td class="p-4 space-x-4 inline-flex">
 
-                    <Link href="/edit" class="bg-yellow-400 hover:bg-yellow-300 rounded-sm px-4 py-1">Edit</Link>
-                    <button class="bg-red-500 hover:bg-red-400 text-black rounded-sm px-2 py-1">Delete</button>
+                    <Link href="/edit" class="bg-yellow-400 hover:bg-yellow-500 rounded-sm px-4 py-1">Edit</Link>
+                    <button class="bg-red-500 hover:bg-red-600 text-black rounded-sm px-2 py-1">Delete</button>
                 </td>
             </tr>
         </tbody>

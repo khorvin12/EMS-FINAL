@@ -5,16 +5,17 @@ namespace App\Http\Controllers\Employee;
 use App\Http\Controllers\Controller;
 use App\Models\Leave;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; // 👈 ADD THIS
 use Inertia\Inertia;
 
 class LeaveController extends Controller
 {
     public function index()
     {
-        $leaves = Leave::where('user_id', auth()->id())
+        $leaves = Leave::where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->get()
-            ->map(function($leave) {
+            ->map(function ($leave) {
                 return [
                     'id' => $leave->id,
                     'start_date' => $leave->start_date->format('Y-m-d'),
@@ -46,7 +47,7 @@ class LeaveController extends Controller
         ]);
 
         Leave::create([
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'start_date' => $validated['start_date'],
             'end_date' => $validated['end_date'],
             'reason' => $validated['reason'],
@@ -59,8 +60,7 @@ class LeaveController extends Controller
 
     public function show(Leave $leave)
     {
-        // Ensure user can only view their own leaves
-        if ($leave->user_id !== auth()->id()) {
+        if ($leave->user_id !== Auth::id()) {
             abort(403);
         }
 

@@ -26,7 +26,7 @@ const cancel = () => {
 </script>
 
 <template>
-    <div class="min-h-screen bg-gray-100 flex items-center justify-center p-6">
+    <div class="bg-gray-100 flex items-center justify-center p-6 h-176">
         <div class="bg-white w-full max-w-lg px-6 py-4 rounded-md shadow-md border-4 border-green-600">
             <h1 class="text-xl font-bold mb-6 text-center">Request for Leave</h1>
 
@@ -78,14 +78,14 @@ const cancel = () => {
                     <button
                         type="button"
                         @click="cancel"
-                        class="bg-gray-600 hover:bg-gray-500 px-8 py-2 rounded-md"
+                        class="bg-red-500 hover:bg-red-600 px-8 py-2 rounded-md"
                     >
                         Cancel
                     </button>
                     <button
                         type="submit"
                         :disabled="form.processing"
-                        class="bg-green-600 hover:bg-green-500 px-8 py-2 rounded-md disabled:opacity-50"
+                        class="bg-green-500 hover:bg-green-600 px-8 py-2 rounded-md disabled:opacity-50"
                     >
                         {{ form.processing ? 'Submitting...' : 'Submit Leave' }}
                     </button>
