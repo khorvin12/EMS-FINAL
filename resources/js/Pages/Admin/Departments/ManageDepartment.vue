@@ -4,25 +4,38 @@ import { ref, computed } from 'vue';
 import PaginationLinks from '../../Components/PaginationLinks.vue';
 
 const props = defineProps({
-    departments: Array
+    departments: Object
 });
 
 const searchQuery = ref('');
 
 const filteredDepartments = computed(() => {
-    if (!searchQuery.value) return props.departments;
+    // 1. Extract the array from the paginator object
+    const data = props.departments.data || [];
 
-    return props.departments.filter(dept =>
+    // 2. Return the data array if no search query
+    if (!searchQuery.value) return data;
+
+    // 3. Filter the data array
+    return data.filter(dept =>
         dept.name.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
 });
 
 const tableColumns = [
-    { label: 'ID', key: 'id' },
+    { label: 'Department ID', key: 'id' },
     { label: 'Department', key: 'department' },
     { label: 'Manager ID', key: 'manager id' },
     { label: 'Action', key: 'actions', align: 'center' }
 ]
+
+const DepartmentDataTable = computed(() => {
+    return filteredDepartments.value.map(dept => ({
+        id: dept.id,
+        name: dept.name,
+        manager_id: dept.manager_id || 'N/A'
+    }));
+})
 
 const actionButtons = [
     {
@@ -43,44 +56,45 @@ const actionButtons = [
 <template>
     <div class="flex flex-col px-6">
 
-        <!-- Title -->
         <h1 class="text-center text-3xl font-bold mb-12">Manage Departments</h1>
 
-        <!-- Search + Add Button -->
         <div class="flex justify-between mb-6">
             <input type="search" v-model="searchQuery" placeholder="Search by Name or ID"
-                class="bg-white border border-gray-300 rounded-md p-2 focus:outline-none focus:border-blue-400" />
-
+                class="bg-white border border-gray-300 rounded-md p-2 focus:border-blue-400 outline-none" />
 
             <Link href="/adddepartment"
-                class="text-black font-semibold bg-green-500 hover:bg-green-600 rounded-md px-4 py-2">Add New
-                Department</Link>
+                class="text-black font-semibold bg-green-500 hover:bg-green-600 rounded-md px-4 py-2">
+                Add New Department
+            </Link>
         </div>
 
         <div class="bg-white rounded-lg shadow-lg overflow-x-auto">
             <table class="min-w-full text-left">
                 <thead class="bg-gray-400 text-black font-medium">
                     <tr>
-                        <th v-for="column in tableColumns" :key="column.key" :class="[
-                            'p-6',
-                            column.align === 'center' ? 'text-center' : ''
-                        ]">
+                        <th v-for="column in tableColumns" :key="column.key"
+                            :class="['p-6', column.align === 'center' ? 'text-center' : '']">
                             {{ column.label }}
                         </th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    <tr v-for="department in departments.data" :key="department.id"
-                        class="border-t-4 border-slate-200">
-                        <td class="px-6 py-4">{{ department.id }}</td>
-                        <td class="px-6 py-4">{{ department.name }}</td>
-                        <td class="px-6 py-4">{{ department.manager_id || 'N/A' }}</td>
+                    <tr v-for="row in DepartmentDataTable" :key="row.id" class="border-t-4 border-slate-200">
+                        <td class="px-6 py-4">
+                            {{ row.id }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ row.name }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ row.manager_id }}
+                        </td>
                         <td class="px-6 py-4">
                             <div class="flex justify-center gap-2">
-                                <Link v-for="action in actionButtons" :key="action.label"
-                                    :href="action.href(department.id)" :method="action.method" :as="action.as"
-                                    :class="[action.color, 'px-4 py-2 rounded-md inline-block']">
+                                <Link v-for="action in actionButtons" :key="action.label" :href="action.href(row.id)"
+                                    :method="action.method" :as="action.as"
+                                    :class="[action.color, 'px-4 py-2 rounded-md text-sm font-medium transition']">
                                     {{ action.label }}
                                 </Link>
                             </div>
@@ -88,15 +102,15 @@ const actionButtons = [
                     </tr>
 
                     <tr v-if="!departments || departments.length === 0">
-                        <td colspan="4" class="px-6 py-8 text-center text-gray-500">
-                            No departments found
+                        <td colspan="4" class="px-6 py-12 text-center text-gray-500">
+                            No departments found.
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <div class="mt-6">
+        <div class="mt-6 flex justify-end">
             <PaginationLinks :paginator="departments" />
         </div>
     </div>

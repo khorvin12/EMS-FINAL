@@ -15,10 +15,10 @@ const formatDate = (dateString) => {
 
 const formatDisplayDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
     });
 };
 
@@ -51,20 +51,23 @@ const goBack = () => {
 
 // Status badge color
 const getStatusColor = (status) => {
-    switch(status) {
-        case 'approved': return 'bg-green-500';
-        case 'rejected': return 'bg-red-500';
-        case 'pending': return 'bg-yellow-500';
-        default: return 'bg-gray-500';
+    // Convert to lowercase to ensure it matches regardless of database formatting
+    const s = status?.toLowerCase();
+
+    switch (s) {
+        case 'approved': return 'bg-green-500 text-black';
+        case 'rejected': return 'bg-red-500 text-black';
+        case 'pending': return 'bg-yellow-500 text-black';
+        default: return 'bg-gray-500 text-black';
     }
 };
 </script>
 
 <template>
-    <div class="flex items-center justify-center h-172 bg-gray-100">
+    <div class="flex items-center justify-center h-182 bg-gray-100">
 
         <!-- OUTER MODAL -->
-        <div class="w-full max-w-2xl bg-sky-400 rounded-lg shadow-lg border-4 border-blue-500">
+        <div class="w-full max-w-4xl bg-sky-400 rounded-lg shadow-lg border-4 border-blue-500">
 
             <!-- HEADER -->
             <div class="flex items-center justify-between px-4 py-3 bg-sky-400 rounded-t-md">
@@ -72,10 +75,7 @@ const getStatusColor = (status) => {
                     Leave Request #{{ leave.id }} - {{ leave.user.name }}
                 </h1>
 
-                <button 
-                    @click="goBack"
-                    class="text-xl font-bold text-black hover:text-red-600"
-                >
+                <button @click="goBack" class="text-xl font-bold text-black hover:text-red-600">
                     ✕
                 </button>
             </div>
@@ -85,10 +85,8 @@ const getStatusColor = (status) => {
 
                 <!-- Status Badge -->
                 <div class="mb-4">
-                    <span 
-                        :class="getStatusColor(leave.status)"
-                        class="px-4 py-2 rounded-full text-white font-bold text-sm"
-                    >
+                    <span :class="getStatusColor(leave.status)"
+                        class="px-4 py-2 rounded-full text-white font-bold text-sm">
                         STATUS: {{ leave.status.toUpperCase() }}
                     </span>
                 </div>
@@ -104,45 +102,29 @@ const getStatusColor = (status) => {
                 <div class="grid grid-cols-2 gap-6 mb-6">
                     <div class="flex flex-col">
                         <label class="mb-1 text-sm font-medium">From</label>
-                        <input
-                            type="date"
-                            :value="formatDate(leave.start_date)"
-                            readonly
-                            class="p-2 border border-gray-500 rounded-md bg-gray-100"
-                        />
+                        <input type="date" :value="formatDate(leave.start_date)" readonly
+                            class="p-2 border border-gray-500 rounded-md bg-gray-100 focus:outline-none focus:border-blue-400" />
                     </div>
 
                     <div class="flex flex-col">
                         <label class="mb-1 text-sm font-medium">To</label>
-                        <input
-                            type="date"
-                            :value="formatDate(leave.end_date)"
-                            readonly
-                            class="p-2 border border-gray-500 rounded-md bg-gray-100"
-                        />
+                        <input type="date" :value="formatDate(leave.end_date)" readonly
+                            class="p-2 border border-gray-500 rounded-md bg-gray-100 focus:outline-none focus:border-blue-400" />
                     </div>
                 </div>
 
                 <!-- REASON -->
                 <div class="mb-4">
                     <label class="mb-1 block text-sm font-medium">Reason</label>
-                    <input
-                        type="text"
-                        :value="leave.reason"
-                        readonly
-                        class="w-full p-2 border border-gray-500 rounded-md font-semibold bg-gray-100"
-                    />
+                    <input type="text" :value="leave.reason" readonly
+                        class="w-full p-2 border border-gray-500 rounded-md font-semibold bg-gray-100 focus:outline-none focus:border-blue-400" />
                 </div>
 
                 <!-- DESCRIPTION -->
                 <div>
                     <label class="mb-1 block text-sm font-medium">Description</label>
-                    <textarea
-                        rows="6"
-                        :value="leave.description || 'No description provided'"
-                        readonly
-                        class="w-full p-2 border border-gray-500 rounded-md resize-none bg-gray-100"
-                    ></textarea>
+                    <textarea rows="4" :value="leave.description || 'No description provided'" readonly
+                        class="w-full p-2 border border-gray-500 rounded-md resize-none bg-gray-100 focus:outline-none focus:border-blue-400 font-semibold"></textarea>
                 </div>
             </div>
 
@@ -150,17 +132,13 @@ const getStatusColor = (status) => {
             <div class="flex justify-between px-12 pb-6">
                 <!-- Only show approve/reject buttons if status is pending -->
                 <template v-if="leave.status === 'pending'">
-                    <button
-                        @click="approve"
-                        class="bg-green-500 hover:bg-green-400 text-white font-bold px-6 py-2 rounded-md border border-black transition"
-                    >
+                    <button @click="approve"
+                        class="bg-green-500 hover:bg-green-400 text-white font-bold px-6 py-2 rounded-md border border-black transition">
                         Approve
                     </button>
 
-                    <button
-                        @click="reject"
-                        class="bg-red-500 hover:bg-red-400 text-white font-bold px-6 py-2 rounded-md border border-black transition"
-                    >
+                    <button @click="reject"
+                        class="bg-red-500 hover:bg-red-400 text-white font-bold px-6 py-2 rounded-md border border-black transition">
                         Reject
                     </button>
                 </template>
@@ -171,10 +149,8 @@ const getStatusColor = (status) => {
                         <p class="text-lg font-semibold">
                             This leave request has been {{ leave.status }}
                         </p>
-                        <button
-                            @click="goBack"
-                            class="mt-4 bg-blue-500 hover:bg-blue-400 text-white font-bold px-6 py-2 rounded-md"
-                        >
+                        <button @click="goBack"
+                            class="mt-4 bg-blue-500 hover:bg-blue-400 text-white font-bold px-6 py-2 rounded-md">
                             Back to List
                         </button>
                     </div>

@@ -52,8 +52,8 @@ const filterButtons = computed(() => [
 
 const statusConfig: Record<string, { color: string; label: string }> = {
     pending: { color: 'bg-yellow-400', label: 'Pending' },
-    approved: { color: 'bg-green-400', label: 'Approved' },
-    rejected: { color: 'bg-red-400', label: 'Rejected' }
+    approved: { color: 'bg-green-500', label: 'Approved' },
+    rejected: { color: 'bg-red-500', label: 'Rejected' }
 }
 
 const getStatusConfig = (status: string) => {
@@ -70,7 +70,7 @@ const formatDate = (dateString: string) => {
 }
 
 const tableColumns = [
-    { label: 'No.', key: 'number', align: 'left' },
+    { label: 'Serial No.', key: 'number', align: 'left' },
     { label: 'Employee', key: 'employee', align: 'left' },
     { label: 'Reason', key: 'reason', align: 'left' },
     { label: 'Start Date', key: 'start_date', align: 'left' },
@@ -103,12 +103,12 @@ const emptyStateMessage = computed(() => {
     <div class="flex flex-col px-6">
 
         <!-- Header -->
-        <h1 class="text-3xl font-bold mb-8 text-center text-gray-800">
+        <h1 class="text-3xl font-bold mb-12 text-center text-gray-800">
             Manage Leaves
         </h1>
 
 
-        <div class="flex justify-center gap-4 mb-8 flex-wrap">
+        <div class="flex justify-center gap-4 mb-12 flex-wrap">
             <button v-for="filter in filterButtons" :key="filter.value" @click="selectedFilter = filter.value" :class="[
                 selectedFilter === filter.value
                     ? `${filter.color} text-white`
@@ -130,12 +130,12 @@ const emptyStateMessage = computed(() => {
 
         <!-- Leave Table -->
         <div v-else class="bg-white rounded-lg shadow-lg overflow-x-auto">
-            <table class="text-base min-w-full text-left">
+            <table class="min-w-full text-left">
                 <!-- Table Header -->
                 <thead class="bg-gray-400 text-black font-medium">
                     <tr>
                         <th v-for="column in tableColumns" :key="column.key" :class="[
-                            'p-6 font-bold',
+                            'p-6',
                             column.align === 'center' ? 'text-center' : ''
                         ]">
                             {{ column.label }}
@@ -158,25 +158,23 @@ const emptyStateMessage = computed(() => {
                         <td class="px-6 py-4">
                             {{ row.start_date }}
                         </td>
-                        <td class="px-6 py-4">
+                        <td class="p-6">
                             {{ row.end_date }}
                         </td>
-                        <td class="px-6 py-4">
+                        <td class="px-6 py-4 r">
                             <div class="flex justify-center">
                                 <span :class="[
                                     row.status.color,
-                                    'py-2 px-4 rounded-md text-sm shadow-sm font-bold text-white inline-block'
+                                    'py-2 px-4 rounded-full shadow-sm text-sm font-semibold text-black inline-block'
                                 ]">
                                     {{ row.status.label }}
                                 </span>
                             </div>
                         </td>
                         <td class="px-6 py-4 text-center">
-                            <Link :href="`/manageleaves/leaves/review/${row.id}`">
-                                <button
-                                    class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg shadow-md transition-colors">
-                                    Review
-                                </button>
+                            <Link :href="`/manageleaves/leaves/review/${row.id}`"
+                                class="bg-blue-500 hover:bg-blue-600 text-black text-sm font-semibold py-2 px-4 rounded-lg shadow-md transition-colors">
+                                Review
                             </Link>
                         </td>
                     </tr>

@@ -54,12 +54,16 @@ const formatCurrency = (value) => {
 </script>
 
 <template>
+
     <Head title="Your Monthly Salary" />
 
     <!-- Just the content, no layout wrapper -->
     <div class="max-w-7xl mx-auto">
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+
+        <div class="overflow-hidden shadow-sm sm:rounded-lg">
+            
             <div class="p-8 bg-gray-50">
+
                 <h2 class="text-3xl font-bold text-gray-900 mb-8">Your Monthly Salary</h2>
 
                 <!-- Employee Info - Now with 3 columns instead of 4 -->
@@ -79,7 +83,8 @@ const formatCurrency = (value) => {
                 </div>
 
                 <!-- Salary Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-7xl">
+
                     <!-- Gross Salary Card -->
                     <div class="bg-white rounded-xl shadow-sm p-8 border-l-4 border-green-500 hover:shadow-md transition-all hover:-translate-y-1 duration-300">
                         <p class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 opacity-70">Gross Salary</p>
@@ -100,13 +105,17 @@ const formatCurrency = (value) => {
                     </div>
 
                     <!-- Net Salary Card (Full Width) -->
-                    <div class="md:col-span-2 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl shadow-lg p-8 text-white hover:shadow-xl transition-all hover:-translate-y-1 duration-300">
+                    <div class="md:col-span-2 bg-gradient-to-r w-149 from-blue-500 to-blue-600 rounded-xl shadow-lg p-8 text-white hover:shadow-xl transition-all hover:-translate-y-1 duration-300">
                         <p class="text-sm font-semibold uppercase tracking-wide mb-3 opacity-90">Net Salary</p>
                         <p class="text-5xl font-extrabold mb-2 leading-none">₱{{ formatCurrency(calculatedSalary.net) }}</p>
                         <p class="text-sm opacity-90 font-medium">Take-home pay this month</p>
                     </div>
+
                 </div>
+
             </div>
+
         </div>
+
     </div>
 </template>

@@ -14,8 +14,8 @@ class LeaveController extends Controller
     {
         $leaves = Leave::where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
-            ->get()
-            ->map(function ($leave) {
+            ->paginate(5)
+            ->through(function ($leave) {
                 return [
                     'id' => $leave->id,
                     'start_date' => $leave->start_date->format('Y-m-d'),

@@ -21,19 +21,19 @@ const updateDepartment = () => {
 </script>
 
 <template>
-    <div class="flex items-center justify-center h-full">
-        <div class="bg-white w-full max-w-sm px-6 py-4 rounded-md shadow-md border-5 border-yellow-300">
+    <div class="flex items-center justify-center h-176">
+        <div class="bg-white w-full max-w-md px-6 py-4 rounded-md shadow-md border-5 border-yellow-300">
             <h1 class="text-xl font-bold mb-8 text-center">Edit Department</h1>
 
             <form @submit.prevent="updateDepartment">
                 <div class="grid grid-cols-1 mb-6 space-y-1">
                     <label for="departmentName">Department Name</label>
-                    <input 
-                        type="text" 
+                    <input
+                        type="text"
                         v-model="form.name"
                         id="departmentName" 
                         placeholder="Department Name"
-                        class="p-2 rounded-md border border-gray-300"
+                        class="p-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-400"
                         required
                     />
                     <span v-if="form.errors.name" class="text-red-500 text-sm">{{ form.errors.name }}</span>
@@ -46,7 +46,7 @@ const updateDepartment = () => {
                         rows="5" 
                         id="description" 
                         placeholder="Description"
-                        class="p-2 rounded-md border border-gray-300"
+                        class="p-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-400"
                     ></textarea>
                     <span v-if="form.errors.description" class="text-red-500 text-sm">{{ form.errors.description }}</span>
                 </div>
@@ -58,7 +58,7 @@ const updateDepartment = () => {
                         v-model="form.manager_id"
                         id="managerId" 
                         placeholder="Manager ID (Optional)"
-                        class="p-2 rounded-md border border-gray-300"
+                        class="p-2 rounded-md border border-gray-300 focus:outline-none focus:border-blue-400"
                     />
                     <span v-if="form.errors.manager_id" class="text-red-500 text-sm">{{ form.errors.manager_id }}</span>
                 </div>

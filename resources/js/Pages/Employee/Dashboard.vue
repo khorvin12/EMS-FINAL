@@ -39,34 +39,38 @@ const formatTime = (timeString) => {
 </script>
 
 <template>
-    <div class="space-y-10">
-        <div>
+    <div class="max-w-7xl mx-auto">
+
+        <div class="mb-12">
             <h2 class="text-3xl font-bold text-gray-800">Welcome back, Khorvin!</h2>
             <p class="text-gray-600">Here is what's happening with your profile today.</p>
         </div>
 
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-16 overflow-hidden mb-16">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-16 mb-16">
 
-            <div class="bg-white p-8 rounded-xl shadow-sm border-l-4 border-green-500">
-                <p class="text-sm text-gray-500 uppercase font-bold text-center tracking-tight">Present Days This Month
+            <div
+                class="bg-white text-center rounded-xl shadow-sm p-8 border-l-4 border-green-500 hover:shadow-md transition-all hover:-translate-y-1 duration-300">
+                <p class="text-md text-gray-500 uppercase font-bold tracking-tight">Present Days This Month
                 </p>
-                <p class="text-3xl font-bold text-center mt-2">
+                <p class="text-3xl font-extrabold text-gray-900 mb-2 leading-none mt-2">
                     {{ presentDays ?? 0 }}
                 </p>
 
             </div>
 
-            <div class="bg-white p-8 rounded-xl shadow-sm border-l-4 border-yellow-500">
-                <p class="text-sm text-gray-500 uppercase font-bold text-center tracking-tight">Pending Requests</p>
-                <p class="text-3xl font-bold text-center mt-2">
+            <div
+                class="bg-white text-center rounded-xl shadow-sm p-8 border-l-4 border-yellow-500 hover:shadow-md transition-all hover:-translate-y-1 duration-300">
+                <p class="text-md text-gray-500 uppercase font-bold tracking-tight">Pending Requests</p>
+                <p class="text-3xl font-extrabold text-gray-900 mb-2 leading-none mt-2">
                     {{ pendingLeaves ?? 0 }}
                 </p>
 
             </div>
 
-            <div class="bg-white p-8 rounded-xl shadow-sm border-l-4 border-blue-500">
-                <p class="text-sm text-gray-500 uppercase font-bold text-center tracking-tight">Estimated Salary</p>
-                <p class="text-3xl font-bold text-gray-800 mt-2 text-center">
+            <div
+                class="bg-white text-center rounded-xl shadow-sm p-8 border-l-4 border-blue-500 hover:shadow-md transition-all hover:-translate-y-1 duration-300">
+                <p class="text-md text-gray-500 uppercase font-bold tracking-tight">Estimated Salary</p>
+                <p class="text-3xl font-extrabold text-gray-900 mb-2 leading-none mt-2">
                     ₱{{ estimatedSalary?.toLocaleString() ?? '0.00' }}
                 </p>
 
@@ -76,32 +80,30 @@ const formatTime = (timeString) => {
 
         <!-- Attendance History -->
         <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-            
+
             <div class="p-6 bg-gray-50 border border-gray-200 rounded-tl-xl rounded-tr-xl">
                 <h3 class="text-xl font-bold text-gray-900">Attendance History</h3>
             </div>
 
             <div class="overflow-x-auto">
+
                 <table class="w-full">
+
                     <thead class="bg-gray-100 border-b border-gray-200">
                         <tr>
-                            <th
-                                class="p-6 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            <th class="p-6 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 Date</th>
-                            <th
-                                class="p-6 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            <th class="p-6 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 Time In</th>
-                            <th
-                                class="p-6 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            <th class="p-6 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 Time Out</th>
-                            <th
-                                class="p-6 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            <th class="p-6 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 Hours</th>
-                            <th
-                                class="p-6 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            <th class="p-6 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 Status</th>
                         </tr>
                     </thead>
+
                     <tbody class="divide-y divide-gray-200">
                         <tr v-for="record in attendanceHistory" :key="record.id" class="hover:bg-gray-50 transition">
                             <td class="p-6 whitespace-nowrap text-sm text-gray-900 font-medium">
@@ -130,9 +132,14 @@ const formatTime = (timeString) => {
                                 <p>No attendance records found</p>
                             </td>
                         </tr>
+
                     </tbody>
+
                 </table>
+
             </div>
+
         </div>
+
     </div>
 </template>

@@ -52,23 +52,21 @@ const handleReject = () => {
 <template>
 
     <!-- Outer Container -->
-    <div class="flex justify-center items-center">
+    <div class="flex justify-center items-center h-190">
 
         <!-- Blue Review Card -->
         <div class="relative bg-sky-400 rounded-lg p-6 w-full max-w-4xl shadow-lg">
 
             <!-- Header -->
             <div class="flex justify-end mb-4">
-                <Link href="/manageleaves/leaves">
-                    <button class="text-2xl font-bold hover:text-red-600 transition">
-                        ×
-                    </button>
+                <Link href="/manageleaves/leaves" class="text-2xl font-bold hover:text-red-600 transition">
+                    ×
                 </Link>
             </div>
 
             <!-- Inner White Card -->
             <div class="bg-white border rounded-lg p-6">
-                
+
                 <!-- Employee Info -->
                 <div class="mb-4 p-3 bg-blue-50 rounded">
                     <p class="text-sm font-semibold">Employee: <span class="font-normal">{{ leave.user.name }}</span>
@@ -89,13 +87,13 @@ const handleReject = () => {
                     <div class="flex-1">
                         <label class="block text-sm font-medium mb-1">From</label>
                         <input type="text" :value="leave.start_date" readonly
-                            class="w-full border rounded-md px-3 py-2 text-lg bg-gray-50" />
+                            class="w-full border rounded-md px-3 py-2 text-lg bg-gray-50 focus:outline-none focus:border-blue-400" />
                     </div>
 
                     <div class="flex-1">
                         <label class="block text-sm font-medium mb-1">To</label>
                         <input type="text" :value="leave.end_date" readonly
-                            class="w-full border rounded-md px-3 py-2 text-lg bg-gray-50" />
+                            class="w-full border rounded-md px-3 py-2 text-lg bg-gray-50 focus:outline-none focus:border-blue-400" />
                     </div>
                 </div>
 
@@ -103,11 +101,11 @@ const handleReject = () => {
                 <div>
                     <label class="block text-sm font-medium mb-1">Reason</label>
                     <input type="text" :value="leave.reason" readonly
-                        class="w-full border rounded-md px-3 py-2 text-lg font-semibold mb-3 bg-gray-50" />
+                        class="w-full border rounded-md px-3 py-2 text-lg font-semibold mb-3 bg-gray-50 focus:outline-none focus:border-blue-400" />
 
                     <!-- Reason Description -->
                     <textarea rows="4" :value="leave.description || 'No description provided'" readonly
-                        class="w-full border rounded-md px-3 py-2 text-lg resize-none bg-gray-50"></textarea>
+                        class="w-full border rounded-md px-3 py-2 text-lg resize-none bg-gray-50 focus:outline-none focus:border-blue-400"></textarea>
                 </div>
             </div>
 
