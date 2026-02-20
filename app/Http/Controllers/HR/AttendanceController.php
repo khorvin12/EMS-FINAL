@@ -21,7 +21,7 @@ class AttendanceController extends Controller
                 'attendances.check_in',
                 'attendances.check_out',
                 'attendances.status',
-                'users.name as employee_name'
+                DB::raw("CONCAT(users.first_name, ' ', users.last_name) as employee_name")
             )
             ->orderBy('attendances.date', 'desc')
             ->get()
@@ -53,9 +53,13 @@ class AttendanceController extends Controller
     {
         $employees = DB::table('attendances')
             ->join('users', 'attendances.employee_id', '=', 'users.employee_id')
-            ->select('attendances.employee_id', 'users.name as employee_name')
+            ->select(
+                'attendances.employee_id',
+                DB::raw("CONCAT(users.first_name, ' ', users.last_name) as employee_name"),
+                'users.first_name'
+            )
             ->distinct()
-            ->orderBy('users.name')
+            ->orderBy('users.first_name')
             ->get()
             ->map(function ($emp) {
                 $attendance = DB::table('attendances')
@@ -88,7 +92,7 @@ class AttendanceController extends Controller
                 'attendances.check_in',
                 'attendances.check_out',
                 'attendances.status',
-                'users.name as employee_name'
+                DB::raw("CONCAT(users.first_name, ' ', users.last_name) as employee_name")
             )
             ->where('attendances.id', $id)
             ->first();

@@ -13,13 +13,11 @@ class AdminSeeder extends Seeder
         User::updateOrCreate(
             ['email' => 'admin@gmail.com'],
             [
-                'name' => 'Admin',
-                'password' => Hash::make('123456'),
-                'role' => 'admin',
-                'employee_id' => 'ADMIN001', // optional, just to fill
-                'dob' => null,
-                'gender' => null,
-                'civil_status' => null,
+                'first_name'  => 'Admin',
+                'last_name'   => 'User',
+                'password'    => Hash::make('123456'),
+                'role'        => 'admin',
+                'employee_id' => 'ADMIN001',
             ]
         );
     }

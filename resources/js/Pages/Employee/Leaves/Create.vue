@@ -4,6 +4,7 @@ import { useForm } from '@inertiajs/vue3';
 const form = useForm({
     start_date: '',
     end_date: '',
+    type: '',
     reason: '',
     description: ''
 });
@@ -53,6 +54,22 @@ const cancel = () => {
                         />
                         <span v-if="form.errors.end_date" class="text-red-500 text-sm">{{ form.errors.end_date }}</span>
                     </div>
+                </div>
+
+                <div class="grid grid-cols-1 gap-1 mb-4">
+                    <label class="block mb-1">Type</label>
+                    <select
+                        v-model="form.type"
+                        class="p-2 rounded-md border border-gray-300"
+                        required
+                    >
+                        <option value="">Select Type</option>
+                        <option value="sick">Sick</option>
+                        <option value="vacation">Vacation</option>
+                        <option value="emergency">Emergency</option>
+                        <option value="personal">Personal</option>
+                    </select>
+                    <span v-if="form.errors.type" class="text-red-500 text-sm">{{ form.errors.type }}</span>
                 </div>
 
                 <div class="grid grid-cols-1 gap-1">

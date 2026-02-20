@@ -11,19 +11,19 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'role',
         'employee_id',
+        'first_name',
+        'last_name',
+        'email',
+        'phone',
         'dob',
         'gender',
         'civil_status',
-        'phone',
         'department_id',
-        'role_id',
         'hire_date',
         'salary',
+        'role',
+        'password',
     ];
 
     protected $hidden = [
@@ -35,22 +35,42 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'dob' => 'date',
-            'hire_date' => 'date',
-            'salary' => 'decimal:2',
+            'password'          => 'hashed',
+            'dob'               => 'date',
+            'hire_date'         => 'date',
+            'salary'            => 'decimal:2',
         ];
     }
 
     /**
-     * Get the department that the user belongs to.
+     * Makes $user->name still work everywhere in your existing code.
+     * Automatically combines first_name + last_name.
      */
+    public function getNameAttribute()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
+
+    public function getFullNameAttribute()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
+
+    // Returns the department this user belongs to
     public function department()
     {
         return $this->belongsTo(Department::class);
     }
 
-    
+    // Returns all leave requests for this user
+    public function leaves()
+    {
+        return $this->hasMany(Leave::class, 'employee_id');
+    }
 
-    // Remove roleRelation() method since Role model doesn't exist
+    // Returns all payroll records for this user
+    public function payrolls()
+    {
+        return $this->hasMany(Payroll::class, 'employee_id', 'employee_id');
+    }
 }

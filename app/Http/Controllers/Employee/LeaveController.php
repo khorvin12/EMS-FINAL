@@ -11,18 +11,19 @@ class LeaveController extends Controller
 {
     public function index()
     {
-        $leaves = Leave::where('user_id', auth()->id())
+        $leaves = Leave::where('employee_id', auth()->id())
             ->orderBy('created_at', 'desc')
             ->get()
-            ->map(function($leave) {
+            ->map(function ($leave) {
                 return [
-                    'id' => $leave->id,
-                    'start_date' => $leave->start_date->format('Y-m-d'),
-                    'end_date' => $leave->end_date->format('Y-m-d'),
-                    'reason' => $leave->reason,
+                    'id'          => $leave->id,
+                    'start_date'  => $leave->start_date->format('Y-m-d'),
+                    'end_date'    => $leave->end_date->format('Y-m-d'),
+                    'type'        => $leave->type,
+                    'reason'      => $leave->reason,
                     'description' => $leave->description,
-                    'status' => $leave->status,
-                    'created_at' => $leave->created_at->format('Y-m-d'),
+                    'status'      => $leave->status,
+                    'created_at'  => $leave->created_at->format('Y-m-d'),
                 ];
             });
 
@@ -39,19 +40,21 @@ class LeaveController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
-            'reason' => 'required|string|max:255',
-            'description' => 'nullable|string'
+            'start_date'  => 'required|date',
+            'end_date'    => 'required|date|after_or_equal:start_date',
+            'type'        => 'required|string|in:sick,vacation,emergency,personal',
+            'reason'      => 'required|string|max:255',
+            'description' => 'nullable|string',
         ]);
 
         Leave::create([
-            'user_id' => auth()->id(),
-            'start_date' => $validated['start_date'],
-            'end_date' => $validated['end_date'],
-            'reason' => $validated['reason'],
-            'description' => $validated['description'],
-            'status' => 'pending'
+            'employee_id' => auth()->id(),
+            'start_date'  => $validated['start_date'],
+            'end_date'    => $validated['end_date'],
+            'type'        => $validated['type'],
+            'reason'      => $validated['reason'],
+            'description' => $validated['description'] ?? null,
+            'status'      => 'pending',
         ]);
 
         return redirect('/employee/leaves')->with('success', 'Leave request submitted successfully');
@@ -59,23 +62,21 @@ class LeaveController extends Controller
 
     public function show(Leave $leave)
     {
-        // Ensure user can only view their own leaves
-        if ($leave->user_id !== auth()->id()) {
+        if ($leave->employee_id !== auth()->id()) {
             abort(403);
         }
 
-        $leaveData = [
-            'id' => $leave->id,
-            'start_date' => $leave->start_date->format('Y-m-d'),
-            'end_date' => $leave->end_date->format('Y-m-d'),
-            'reason' => $leave->reason,
-            'description' => $leave->description,
-            'status' => $leave->status,
-            'created_at' => $leave->created_at->format('Y-m-d H:i:s'),
-        ];
-
         return Inertia::render('Employee/Leaves/View', [
-            'leave' => $leaveData
+            'leave' => [
+                'id'          => $leave->id,
+                'start_date'  => $leave->start_date->format('Y-m-d'),
+                'end_date'    => $leave->end_date->format('Y-m-d'),
+                'type'        => $leave->type,
+                'reason'      => $leave->reason,
+                'description' => $leave->description,
+                'status'      => $leave->status,
+                'created_at'  => $leave->created_at->format('Y-m-d H:i:s'),
+            ]
         ]);
     }
 }

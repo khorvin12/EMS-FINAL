@@ -10,22 +10,30 @@ class Leave extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        'employee_id',
         'start_date',
         'end_date',
+        'type',
         'reason',
         'description',
         'status',
-        'admin_comment'
+        'admin_comment',
     ];
 
     protected $casts = [
         'start_date' => 'date',
-        'end_date' => 'date',
+        'end_date'   => 'date',
     ];
 
+    // Kept as user() so ManageLeavesController still works ($leave->user->name)
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'employee_id');
+    }
+
+    // Also available as employee() for new code
+    public function employee()
+    {
+        return $this->belongsTo(User::class, 'employee_id');
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,28 +12,27 @@ class Department extends Model
     protected $fillable = [
         'name',
         'description',
-        'manager_id'
+        'manager_id',
     ];
 
-    /**
-     * Get all users (employees) in this department.
-     */
-    public function users()
+    // Returns all employees in this department
+    public function employees()
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(User::class, 'department_id');
     }
 
-    /**
-     * Get the manager of this department.
-     */
+    // Kept so existing code using users() still works
+    public function users()
+    {
+        return $this->hasMany(User::class, 'department_id');
+    }
+
+    // Returns the manager (a User) of this department
     public function manager()
     {
         return $this->belongsTo(User::class, 'manager_id');
     }
 
-    /**
-     * Get the count of employees in this department.
-     */
     public function employeesCount()
     {
         return $this->users()->count();
