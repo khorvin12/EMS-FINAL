@@ -62,7 +62,8 @@ const getHours = (checkIn, checkOut) => {
     try {
         const timeIn = new Date(`2000-01-01 ${checkIn}`);
         const timeOut = new Date(`2000-01-01 ${checkOut}`);
-        return Math.round((timeOut - timeIn) / (1000 * 60 * 60));
+        const hours = (timeOut - timeIn) / (1000 * 60 * 60) - 1;
+        return Math.max(0, Math.round(hours));
     } catch (e) {
         return 0;
     }

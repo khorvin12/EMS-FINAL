@@ -162,9 +162,9 @@ const goBack = () => router.visit('/hr/salaries');
                                 <p class="text-xl font-bold text-red-600">{{ attendance.undertime_hours }} hours</p>
                                 <p class="text-xs text-gray-500 mt-1">Deduction: ₱{{ formatCurrency(calculatedSalary.undertimeDeduction) }}</p>
                             </div>
-                            <div v-else class="text-right">
-                                <p class="text-sm text-green-600 font-semibold">✓ Full Hours Completed</p>
-                            </div>
+                        <div v-else-if="attendance.total_hours_worked > 0" class="text-right">
+    <p class="text-sm text-green-600 font-semibold">✓ Full Hours Completed</p>
+</div>
                         </div>
                     </div>
 

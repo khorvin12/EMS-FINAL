@@ -200,11 +200,25 @@ class SalaryController extends Controller
         DB::table('payrolls')->updateOrInsert(
             ['employee_id' => $user->employee_id, 'month' => $currentMonthLabel],
             [
-                'basic_salary' => $grossSalary,
-                'deductions'   => $totalDeductions,
-                'net_salary'   => $netSalary,
-                'updated_at'   => Carbon::now(),
-                'created_at'   => DB::raw('COALESCE(created_at, NOW())'),
+                'basic_salary'        => $grossSalary,
+                'deductions'          => $totalDeductions,
+                'net_salary'          => $netSalary,
+                'present_days'        => $presentDays,
+                'absences'            => $totalAbsences,
+                'late_count'          => $lateCount,
+                'total_late_minutes'  => round($totalLateMinutes, 0),
+                'total_hours_worked'  => round($totalHoursWorked, 2),
+                'expected_hours'      => 176,
+                'undertime_hours'     => round($undertimeHours, 2),
+                'total_working_days'  => $workingDaysInMonth,
+                'absence_deduction'   => $absenceDeduction,
+                'late_deduction'      => $lateDeduction,
+                'undertime_deduction' => $undertimeDeduction,
+                'generated_by'        => Auth::id(),
+                'generated_at'        => Carbon::now(),
+                'year'                => Carbon::now()->year,
+                'updated_at'          => Carbon::now(),
+                'created_at'          => DB::raw('COALESCE(created_at, NOW())'),
             ]
         );
 
