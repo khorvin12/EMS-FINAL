@@ -29,14 +29,14 @@ const props = defineProps({
 const calculatedSalary = computed(() => {
     const grossSalary = parseFloat(props.salary.full_salary || 0);
     const baseDeductions = parseFloat(props.salary.deductions || 0);
-    
+
     const workingDaysPerMonth = 22;
     const dailyRate = grossSalary / workingDaysPerMonth;
     const absenceDeduction = dailyRate * props.absences;
-    
+
     const totalDeductions = baseDeductions + absenceDeduction;
     const netSalary = grossSalary - totalDeductions;
-    
+
     return {
         gross: grossSalary,
         deductions: totalDeductions,
@@ -46,7 +46,7 @@ const calculatedSalary = computed(() => {
 });
 
 const formatCurrency = (value) => {
-    return Number(value).toLocaleString('en-PH', { 
+    return Number(value).toLocaleString('en-PH', {
         minimumFractionDigits: 0,
         maximumFractionDigits: 0
     });
@@ -61,7 +61,7 @@ const formatCurrency = (value) => {
     <div class="max-w-7xl mx-auto">
 
         <div class="overflow-hidden shadow-sm sm:rounded-lg">
-            
+
             <div class="p-8 bg-gray-50">
 
                 <h2 class="text-3xl font-bold text-gray-900 mb-8">Your Monthly Salary</h2>
@@ -86,28 +86,37 @@ const formatCurrency = (value) => {
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-7xl">
 
                     <!-- Gross Salary Card -->
-                    <div class="bg-white rounded-xl shadow-sm p-8 border-l-4 border-green-500 hover:shadow-md transition-all hover:-translate-y-1 duration-300">
-                        <p class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 opacity-70">Gross Salary</p>
-                        <p class="text-5xl font-extrabold text-gray-900 mb-2 leading-none">₱{{ formatCurrency(calculatedSalary.gross) }}</p>
+                    <div
+                        class="bg-white rounded-xl shadow-sm p-8 border-l-4 border-green-500 hover:shadow-md transition-all hover:-translate-y-1 duration-300">
+                        <p class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 opacity-70">Gross
+                            Salary</p>
+                        <p class="text-5xl font-extrabold text-gray-900 mb-2 leading-none">₱{{
+                            formatCurrency(calculatedSalary.gross) }}</p>
                         <p class="text-sm text-gray-500 opacity-70 font-medium">Base salary + allowances</p>
                     </div>
 
                     <!-- Total Deductions Card -->
-                    <div class="bg-white rounded-xl shadow-sm p-8 border-l-4 border-red-500 hover:shadow-md transition-all hover:-translate-y-1 duration-300">
-                        <p class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 opacity-70">Total Deductions</p>
-                        <p class="text-5xl font-extrabold text-gray-900 mb-2 leading-none">₱{{ formatCurrency(calculatedSalary.deductions) }}</p>
+                    <div
+                        class="bg-white rounded-xl shadow-sm p-8 border-l-4 border-red-500 hover:shadow-md transition-all hover:-translate-y-1 duration-300">
+                        <p class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 opacity-70">Total
+                            Deductions</p>
+                        <p class="text-5xl font-extrabold text-gray-900 mb-2 leading-none">₱{{
+                            formatCurrency(calculatedSalary.deductions) }}</p>
                         <p class="text-sm text-gray-500 opacity-70 font-medium">
                             Taxes + contributions
                             <span v-if="absences > 0" class="block text-xs text-red-600 mt-1">
-                                (includes {{ absences }} day{{ absences > 1 ? 's' : '' }} absence deduction: ₱{{ formatCurrency(calculatedSalary.absenceDeduction) }})
+                                (includes {{ absences }} day{{ absences > 1 ? 's' : '' }} absence deduction: ₱{{
+                                    formatCurrency(calculatedSalary.absenceDeduction) }})
                             </span>
                         </p>
                     </div>
 
                     <!-- Net Salary Card (Full Width) -->
-                    <div class="md:col-span-2 bg-gradient-to-r w-149 from-blue-500 to-blue-600 rounded-xl shadow-lg p-8 text-white hover:shadow-xl transition-all hover:-translate-y-1 duration-300">
+                    <div
+                        class="md:col-span-2 bg-gradient-to-r w-149 from-blue-500 to-blue-600 rounded-xl shadow-lg p-8 text-white hover:shadow-xl transition-all hover:-translate-y-1 duration-300">
                         <p class="text-sm font-semibold uppercase tracking-wide mb-3 opacity-90">Net Salary</p>
-                        <p class="text-5xl font-extrabold mb-2 leading-none">₱{{ formatCurrency(calculatedSalary.net) }}</p>
+                        <p class="text-5xl font-extrabold mb-2 leading-none">₱{{ formatCurrency(calculatedSalary.net) }}
+                        </p>
                         <p class="text-sm opacity-90 font-medium">Take-home pay this month</p>
                     </div>
 

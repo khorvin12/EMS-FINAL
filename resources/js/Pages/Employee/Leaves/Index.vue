@@ -68,7 +68,8 @@ const LeaveDataTable = computed(() => {
                 <input type="search" id="search" name="search" placeholder="Search By Serial No" v-model="searchTerm"
                     class="bg-white rounded-md p-2 outline-none focus:outline-none focus:border-blue-400 border border-gray-200" />
 
-                <Link href="/employee/leaves/create" class="bg-green-500 hover:bg-green-600 rounded-md px-4 py-2">
+                <Link href="/employee/leaves/create"
+                    class="bg-green-500 hover:bg-green-600 rounded-md px-4 py-2 font-semibold">
                     Add Leave
                 </Link>
 
@@ -89,7 +90,6 @@ const LeaveDataTable = computed(() => {
                 <thead class="border-slate-200 text-slate-600">
                     <tr class="bg-gray-400 text-black font-medium">
                         <th v-for="column in TableColumns" :key="column.key" :class="[
-                            'p-6 font-bold',
                             column.align === 'center' ? 'text-center' : ''
                         ]">
                             {{ column.label }}
@@ -106,17 +106,18 @@ const LeaveDataTable = computed(() => {
 
                     <tr v-for="row in LeaveDataTable" :key="row.id" class="border-t-4 border-slate-200">
 
-                        <td class="p-6">{{ row.id }}</td>
-                        <td class="p-6">{{ row.reason }}</td>
-                        <td class="p-6">{{ row.date }}</td>
-                        <td class="p-6 text-center">
-                            <span :class="getStatusColor(row.status)" class="rounded-full px-4 py-2">
+                        <td>{{ row.id }}</td>
+                        <td>{{ row.reason }}</td>
+                        <td>{{ row.date }}</td>
+                        <td class="text-center">
+                            <span :class="getStatusColor(row.status)"
+                                class="py-2 px-4 rounded-full shadow-sm text-sm font-semibold text-black inline-block">
                                 {{ getStatusText(row.status) }}
                             </span>
                         </td>
-                        <td class="p-6 text-center">
+                        <td class="text-center">
                             <Link :href="`/employee/leaves/${row.id}`"
-                                class="bg-blue-400 hover:bg-blue-500 rounded-md px-4 py-2">
+                                class="bg-blue-500 hover:bg-blue-600 text-black text-sm font-semibold py-2 px-4 rounded-lg shadow-md transition-colors">
                                 View
                             </Link>
                         </td>

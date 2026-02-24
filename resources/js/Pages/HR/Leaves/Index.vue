@@ -47,13 +47,13 @@ const formatDate = (dateString) => {
 // Status badge color
 const getStatusColor = (status) => {
     // Convert to lowercase to ensure it matches regardless of database formatting
-    const s = status?.toLowerCase(); 
-    
+    const s = status?.toLowerCase();
+
     switch (s) {
         case 'approved': return 'bg-green-500 text-black';
         case 'rejected': return 'bg-red-500 text-black';
-        case 'pending':  return 'bg-yellow-500 text-black';
-        default:         return 'bg-gray-500 text-black';
+        case 'pending': return 'bg-yellow-500 text-black';
+        default: return 'bg-gray-500 text-black';
     }
 };
 
@@ -103,7 +103,6 @@ const LeaveDataTable = computed(() => {
 
             <!-- Stats Summary (Optional) -->
             <div v-if="stats" class="grid grid-cols-4 gap-4 mb-6">
-
                 <div class="bg-white rounded-lg p-4 shadow">
                     <p class="text-sm text-gray-600">Total</p>
                     <p class="text-2xl font-bold">{{ stats.all }}</p>
@@ -123,11 +122,9 @@ const LeaveDataTable = computed(() => {
                     <p class="text-sm text-gray-600">Rejected</p>
                     <p class="text-2xl font-bold">{{ stats.rejected }}</p>
                 </div>
-
             </div>
 
             <table class="w-full shadow-lg overflow-hidden table-fixed bg-white rounded-lg text-left">
-                
                 <thead>
                     <tr class="bg-gray-400 text-black">
                         <th v-for="column in TableColumns" :key="column.key" :class="[
@@ -140,7 +137,6 @@ const LeaveDataTable = computed(() => {
                 </thead>
 
                 <tbody>
-
                     <!-- Show message if no leaves found -->
                     <tr v-if="!filteredLeaves || filteredLeaves.length === 0">
                         <td colspan="8" class="text-center p-8 text-gray-500">
@@ -151,7 +147,6 @@ const LeaveDataTable = computed(() => {
                     <!-- Display each leave request -->
                     <tr v-for="(row, index) in LeaveDataTable" :key="row.id"
                         class="bg-white text-left border-slate-200 border-t-4">
-
                         <td class="px-6 py-4">{{ index + 1 }}</td>
                         <td class="px-6 py-4">{{ row.user?.id || 'N/A' }}</td>
                         <td class="px-6 py-4">{{ row.user?.name || 'Unknown' }}</td>
@@ -166,11 +161,10 @@ const LeaveDataTable = computed(() => {
                         </td>
                         <td class="px-6 py-4 text-center">
                             <Link :href="`/hr/leaves/review/${row.id}`"
-                                class="bg-blue-500 hover:bg-blue-600 rounded-lg px-4 py-2 text-sm font-semibold">
+                                class="bg-blue-500 hover:bg-blue-600 rounded-lg px-4 py-2 text-sm font-semibold inline-block">
                                 View
                             </Link>
                         </td>
-
                     </tr>
                 </tbody>
             </table>

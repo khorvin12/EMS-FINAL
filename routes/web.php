@@ -159,7 +159,7 @@ Route::middleware(['auth', EmployeeMiddleware::class])
                 ->where('status', 'present')
                 ->count();
 
-            // ✅ Pending leave count
+            // Pending leave count
             $pendingLeaves = DB::table('leaves')
                 ->where('user_id', $user->id)
                 ->where('status', 'pending')
@@ -202,7 +202,9 @@ Route::middleware(['auth', EmployeeMiddleware::class])
         // Employee Settings Routes
         Route::inertia('/settings', 'Employee/Settings/Index')->name('settings');
 
-        Route::inertia('/profile', 'Employee/Settings/Profile')->name('profile');
+        Route::inertia('/about', 'Employee/Settings/About')->name('about');
+
+         Route::inertia('/support', 'Employee/Settings/CustomerSupport')->name('customer-support');
 
         // Change Password Route
         Route::inertia('/change-password', 'Employee/Settings/ChangePassword')
@@ -243,4 +245,9 @@ Route::middleware(['auth', HRMiddleware::class])
         Route::inertia('/attendance', 'HR/Attendance/Index')->name('attendance');
 
         Route::inertia('/salary', 'HR/Salary/Index')->name('salary');
+
+        Route::inertia('/settings', 'HR/Settings/Index')->name('settings');
+        Route::inertia('/change-password', 'HR/Settings/ChangePassword')->name('change-password');
+        Route::inertia('/about', 'HR/Settings/About')->name('about');
+        Route::inertia('/support', 'HR/Settings/CustomerSupport')->name('customer-support');
     });

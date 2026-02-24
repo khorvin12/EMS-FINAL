@@ -1,5 +1,23 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@layer base {
+    body {
+        font-family: "Poppins", sans-serif;
+    }
+}
+
+@layer components {
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="search"],
+    input[type="tel"],
+    input[type="url"], 
+    
+    th {
+        @apply p-6;
+    }
+    td {
+        @apply px-6 py-4;
+    }
+}

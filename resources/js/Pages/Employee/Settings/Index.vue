@@ -7,9 +7,9 @@ import { Link } from '@inertiajs/vue3'
 
         <Link href="/employee/change-password" class="block hover:underline">Change Password</Link>
 
-        <Link href="/support" class="block hover:underline">Customer Support</Link>
+        <Link href="/employee/support" class="block hover:underline">Customer Support</Link>
 
-        <Link href="/about" class="block hover:underline">About</Link>
+        <Link href="/employee/about" class="block hover:underline">About</Link>
 
     </div>
 </template>

@@ -73,7 +73,7 @@ const actionButtons = [
                 <thead class="bg-gray-400 text-black font-medium">
                     <tr>
                         <th v-for="column in tableColumns" :key="column.key"
-                            :class="['p-6', column.align === 'center' ? 'text-center' : '']">
+                            :class="[column.align === 'center' ? 'text-center' : '']">
                             {{ column.label }}
                         </th>
                     </tr>
@@ -81,23 +81,21 @@ const actionButtons = [
 
                 <tbody>
                     <tr v-for="row in DepartmentDataTable" :key="row.id" class="border-t-4 border-slate-200">
-                        <td class="px-6 py-4">
+                        <td>
                             {{ row.id }}
                         </td>
-                        <td class="px-6 py-4">
+                        <td>
                             {{ row.name }}
                         </td>
-                        <td class="px-6 py-4">
+                        <td>
                             {{ row.manager_id }}
                         </td>
-                        <td class="px-6 py-4">
-                            <div class="flex justify-center gap-2">
-                                <Link v-for="action in actionButtons" :key="action.label" :href="action.href(row.id)"
-                                    :method="action.method" :as="action.as"
-                                    :class="[action.color, 'px-4 py-2 rounded-md text-sm font-medium transition']">
-                                    {{ action.label }}
-                                </Link>
-                            </div>
+                        <td class="flex justify-center gap-2">
+                            <Link v-for="action in actionButtons" :key="action.label" :href="action.href(row.id)"
+                                :method="action.method" :as="action.as"
+                                :class="[action.color, 'px-4 py-2 rounded-md text-sm font-semibold transition']">
+                                {{ action.label }}
+                            </Link>
                         </td>
                     </tr>
 
@@ -110,7 +108,7 @@ const actionButtons = [
             </table>
         </div>
 
-        <div class="mt-6 flex justify-end">
+        <div class="mt-6">
             <PaginationLinks :paginator="departments" />
         </div>
     </div>

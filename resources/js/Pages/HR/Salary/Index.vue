@@ -18,38 +18,36 @@ import { Link } from '@inertiajs/vue3';
 
         <thead>
             <tr class="bg-gray-400 text-black font-medium text-left">
-                <th class="p-6">Serial No</th>
-                <th class="p-6">Employee ID</th>
-                <th class="p-6">Month</th>
-                <th class="p-6">Basic Salary</th>
-                <th class="p-6">Deductions</th>
-                <th class="p-6">Net Salary</th>
+                <th>Serial No</th>
+                <th>Employee ID</th>
+                <th>Month</th>
+                <th>Basic Salary</th>
+                <th>Deductions</th>
+                <th>Net Salary</th>
             </tr>
         </thead>
 
         <tbody>
             <tr class="border-t-4 border-gray-200">
-                <td class="px-6 py-4">1</td>
-                <td class="px-6 py-4">11111</td>
+                <td>1</td>
+                <td>11111</td>
 
-                <td class="px-6 py-4">
+                <td>
                     February 1, 2026
                 </td>
 
-                <td class="px-6 py-4">$12,000,000</td>
-                <td class="px-6 py-4">$15,000,000</td>
+                <td>$12,000,000</td>
+                <td>$15,000,000</td>
 
-                <td class="px-6 py-4">
-                    <div class="flex items-center justify-between">
+                <td class="flex items-center justify-between">
 
-                        <span>$1,000,000</span>
+                    <span>$1,000,000</span>
 
-                        <Link href="/editdepartment"
-                            class="bg-yellow-400 hover:bg-yellow-500 rounded-lg px-4 py-2 text-sm font-semibold text-black">
-                            Edit
-                        </Link>
+                    <Link href="/editdepartment"
+                        class="bg-yellow-400 hover:bg-yellow-500 rounded-lg px-4 py-2 text-sm font-semibold text-black">
+                        Edit
+                    </Link>
 
-                    </div>
                 </td>
             </tr>
         </tbody>

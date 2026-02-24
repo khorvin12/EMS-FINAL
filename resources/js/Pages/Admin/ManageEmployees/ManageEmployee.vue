@@ -23,7 +23,7 @@ const filteredEmployees = computed(() => {
 })
 
 const tableColumns = [
-  { label: 'ID', key: 'id' },
+  { label: 'Employee ID', key: 'id' },
   { label: 'Name', key: 'name' },
   { label: 'Department', key: 'department' },
   { label: 'Action', key: 'actions', align: 'center' }
@@ -63,7 +63,7 @@ const actionButtons = [
         class="bg-white p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-400" />
 
       <Link href="/addnewemployee"
-        class="bg-green-500 hover:bg-green-600 text-black font-semibold px-4 py-2 rounded-md font-semibold">
+        class="bg-green-500 hover:bg-green-600 text-black font-semibold px-4 py-2 rounded-md">
         Add New Employee
       </Link>
     </div>
@@ -71,10 +71,9 @@ const actionButtons = [
     <!-- Table -->
     <div class="bg-white rounded-lg shadow-lg overflow-x-auto">
       <table class="min-w-full text-left">
-        <thead class="bg-gray-400 text-black font-medium">
+        <thead class="bg-gray-400 text-black font-bold">
           <tr>
             <th v-for="column in tableColumns" :key="column.key" :class="[
-              'p-6',
               column.align === 'center' ? 'text-center' : ''
             ]">
               {{ column.label }}
@@ -86,27 +85,26 @@ const actionButtons = [
           <!-- Employee Rows -->
           <tr v-for="employee in filteredEmployees" :key="employee.id" class="border-t-4 border-gray-200">
 
-            <td class="px-6 py-4">
+            <td>
               {{ employee.id }}
             </td>
 
-            <td class="px-6 py-4">
+            <td>
               {{ employee.name }}
             </td>
 
-            <td class="px-6 py-4">
+            <td>
               {{ employee.department?.name ?? 'N/A' }}
             </td>
 
-            <td class="px-6 py-4">
-              <div class="flex justify-center gap-2">
-                <Link v-for="action in actionButtons" :key="action.label" :href="action.href(employee.id)"
-                  :method="action.method" :as="action.as" :class="[action.color, 'px-4 py-2 rounded-md inline-block text-sm font-semibold']">
-                  {{ action.label }}
-                </Link>
-              </div>
+            <td class="flex justify-center gap-2">
+              <Link v-for="action in actionButtons" :key="action.label" :href="action.href(employee.id)"
+                :method="action.method" :as="action.as"
+                :class="[action.color, 'px-4 py-2 rounded-md inline-block text-sm font-semibold']">
+                {{ action.label }}
+              </Link>
             </td>
-            
+
           </tr>
 
           <!-- Empty State -->

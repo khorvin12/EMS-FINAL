@@ -71,7 +71,7 @@ const formatDate = (dateString: string) => {
 
 const tableColumns = [
     { label: 'Serial No.', key: 'number', align: 'left' },
-    { label: 'Employee', key: 'employee', align: 'left' },
+    { label: 'Employee ID', key: 'employee', align: 'left' },
     { label: 'Reason', key: 'reason', align: 'left' },
     { label: 'Start Date', key: 'start_date', align: 'left' },
     { label: 'End Date', key: 'end_date', align: 'left' },
@@ -91,7 +91,6 @@ const leaveTableData = computed(() =>
     }))
 )
 
-
 const emptyStateMessage = computed(() => {
     return selectedFilter.value === 'all'
         ? 'No leave requests submitted yet'
@@ -106,7 +105,6 @@ const emptyStateMessage = computed(() => {
         <h1 class="text-3xl font-bold mb-12 text-center text-gray-800">
             Manage Leaves
         </h1>
-
 
         <div class="flex justify-center gap-4 mb-12 flex-wrap">
             <button v-for="filter in filterButtons" :key="filter.value" @click="selectedFilter = filter.value" :class="[
@@ -135,7 +133,6 @@ const emptyStateMessage = computed(() => {
                 <thead class="bg-gray-400 text-black font-medium">
                     <tr>
                         <th v-for="column in tableColumns" :key="column.key" :class="[
-                            'p-6',
                             column.align === 'center' ? 'text-center' : ''
                         ]">
                             {{ column.label }}
@@ -143,37 +140,24 @@ const emptyStateMessage = computed(() => {
                     </tr>
                 </thead>
 
-
                 <tbody>
                     <tr v-for="row in leaveTableData" :key="row.id" class="border-t-4 border-slate-200">
-                        <td class="px-6 py-4">
-                            {{ row.number }}
+                        <td>{{ row.number }}</td>
+                        <td>{{ row.employee }}</td>
+                        <td>{{ row.reason }}</td>
+                        <td>{{ row.start_date }}</td>
+                        <td>{{ row.end_date }}</td>
+                        <td class="text-center">
+                            <span :class="[
+                                row.status.color,
+                                'py-2 px-4 rounded-full shadow-sm text-sm font-semibold text-black inline-block'
+                            ]">
+                                {{ row.status.label }}
+                            </span>
                         </td>
-                        <td class="px-6 py-4">
-                            {{ row.employee }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ row.reason }}
-                        </td>
-                        <td class="px-6 py-4">
-                            {{ row.start_date }}
-                        </td>
-                        <td class="p-6">
-                            {{ row.end_date }}
-                        </td>
-                        <td class="px-6 py-4 r">
-                            <div class="flex justify-center">
-                                <span :class="[
-                                    row.status.color,
-                                    'py-2 px-4 rounded-full shadow-sm text-sm font-semibold text-black inline-block'
-                                ]">
-                                    {{ row.status.label }}
-                                </span>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-center">
+                        <td class="text-center">
                             <Link :href="`/manageleaves/leaves/review/${row.id}`"
-                                class="bg-blue-500 hover:bg-blue-600 text-black text-sm font-semibold py-2 px-4 rounded-lg shadow-md transition-colors">
+                                class="bg-blue-500 hover:bg-blue-600 text-black text-sm font-semibold py-2 px-4 rounded-lg shadow-md transition-colors inline-block">
                                 Review
                             </Link>
                         </td>
