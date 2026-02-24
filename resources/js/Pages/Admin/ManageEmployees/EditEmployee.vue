@@ -3,30 +3,17 @@ import { useForm } from "@inertiajs/vue3";
 import { ref, computed } from "vue";
 
 const props = defineProps({
-    employee: {
-        type: Object,
-        required: true,
-    },
-    departments: {
-        type: Array,
-        default: () => [],
-    },
+    employee: { type: Object, required: true },
+    departments: { type: Array, default: () => [] },
 });
 
 const showSuccess = ref(false);
 
-// Split name into first and last
-const [firstName, ...lastNameParts] = props.employee?.name?.split(" ") || [
-    "",
-    "",
-];
-
 const form = useForm({
-    first_name: firstName || "",
-    last_name: lastNameParts.join(" ") || "",
+    first_name: props.employee?.first_name || "",
+    last_name: props.employee?.last_name || "",
     email: props.employee?.email || "",
     phone: props.employee?.phone || "",
-    employee_id: props.employee?.employee_id || "",
     dob: props.employee?.dob || "",
     gender: props.employee?.gender || "",
     civil_status: props.employee?.civil_status || "",
@@ -37,72 +24,17 @@ const form = useForm({
 });
 
 const formFields = [
-    {
-        name: "first_name",
-        label: "First Name",
-        type: "text",
-        placeholder: "Enter First Name",
-    },
-    {
-        name: "last_name",
-        label: "Last Name",
-        type: "text",
-        placeholder: "Enter Last Name",
-    },
-    {
-        name: "email",
-        label: "Email",
-        type: "email",
-        placeholder: "Enter Email",
-    },
+    { name: "first_name", label: "First Name", type: "text", placeholder: "Enter First Name" },
+    { name: "last_name", label: "Last Name", type: "text", placeholder: "Enter Last Name" },
+    { name: "email", label: "Email", type: "email", placeholder: "Enter Email" },
     { name: "phone", label: "Phone", type: "text", placeholder: "Enter Phone" },
-    {
-        name: "employee_id",
-        label: "Employee ID",
-        type: "text",
-        placeholder: "Enter ID",
-    },
     { name: "dob", label: "Date of Birth", type: "date" },
-    {
-        name: "gender",
-        label: "Gender",
-        type: "select",
-        options: ["Male", "Female"],
-        placeholder: "Select Gender",
-    },
-    {
-        name: "civil_status",
-        label: "Civil Status",
-        type: "select",
-        options: ["Single", "Married"],
-        placeholder: "Select Status",
-    },
-    {
-        name: "department_id",
-        label: "Department",
-        type: "select",
-        options: computed(() => props.departments),
-        placeholder: "Select Department",
-    },
+    { name: "gender", label: "Gender", type: "select", options: ["Male", "Female"], placeholder: "Select Gender" },
+    { name: "civil_status", label: "Civil Status", type: "select", options: ["Single", "Married"], placeholder: "Select Status" },
+    { name: "department_id", label: "Department", type: "select", options: computed(() => props.departments), placeholder: "Select Department" },
     { name: "hire_date", label: "Hire Date", type: "date" },
-    {
-        name: "salary",
-        label: "Salary",
-        type: "number",
-        placeholder: "Salary",
-        step: "0.01",
-    },
-    {
-        name: "role",
-        label: "Role",
-        type: "select",
-        options: [
-            { value: "admin", label: "Admin" },
-            { value: "hr", label: "HR" },
-            { value: "employee", label: "Employee" },
-        ],
-        placeholder: "Select Role",
-    },
+    { name: "salary", label: "Salary", type: "number", placeholder: "Salary", step: "0.01" },
+    { name: "role", label: "Role", type: "select", options: [{ value: "admin", label: "Admin" }, { value: "hr", label: "HR" }, { value: "employee", label: "Employee" }], placeholder: "Select Role" },
 ];
 
 function submit() {
@@ -118,7 +50,6 @@ function submit() {
     });
 }
 </script>
-
 <template>
     <main class="flex-1 p-8">
         <!-- Success Notification -->

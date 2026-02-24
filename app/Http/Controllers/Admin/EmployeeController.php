@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Department;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
@@ -13,7 +14,6 @@ class EmployeeController extends Controller
 {
     public function index()
     {
-        // Hide admin accounts from the employee list
         $employees = User::with('department')
             ->where('role', '!=', 'admin')
             ->paginate(10);
@@ -48,16 +48,8 @@ class EmployeeController extends Controller
 
     public function edit($id)
     {
-        $employee = User::findOrFail($id);
-
-        // Prevent editing admin accounts
-        if ($employee->role === 'admin') {
-            return redirect()->route('admin.manageemployees')
-                ->with('error', 'Admin accounts cannot be edited here.');
-        }
-
         return Inertia::render('Admin/ManageEmployees/EditEmployee', [
-            'employee'    => $employee,
+            'employee'    => User::findOrFail($id),
             'departments' => $this->getDepartments()
         ]);
     }
@@ -65,13 +57,6 @@ class EmployeeController extends Controller
     public function update(Request $request, $id)
     {
         $employee = User::findOrFail($id);
-
-        // Prevent updating admin accounts
-        if ($employee->role === 'admin') {
-            return redirect()->route('admin.manageemployees')
-                ->with('error', 'Admin accounts cannot be edited here.');
-        }
-
         $validated = $this->validateEmployee($request, $id);
         $employee->update($this->prepareEmployeeData($validated, false));
         return $this->redirectWithSuccess('Employee updated successfully!');
@@ -79,15 +64,7 @@ class EmployeeController extends Controller
 
     public function destroy($id)
     {
-        $employee = User::findOrFail($id);
-
-        // Prevent deleting admin accounts
-        if ($employee->role === 'admin') {
-            return redirect()->route('admin.manageemployees')
-                ->with('error', 'Admin accounts cannot be deleted.');
-        }
-
-        $employee->delete();
+        User::findOrFail($id)->delete();
         return $this->redirectWithSuccess('Employee deleted successfully!');
     }
 
@@ -108,7 +85,7 @@ class EmployeeController extends Controller
             'dob'           => 'required|date',
             'gender'        => 'required|string',
             'civil_status'  => 'required|string',
-            'role'          => 'required|in:employee,hr',  // admin cannot be created here
+            'role'          => 'required|in:employee,hr,admin',
             'hire_date'     => 'required|date',
             'salary'        => 'required|numeric|min:0',
         ]);
@@ -127,6 +104,7 @@ class EmployeeController extends Controller
             'gender'        => $validated['gender'],
             'civil_status'  => $validated['civil_status'],
             'role'          => $validated['role'],
+            'role_id'       => Role::where('name', $validated['role'])->value('id'),
             'hire_date'     => $validated['hire_date'],
             'salary'        => $validated['salary'],
         ];

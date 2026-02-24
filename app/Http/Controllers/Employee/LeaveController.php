@@ -11,6 +11,7 @@ class LeaveController extends Controller
 {
     public function index()
     {
+        // leaves.employee_id is already users.id (integer FK) — correct
         $leaves = Leave::where('employee_id', auth()->id())
             ->orderBy('created_at', 'desc')
             ->get()
@@ -47,6 +48,7 @@ class LeaveController extends Controller
             'description' => 'nullable|string',
         ]);
 
+        // auth()->id() returns users.id — correct
         Leave::create([
             'employee_id' => auth()->id(),
             'start_date'  => $validated['start_date'],
@@ -62,6 +64,7 @@ class LeaveController extends Controller
 
     public function show(Leave $leave)
     {
+        // auth()->id() returns users.id — correct
         if ($leave->employee_id !== auth()->id()) {
             abort(403);
         }

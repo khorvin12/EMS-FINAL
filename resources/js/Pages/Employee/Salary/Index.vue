@@ -115,7 +115,7 @@ const formatCurrency = (value) => {
                 <div class="bg-gray-200 rounded-lg p-7 mb-8 grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div>
                         <p class="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Employee ID</p>
-                        <p class="text-base font-semibold text-gray-900">{{ employee.employee_id }}</p>
+                      <p class="text-base font-semibold text-gray-900">{{ employee.id }}</p>>
                     </div>
                     <div>
                         <p class="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Employee Name</p>

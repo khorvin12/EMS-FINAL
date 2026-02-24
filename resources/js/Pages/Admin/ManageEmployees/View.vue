@@ -20,8 +20,8 @@ const formatDate = (dateString) => {
 }
 
 const employeeFields = [
-  { label: 'Employee ID', value: (emp) => emp.employee_id },
-  { label: 'Name', value: (emp) => emp.name },
+  { label: 'Employee ID', value: (emp) => emp.id },
+  { label: 'Name', value: (emp) => `${emp.first_name} ${emp.last_name}` },
   { label: 'Email', value: (emp) => emp.email },
   { label: 'Phone', value: (emp) => emp.phone },
   { label: 'Department', value: (emp) => emp.department?.name ?? 'N/A' },

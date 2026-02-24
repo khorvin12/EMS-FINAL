@@ -23,6 +23,7 @@ class User extends Authenticatable
         'hire_date',
         'salary',
         'role',
+        'role_id',
         'password',
     ];
 
@@ -35,10 +36,10 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password'          => 'hashed',
-            'dob'               => 'date',
-            'hire_date'         => 'date',
-            'salary'            => 'decimal:2',
+            'password' => 'hashed',
+            'dob' => 'date',
+            'hire_date' => 'date',
+            'salary' => 'decimal:2',
         ];
     }
 
@@ -72,5 +73,9 @@ class User extends Authenticatable
     public function payrolls()
     {
         return $this->hasMany(Payroll::class, 'employee_id', 'employee_id');
+    }
+    public function roleModel()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
     }
 }

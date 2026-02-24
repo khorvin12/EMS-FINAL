@@ -117,7 +117,7 @@ const formatTime = (timeString) => {
                 <div>
                     <div class="bg-gray-50 rounded-lg p-6 mb-6">
                         <p class="text-sm text-gray-600 mb-1">Employee ID</p>
-                        <p class="text-xl font-bold text-gray-900 mb-4">{{ employee.employee_id }}</p>
+                        <p class="text-xl font-bold text-gray-900 mb-4">{{ employee.id }}</p>
                         
                         <p class="text-sm text-gray-600 mb-1">Name</p>
                         <p class="text-xl font-bold text-gray-900">{{ employee.name }}</p>

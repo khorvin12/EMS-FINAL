@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from 'vue'
 import { useForm } from '@inertiajs/vue3'
 
 const form = useForm({
@@ -6,6 +7,8 @@ const form = useForm({
   password: '',
   remember: false,
 })
+
+const showPassword = ref(false)
 
 function handleLogin() {
   form.post('/login')
@@ -36,13 +39,19 @@ export default {
           required
         />
 
-        <input
-          type="password"
-          v-model="form.password"
-          placeholder="Enter Password"
-          class="bg-white w-full px-3 py-2 border border-gray-300 rounded"
-          required
-        />
+        <div>
+          <input
+            :type="showPassword ? 'text' : 'password'"
+            v-model="form.password"
+            placeholder="Enter Password"
+            class="bg-white w-full px-3 py-2 border border-gray-300 rounded"
+            required
+          />
+          <label class="flex items-center gap-2 mt-1 text-sm text-gray-700 cursor-pointer">
+            <input type="checkbox" v-model="showPassword" />
+            Show Password
+          </label>
+        </div>
 
         <button
           type="submit"

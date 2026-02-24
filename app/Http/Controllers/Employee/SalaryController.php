@@ -23,17 +23,15 @@ class SalaryController extends Controller
         $grossSalary  = floatval($user->salary ?? 0);
         $currentMonth = Carbon::now()->format('F Y');
 
-        // Check if HR has generated payroll for this month
+        // Query payrolls using users.id (integer FK)
         $payroll = DB::table('payrolls')
-            ->where('employee_id', $user->employee_id)
+            ->where('employee_id', $user->id)
             ->where('month', $currentMonth)
             ->first();
 
         if ($payroll) {
-            // ── HR generated payroll exists ──
             // Read ALL values directly from the saved payroll record.
-            // This guarantees the employee sees exactly what HR computed and locked in.
-
+            // Guarantees employee sees exactly what HR computed and locked in.
             return Inertia::render('Employee/Salary/Index', [
                 'employee' => [
                     'id'          => $user->id,
@@ -52,6 +50,7 @@ class SalaryController extends Controller
                     'total_hours_worked' => floatval($payroll->total_hours_worked),
                     'expected_hours'     => intval($payroll->expected_hours) ?: 176,
                     'undertime_hours'    => floatval($payroll->undertime_hours),
+                    'overtime_hours'     => floatval($payroll->overtime_hours ?? 0),
                     'present_days'       => intval($payroll->present_days),
                     'total_working_days' => intval($payroll->total_working_days) ?: 22,
                 ],
@@ -61,12 +60,13 @@ class SalaryController extends Controller
                     'undertime_deduction' => floatval($payroll->undertime_deduction),
                     'total_deductions'    => floatval($payroll->deductions),
                 ],
+                'overtime_pay'     => floatval($payroll->overtime_pay ?? 0),
                 'netSalary'        => floatval($payroll->net_salary),
                 'payrollGenerated' => true,
             ]);
         }
 
-        // ── No payroll generated yet ──
+        // No payroll generated yet
         return Inertia::render('Employee/Salary/Index', [
             'employee' => [
                 'id'          => $user->id,
@@ -85,6 +85,7 @@ class SalaryController extends Controller
                 'total_hours_worked' => 0,
                 'expected_hours'     => 176,
                 'undertime_hours'    => 0,
+                'overtime_hours'     => 0,
                 'present_days'       => 0,
                 'total_working_days' => 22,
             ],
@@ -94,6 +95,7 @@ class SalaryController extends Controller
                 'undertime_deduction' => 0,
                 'total_deductions'    => 0,
             ],
+            'overtime_pay'     => 0,
             'netSalary'        => $grossSalary,
             'payrollGenerated' => false,
         ]);

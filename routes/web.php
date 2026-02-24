@@ -190,4 +190,7 @@ Route::middleware(['auth', HRMiddleware::class])
         Route::get('/attendance/{id}/edit', [HRAttendanceController::class, 'edit'])->name('attendance.edit');
         Route::put('/attendance/{id}', [HRAttendanceController::class, 'update'])->name('attendance.update');
         Route::delete('/attendance/{id}', [HRAttendanceController::class, 'destroy'])->name('attendance.destroy');
+
+        // HR Settings Routes
+        Route::inertia('/settings', 'HR/Settings/Index')->name('settings');
     });

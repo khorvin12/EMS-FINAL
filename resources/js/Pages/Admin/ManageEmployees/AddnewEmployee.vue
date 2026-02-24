@@ -9,7 +9,6 @@ const props = defineProps({
 const form = useForm({
   first_name: '',
   last_name: '',
-  employee_id: '',
   email: '',
   phone: '',
   department_id: '',
@@ -24,50 +23,20 @@ const form = useForm({
 function submit() {
   form.post('/employees', {
     preserveScroll: true,
-    onSuccess: () => {
-
-    }
+    onSuccess: () => {}
   })
 }
 
 const formFields = [
   { name: 'last_name', label: 'Last Name', type: 'text', placeholder: 'Last Name' },
   { name: 'first_name', label: 'First Name', type: 'text', placeholder: 'First Name' },
-  { name: 'employee_id', label: 'Employee ID', type: 'text', placeholder: 'Enter ID' },
   { name: 'email', label: 'Email', type: 'email', placeholder: 'Enter Email' },
   { name: 'phone', label: 'Phone', type: 'text', placeholder: 'Enter Phone' },
-  { 
-    name: 'department_id', 
-    label: 'Department', 
-    type: 'select',
-    options: computed(() => props.departments),
-    placeholder: 'Select Department'
-  },
+  { name: 'department_id', label: 'Department', type: 'select', options: computed(() => props.departments), placeholder: 'Select Department' },
   { name: 'dob', label: 'Date of Birth', type: 'date' },
-  { 
-    name: 'gender', 
-    label: 'Gender', 
-    type: 'select',
-    options: ['Male', 'Female'],
-    placeholder: 'Select Gender'
-  },
-  { 
-    name: 'civil_status', 
-    label: 'Civil Status', 
-    type: 'select',
-    options: ['Single', 'Married'],
-    placeholder: 'Select Status'
-  },
-  { 
-    name: 'role', 
-    label: 'Role', 
-    type: 'select',
-    options: [
-      { value: 'employee', label: 'Employee' },
-      { value: 'hr', label: 'HR' },
-      { value: 'admin', label: 'Admin' }
-    ]
-  },
+  { name: 'gender', label: 'Gender', type: 'select', options: ['Male', 'Female'], placeholder: 'Select Gender' },
+  { name: 'civil_status', label: 'Civil Status', type: 'select', options: ['Single', 'Married'], placeholder: 'Select Status' },
+  { name: 'role', label: 'Role', type: 'select', options: [{ value: 'employee', label: 'Employee' }, { value: 'hr', label: 'HR' }, { value: 'admin', label: 'Admin' }] },
   { name: 'hire_date', label: 'Hire Date', type: 'date' },
   { name: 'salary', label: 'Salary', type: 'number', placeholder: 'Enter Salary' }
 ]

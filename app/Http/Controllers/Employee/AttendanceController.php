@@ -118,9 +118,9 @@ class AttendanceController extends Controller
         $start = Carbon::parse($checkIn);
         $end = Carbon::parse($checkOut);
 
-        // Subtract 1 hour for lunch break
+        // Subtract 1 hour for lunch break, max 8 hours per day
         $hours = $start->diffInHours($end, true) - 1;
 
-        return round(max(0, $hours), 2);
+        return round(min(8, max(0, $hours)), 2);
     }
 }
