@@ -18,13 +18,11 @@ class SalaryController extends Controller
         $salaries = DB::table('users')
             ->leftJoin('departments', 'users.department_id', '=', 'departments.id')
             ->leftJoin('payrolls', function ($join) use ($currentMonth) {
-                // Join on users.id = payrolls.employee_id (both integers)
                 $join->on('users.id', '=', 'payrolls.employee_id')
                     ->where('payrolls.month', '=', $currentMonth);
             })
             ->select(
                 'users.id',
-                'users.employee_id',  // display code e.g. EMP001
                 DB::raw("CONCAT(users.first_name, ' ', users.last_name) as name"),
                 'users.role',
                 'departments.name as department',
@@ -37,12 +35,12 @@ class SalaryController extends Controller
             ->orderBy('users.id')
             ->get()
             ->map(function ($user) {
-                $salary    = floatval($user->salary ?? 0);
+                $salary = floatval($user->salary ?? 0);
                 $netSalary = $user->net_salary ? floatval($user->net_salary) : $salary;
 
                 return [
                     'id'            => $user->id,
-                    'employee_id'   => $user->employee_id ?? $user->id,
+                    'employee_id'   => $user->id,
                     'employee_name' => $user->name,
                     'role'          => $user->role,
                     'department'    => $user->department ?? 'Not Assigned',
@@ -56,18 +54,13 @@ class SalaryController extends Controller
         ]);
     }
 
-    /**
-     * View payroll details for a specific employee.
-     * Route param is users.id (integer), NOT the employee_id display code.
-     */
     public function view($userId)
     {
         $user = DB::table('users')
             ->leftJoin('departments', 'users.department_id', '=', 'departments.id')
-            ->where('users.id', $userId)   // <-- look up by users.id
+            ->where('users.id', $userId)
             ->select(
                 'users.id',
-                'users.employee_id',
                 DB::raw("CONCAT(users.first_name, ' ', users.last_name) as name"),
                 'departments.name as department',
                 'users.salary'
@@ -86,13 +79,11 @@ class SalaryController extends Controller
         $currentYear        = Carbon::now()->year;
         $workingDaysInMonth = 22;
 
-        // Query payrolls by users.id
         $payroll = DB::table('payrolls')
             ->where('employee_id', $userId)
             ->where('month', $currentMonth)
             ->first();
 
-        // Query attendances by users.id
         $allRecords = DB::table('attendances')
             ->where('employee_id', $userId)
             ->whereMonth('date', $currentMonthNum)
@@ -113,7 +104,6 @@ class SalaryController extends Controller
 
         foreach ($allRecords->where('status', '!=', 'absent') as $record) {
             if (!$record->check_in || !$record->check_out) continue;
-
             $presentDays++;
 
             if ($record->late_minutes > 0) {
@@ -138,10 +128,10 @@ class SalaryController extends Controller
 
         return Inertia::render('HR/Salaries/View', [
             'employee' => [
-                'id'          => $user->id,
-                'employee_id' => $user->employee_id ?? $user->id,
-                'name'        => $user->name,
-                'department'  => $department,
+                'id'         => $user->id,
+                'employee_id'=> $user->id,
+                'name'       => $user->name,
+                'department' => $department,
             ],
             'salary' => [
                 'full_salary' => $salary,
@@ -168,18 +158,13 @@ class SalaryController extends Controller
         ]);
     }
 
-    /**
-     * Generate payroll for a specific employee.
-     * Route param is users.id (integer), NOT the employee_id display code.
-     */
     public function generatePayroll(Request $request, $userId)
     {
         $user = DB::table('users')
             ->leftJoin('departments', 'users.department_id', '=', 'departments.id')
-            ->where('users.id', $userId)   // <-- look up by users.id
+            ->where('users.id', $userId)
             ->select(
                 'users.id',
-                'users.employee_id',
                 DB::raw("CONCAT(users.first_name, ' ', users.last_name) as name"),
                 'departments.name as department',
                 'users.salary'
@@ -197,7 +182,6 @@ class SalaryController extends Controller
         $currentYear        = Carbon::now()->year;
         $workingDaysInMonth = 22;
 
-        // Query attendances by users.id
         $allAttendanceRecords = DB::table('attendances')
             ->where('employee_id', $userId)
             ->whereMonth('date', $currentMonth)
@@ -218,12 +202,11 @@ class SalaryController extends Controller
 
         foreach ($allAttendanceRecords->where('status', '!=', 'absent') as $record) {
             if (!$record->check_in || !$record->check_out) continue;
-
             $presentDays++;
 
-            $checkInDateTime = Carbon::parse($record->date . ' ' . $record->check_in);
+            $checkInDateTime  = Carbon::parse($record->date . ' ' . $record->check_in);
             $checkOutDateTime = Carbon::parse($record->date . ' ' . $record->check_out);
-            $scheduleStart   = Carbon::parse($record->date . ' 08:00:00');
+            $scheduleStart    = Carbon::parse($record->date . ' 08:00:00');
 
             if ($checkInDateTime->greaterThan($scheduleStart)) {
                 $lateMinutes       = $scheduleStart->diffInMinutes($checkInDateTime);
@@ -232,7 +215,6 @@ class SalaryController extends Controller
                 DB::table('attendances')->where('id', $record->id)->update(['late_minutes' => $lateMinutes]);
             }
 
-            // Calculate total worked hours minus 1hr lunch break
             $workedMinutes = $checkInDateTime->diffInMinutes($checkOutDateTime) - 60;
             $workedHours   = max(0, round($workedMinutes / 60, 2));
 
@@ -251,18 +233,14 @@ class SalaryController extends Controller
         $dailyRate          = $grossSalary / $workingDaysInMonth;
         $hourlyRate         = $dailyRate / 8;
         $overtimeRate       = $hourlyRate * 1.25;
-
         $absenceDeduction   = round($dailyRate * $totalAbsences, 2);
         $lateDeduction      = round(($totalLateMinutes / 60) * $hourlyRate, 2);
         $undertimeDeduction = round($undertimeHours * $hourlyRate, 2);
         $overtimePay        = round($overtimeHours * $overtimeRate, 2);
-
         $totalDeductions    = $absenceDeduction + $lateDeduction + $undertimeDeduction;
         $netSalary          = $grossSalary - $totalDeductions + $overtimePay;
-
         $currentMonthLabel  = Carbon::now()->format('F Y');
 
-        // updateOrInsert uses users.id as employee_id key
         DB::table('payrolls')->updateOrInsert(
             ['employee_id' => $userId, 'month' => $currentMonthLabel],
             [
@@ -293,7 +271,7 @@ class SalaryController extends Controller
         return Inertia::render('HR/Salaries/View', [
             'employee' => [
                 'id'          => $user->id,
-                'employee_id' => $user->employee_id ?? $user->id,
+                'employee_id' => $user->id,
                 'name'        => $user->name,
                 'department'  => $department,
             ],

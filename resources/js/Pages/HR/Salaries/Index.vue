@@ -17,12 +17,12 @@ const showAdmin    = ref(false);
 const filteredSalaries = computed(() => {
     let result = props.salaries;
 
-result = result.filter(s => {
-    if (s.role === 'employee' && !showEmployee.value) return false;
-    if (s.role === 'hr'       && !showHR.value)       return false;
-    if (s.role === 'admin'    && !showAdmin.value)     return false;
-    return true;
-});
+    result = result.filter(s => {
+        if (s.role === 'employee' && !showEmployee.value) return false;
+        if (s.role === 'hr'       && !showHR.value)       return false;
+        if (s.role === 'admin'    && !showAdmin.value)     return false;
+        return true;
+    });
 
     if (searchQuery.value) {
         result = result.filter(s =>
@@ -53,23 +53,23 @@ const formatCurrency = (value) => {
             class="bg-white p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-400"
         />
 
-<div class="flex items-center gap-4">
-    <label class="flex items-center gap-2 cursor-pointer select-none">
-        <input type="checkbox" v-model="showEmployee" class="w-4 h-4 accent-green-500" />
-        <span class="text-sm font-medium text-gray-700">Show Employee</span>
-    </label>
-    <label class="flex items-center gap-2 cursor-pointer select-none">
-        <input type="checkbox" v-model="showHR" class="w-4 h-4 accent-blue-500" />
-        <span class="text-sm font-medium text-gray-700">Show HR</span>
-    </label>
-    <label class="flex items-center gap-2 cursor-pointer select-none">
-        <input type="checkbox" v-model="showAdmin" class="w-4 h-4 accent-red-500" />
-        <span class="text-sm font-medium text-gray-700">Show Admin</span>
-    </label>
-</div>
+        <div class="flex items-center gap-4">
+            <label class="flex items-center gap-2 cursor-pointer select-none">
+                <input type="checkbox" v-model="showEmployee" class="w-4 h-4 accent-green-500" />
+                <span class="text-sm font-medium text-gray-700">Show Employee</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer select-none">
+                <input type="checkbox" v-model="showHR" class="w-4 h-4 accent-blue-500" />
+                <span class="text-sm font-medium text-gray-700">Show HR</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer select-none">
+                <input type="checkbox" v-model="showAdmin" class="w-4 h-4 accent-red-500" />
+                <span class="text-sm font-medium text-gray-700">Show Admin</span>
+            </label>
+        </div>
 
         <Link
-            :href="`/hr/salaries/${salary.id}`"
+            href="/hr/salary-report"
             class="bg-green-500 text-black font-medium px-4 py-2 rounded-md hover:bg-green-600"
         >
             Salary Report
@@ -112,7 +112,7 @@ const formatCurrency = (value) => {
                 <td class="p-6">{{ formatCurrency(salary.net_salary) }}</td>
                 <td class="p-6">
                     <Link
-                        :href="`/hr/salaries/${salary.employee_id}`"
+                        :href="`/hr/salaries/${salary.id}`"
                         class="bg-blue-500 hover:bg-blue-600 rounded-sm px-6 py-2 font-medium text-white inline-block"
                     >
                         View
