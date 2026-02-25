@@ -128,10 +128,10 @@ class SalaryController extends Controller
 
         return Inertia::render('HR/Salaries/View', [
             'employee' => [
-                'id'         => $user->id,
-                'employee_id'=> $user->id,
-                'name'       => $user->name,
-                'department' => $department,
+                'id'          => $user->id,
+                'employee_id' => $user->id,
+                'name'        => $user->name,
+                'department'  => $department,
             ],
             'salary' => [
                 'full_salary' => $salary,
@@ -176,7 +176,6 @@ class SalaryController extends Controller
                 ->with('error', 'Employee not found');
         }
 
-        $department         = $user->department ?? 'Not Assigned';
         $grossSalary        = floatval($user->salary ?? 0);
         $currentMonth       = Carbon::now()->month;
         $currentYear        = Carbon::now()->year;
@@ -268,35 +267,7 @@ class SalaryController extends Controller
             ]
         );
 
-        return Inertia::render('HR/Salaries/View', [
-            'employee' => [
-                'id'          => $user->id,
-                'employee_id' => $user->id,
-                'name'        => $user->name,
-                'department'  => $department,
-            ],
-            'salary' => [
-                'full_salary' => $grossSalary,
-            ],
-            'attendance' => [
-                'absences'           => $totalAbsences,
-                'late_count'         => $lateCount,
-                'total_late_minutes' => round($totalLateMinutes, 0),
-                'total_hours_worked' => round($totalHoursWorked, 2),
-                'expected_hours'     => 176,
-                'undertime_hours'    => round($undertimeHours, 2),
-                'overtime_hours'     => round($overtimeHours, 2),
-                'overtime_pay'       => $overtimePay,
-                'present_days'       => $presentDays,
-                'total_working_days' => $workingDaysInMonth,
-            ],
-            'payrollGenerated' => true,
-            'payroll' => [
-                'basic_salary' => $grossSalary,
-                'deductions'   => $totalDeductions,
-                'net_salary'   => $netSalary,
-                'overtime_pay' => $overtimePay,
-            ]
-        ]);
+        return redirect()->route('hr.salaries.view', $userId)
+            ->with('success', 'Payroll generated successfully!');
     }
 }
