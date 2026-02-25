@@ -35,15 +35,15 @@ const employeeFields = [
 </script>
 
 <template>
-  <main class="flex-1 p-8">
-    <div class="bg-white border-4 border-blue-400 rounded-lg p-8 max-w-5xl mx-auto">
+  <main class="p-8">
+    <div class="bg-white border-4 border-blue-400 rounded-lg p-8 mx-auto max-w-5xl">
 
       <h1 class="text-2xl font-bold mb-6">View Employee</h1>
 
-      <div class="grid grid-cols-2 gap-6 text-gray-800">
+      <div class="grid grid-cols-2 gap-7 text-gray-800">
         <div v-for="field in employeeFields" :key="field.label">
           <p class="text-sm font-bold text-gray-600">{{ field.label }}</p>
-          <p class="mt-1 text-gray-900" :class="field.class">{{ field.value(employee) }}</p>
+          <p class="text-gray-900" :class="field.class">{{ field.value(employee) }}</p>
         </div>
       </div>
 

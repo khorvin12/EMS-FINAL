@@ -22,12 +22,13 @@ const filteredDepartments = computed(() => {
 <template>
     <h1 class="text-center text-3xl font-bold mb-12">Manage Departments</h1>
 
-    <div class="flex justify-between mb-6">
-        <div class="bg-white rounded-md px-4 py-2">
+    <div class="flex justify-between mb-4">
+        <div>
             <input 
                 type="search" 
                 v-model="searchQuery"
-                placeholder="Search By Department..." 
+                placeholder="Search By Department..."
+                 class="bg-white rounded-md px-4 py-2 border border-gray-300"
             />
         </div>
 
@@ -50,21 +51,21 @@ const filteredDepartments = computed(() => {
             <tr 
                 v-for="department in filteredDepartments" 
                 :key="department.id"
-                class="bg-white-100 w-full p-0 text-center"
+                class="bg-white-100 w-full p-0 text-center border-b border-gray-200 hover:bg-gray-50"
             >
-                <td class="px-6 py-4 border-b border-slate-100">{{ department.id }}</td>
-                <td class="px-6 py-4 border-b border-slate-100">{{ department.name }}</td>
-                <td class="px-6 py-4 border-b border-slate-100">{{ department.manager_id || 'N/A' }}</td>
-                <td class="px-6 py-4 border-b border-slate-100 space-x-4">
+                <td class="px-6 py-4">{{ department.id }}</td>
+                <td class="px-6 py-4">{{ department.name }}</td>
+                <td class="px-6 py-4">{{ department.manager_id || 'N/A' }}</td>
+                <td class="px-6 py-4 space-x-4">
                     <Link 
                         :href="`/editdepartment/${department.id}`" 
-                        class="bg-yellow-300 rounded-sm px-4 py-1"
+                        class="bg-yellow-300 rounded-sm px-4 py-1 shadow-md"
                     >
                         Edit
                     </Link>
                     <button 
                         @click="deleteDepartment(department.id)"
-                        class="bg-red-500 text-white rounded-sm px-2 py-1"
+                        class="bg-red-500 text-white rounded-sm px-2 py-1 shadow-md"
                     >
                         Delete
                     </button>

@@ -27,12 +27,14 @@ export default {
     <div class="bg-gradient-to-r from-green-400 to-lime-300 p-6 rounded-lg w-80 shadow-md">
       <h2 class="text-xl font-semibold mb-4 text-gray-800">Login</h2>
 
+
       <form @submit.prevent="handleLogin" class="space-y-4">
         <input
-          type="email"
+          type="email"  
           v-model="form.email"
           placeholder="Enter Email"
           class="bg-white w-full px-3 py-2 border border-gray-300 rounded"
+          :class="{ 'border-red-500': form.errors.email }"
           required
         />
 
@@ -41,16 +43,22 @@ export default {
           v-model="form.password"
           placeholder="Enter Password"
           class="bg-white w-full px-3 py-2 border border-gray-300 rounded"
+          :class="{ 'border-red-500': form.errors.email }"
           required
         />
 
         <button
           type="submit"
-          class="w-full bg-blue-600 text-white py-2 rounded font-semibold"
+          class="w-full bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700 disabled:opacity-50"
+          :disabled="form.processing"
         >
-          Login
+          {{ form.processing ? 'Logging in...' : 'Login' }}
         </button>
       </form>
+      <!-- Error Message -->
+      <div v-if="form.errors.email" class="mt-4 text-red-700 text-center">
+        <p class="text-sm font-semibold">Invalid password</p>
+      </div>
     </div>
   </div>
 </template>

@@ -37,7 +37,7 @@ const cancel = () => {
                         <input
                             type="date"
                             v-model="form.start_date"
-                            class="w-full p-2 rounded-md border border-gray-300"
+                            class="w-full p-2 rounded-md border border-gray-200"
                             required
                         />
                         <span v-if="form.errors.start_date" class="text-red-500 text-sm">{{ form.errors.start_date }}</span>

@@ -9,6 +9,9 @@ use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\ManageLeavesController;
 use App\Http\Controllers\Employee\LeaveController;
+use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\ChangePasswordController;
+use App\Http\Controllers\ProfilePictureController;  // Add this line
 
 // Middleware
 use App\Http\Middleware\AdminMiddleware;
@@ -72,7 +75,7 @@ Route::middleware(['auth', AdminMiddleware::class])
             ->name('addnewemployee');
 
         // Show Add New Employee form (alternative route)
-        Route::get('/employees/create', [EmployeeController::class, 'create'])
+        Route::get('/employees/create', [EmployeeController::class, 'create'])  
             ->name('employees.create');
 
         Route::get('/view/{id}', [EmployeeController::class, 'show'])
@@ -94,6 +97,10 @@ Route::middleware(['auth', AdminMiddleware::class])
         // Admin Settings
         Route::inertia('/adminsettings', 'Admin/Settings/adminsettings')
             ->name('adminsettings');
+        
+        // Dark mode route
+        Route::post('/adminsettings/dark-mode', [SettingsController::class, 'updateDarkMode'])
+            ->name('adminsettings.dark-mode');
 
         // Admin Leaves Management
         Route::get('/manageleaves/leaves', [ManageLeavesController::class, 'index'])
@@ -140,6 +147,18 @@ Route::middleware(['auth', EmployeeMiddleware::class])
 
         // Employee Settings Routes
         Route::inertia('/settings', 'Employee/Settings/Index')->name('settings');
+        
+        // Change Password Route
+        Route::post('/change-password', [ChangePasswordController::class, 'update'])
+            ->name('change-password');
+
+        // changepass
+        Route::inertia('/changepass', 'Employee/Settings/ChangePassword')
+            ->name('changepassword');
+        
+        // Profile Picture Upload - Add this line
+        Route::post('/upload-profile-picture', [ProfilePictureController::class, 'upload'])
+            ->name('upload-profile-picture');
     });
 
 /*

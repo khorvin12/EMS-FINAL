@@ -1,23 +1,11 @@
 <script setup>
 import { ref } from 'vue'
-import { router, usePage } from '@inertiajs/vue3'
 
-const page = usePage()
-const darkMode = ref(page.props.auth?.user?.dark_mode || false)
+const darkMode = ref(false)
 const showOverlay = ref(false)
 
 function saveSettings() {
-  router.post('/adminsettings/dark-mode', {
-    dark_mode: darkMode.value
-  }, {
-    preserveScroll: true,
-    onSuccess: () => {
-      showOverlay.value = true
-    },
-    onError: (errors) => {
-      console.error('Save failed:', errors)
-    }
-  })
+  showOverlay.value = true
 }
 </script>
 
@@ -60,26 +48,27 @@ function saveSettings() {
       </button>
 
       <!-- Overlay -->
-      <div
-        v-if="showOverlay"
-        @click="showOverlay = false"
-        class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-      >
-        <!-- Modal -->
-        <div
-          @click.stop
-          class="bg-white p-6 rounded-lg shadow-lg text-center"
-        >
-          <p class="mb-4">Settings saved successfully!</p>
+<div
+  v-if="showOverlay"
+  @click="showOverlay = false"
+  class="fixed inset-0 bg-black/50 flex items-center justify-center"
+>
+  <!-- Modal -->
+  <div
+    @click.stop
+    class="bg-white p-6 rounded-lg shadow-lg text-center"
+  >
+    <p class="mb-4">Settings saved successfully!</p>
 
-          <button
-            @click="showOverlay = false"
-            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-          >
-            Close
-          </button>
-        </div>
+    <button
+      @click="showOverlay = false"
+      class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+    >
+      Close
+    </button>
+  </div>
+</div>
+
       </div>
-    </div>
   </div>
 </template>

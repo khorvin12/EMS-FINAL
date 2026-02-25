@@ -58,7 +58,7 @@ const getStatusText = (status) => {
             </div>
 
             <table v-else class="w-full shadow-lg overflow-hidden table-fixed bg-white rounded-lg">
-                <thead class="border-slate-200 text-slate-600">
+                <thead class="">
                     <tr class="bg-gray-400 text-black font-medium">
                         <th class="p-6">SNO</th>
                         <th>Reason</th>
@@ -75,7 +75,7 @@ const getStatusText = (status) => {
                         </td>
                     </tr>
                     <tr v-else v-for="(leave, index) in filteredLeaves" :key="leave.id" 
-                        class="bg-white text-center border-slate-200 border-t-4 hover:bg-gray-50">
+                        class="bg-white text-center border-b border-gray-200 hover:bg-gray-50">
                         <td class="p-4">{{ index + 1 }}</td>
                         <td class="p-4">{{ leave.reason }}</td>
                         <td class="p-4">{{ leave.start_date }} to {{ leave.end_date }}</td>
