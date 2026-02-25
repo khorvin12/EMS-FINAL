@@ -23,19 +23,16 @@ class SalaryController extends Controller
         $grossSalary  = floatval($user->salary ?? 0);
         $currentMonth = Carbon::now()->format('F Y');
 
-        // Query payrolls using users.id (integer FK)
         $payroll = DB::table('payrolls')
             ->where('employee_id', $user->id)
             ->where('month', $currentMonth)
             ->first();
 
         if ($payroll) {
-            // Read ALL values directly from the saved payroll record.
-            // Guarantees employee sees exactly what HR computed and locked in.
             return Inertia::render('Employee/Salary/Index', [
                 'employee' => [
                     'id'          => $user->id,
-                    'employee_id' => $user->employee_id ?? $user->id,
+                    'employee_id' => $user->id,
                     'name'        => $user->name,
                     'department'  => $department,
                 ],
@@ -66,11 +63,10 @@ class SalaryController extends Controller
             ]);
         }
 
-        // No payroll generated yet
         return Inertia::render('Employee/Salary/Index', [
             'employee' => [
                 'id'          => $user->id,
-                'employee_id' => $user->employee_id ?? $user->id,
+                'employee_id' => $user->id,
                 'name'        => $user->name,
                 'department'  => $department,
             ],

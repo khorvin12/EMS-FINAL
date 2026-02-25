@@ -11,7 +11,6 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     protected $fillable = [
-        'employee_id',
         'first_name',
         'last_name',
         'email',
@@ -43,10 +42,6 @@ class User extends Authenticatable
         ];
     }
 
-    /**
-     * Makes $user->name still work everywhere in your existing code.
-     * Automatically combines first_name + last_name.
-     */
     public function getNameAttribute()
     {
         return $this->first_name . ' ' . $this->last_name;
@@ -57,23 +52,21 @@ class User extends Authenticatable
         return $this->first_name . ' ' . $this->last_name;
     }
 
-    // Returns the department this user belongs to
     public function department()
     {
         return $this->belongsTo(Department::class);
     }
 
-    // Returns all leave requests for this user
     public function leaves()
     {
         return $this->hasMany(Leave::class, 'employee_id');
     }
 
-    // Returns all payroll records for this user
     public function payrolls()
     {
-        return $this->hasMany(Payroll::class, 'employee_id', 'employee_id');
+        return $this->hasMany(Payroll::class, 'employee_id', 'id');
     }
+
     public function roleModel()
     {
         return $this->belongsTo(Role::class, 'role_id');

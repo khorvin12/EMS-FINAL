@@ -10,7 +10,6 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('employee_id')->nullable()->unique();
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email')->unique();
@@ -21,7 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('department_id')->nullable();
             $table->date('hire_date')->nullable();
             $table->decimal('salary', 15, 2)->nullable();
-            $table->string('role')->default('employee'); // admin, hr, employee
+            $table->string('role')->default('employee');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
