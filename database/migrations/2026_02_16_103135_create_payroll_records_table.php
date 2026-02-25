@@ -27,6 +27,8 @@ return new class extends Migration
             $table->decimal('absence_deduction', 10, 2)->default(0);
             $table->decimal('late_deduction', 10, 2)->default(0);
             $table->decimal('undertime_deduction', 10, 2)->default(0);
+            $table->decimal('overtime_hours', 8, 2)->default(0);   // ← added
+            $table->decimal('overtime_pay', 10, 2)->default(0);    // ← added
             $table->unsignedBigInteger('generated_by')->nullable();
             $table->timestamp('generated_at')->nullable();
             $table->timestamps();
