@@ -1,12 +1,20 @@
+<script setup>
+
+</script>
+
 <template>
     <h1 class="text-center text-3xl font-bold mb-12">Attendance Report</h1>
 
-    <div>
-        <h2 class="text-xl">Filter by Date</h2>
-    </div>
     <div class="flex justify-between mb-6">
-        <div class="bg-white rounded-md p-2">
-            <input type="date" name="date">
+
+        <input type="search" name="search" id="search" placeholder="Search by Employee ID" class="bg-gray-200 rounded-md px-4 py-2">
+        
+        <div class="space-x-4">
+            <button class="bg-blue-300 px-5 py-2 rounded-xl">week</button>
+        
+            <button class="bg-blue-400 px-4 py-2 rounded-xl">month</button>
+        
+            <button class="bg-blue-500 px-6 py-2 rounded-xl">year</button>
         </div>
     </div>
 
