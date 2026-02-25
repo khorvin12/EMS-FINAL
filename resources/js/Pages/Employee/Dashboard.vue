@@ -1,6 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
-import { Head, router, usePage } from '@inertiajs/vue3';
+import { usePage } from '@inertiajs/vue3';
 
 const page = usePage();
 
@@ -39,13 +38,9 @@ const formatTime = (timeString) => {
 </script>
 
 <template>
+    <h1 class="text-3xl font-bold mb-12">Dashboard Overview</h1>
+
     <div class="max-w-7xl mx-auto">
-
-        <div class="mb-12">
-            <h2 class="text-3xl font-bold text-gray-800">Welcome back, Khorvin!</h2>
-            <p class="text-gray-600">Here is what's happening with your profile today.</p>
-        </div>
-
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-16 mb-16">
 
             <div
@@ -55,7 +50,6 @@ const formatTime = (timeString) => {
                 <p class="text-3xl font-extrabold text-gray-900 mb-2 leading-none mt-2">
                     {{ presentDays ?? 0 }}
                 </p>
-
             </div>
 
             <div
@@ -64,7 +58,6 @@ const formatTime = (timeString) => {
                 <p class="text-3xl font-extrabold text-gray-900 mb-2 leading-none mt-2">
                     {{ pendingLeaves ?? 0 }}
                 </p>
-
             </div>
 
             <div
@@ -73,9 +66,7 @@ const formatTime = (timeString) => {
                 <p class="text-3xl font-extrabold text-gray-900 mb-2 leading-none mt-2">
                     ₱{{ estimatedSalary?.toLocaleString() ?? '0.00' }}
                 </p>
-
             </div>
-
         </div>
 
         <!-- Attendance History -->

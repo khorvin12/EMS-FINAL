@@ -1,8 +1,6 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Employee\SalaryController;
-use App\Http\Controllers\Employee\AttendanceController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
@@ -12,8 +10,12 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\ManageLeavesController;
+
+use App\Http\Controllers\HR\AttendanceController as HRAttendanceController;
+
+use App\Http\Controllers\Employee\SalaryController;
+use App\Http\Controllers\Employee\AttendanceController;
 use App\Http\Controllers\Employee\LeaveController;
-use App\Http\Controllers\ProfileController;
 
 // Middleware
 use App\Http\Middleware\AdminMiddleware;
@@ -101,21 +103,8 @@ Route::middleware(['auth', AdminMiddleware::class])
         Route::inertia('/settings', 'Admin/Settings/AdminSettings')
             ->name('settings');
 
-        Route::inertia('/profile', 'Admin/Settings/Profile')
-            ->name('profile');
-
-        // Change Password Route
-        Route::inertia('/change-password', 'Admin/Settings/ChangePassword')
-            ->name('change-password');
-
         // Change Password
-        Route::post('/reset-password', [AuthController::class, 'changePassword'])->name('password.change');
-
-        Route::inertia('/support', 'Admin/Settings/CustomerSupport')
-            ->name('support');
-
-        Route::inertia('/about', 'Admin/Settings/About')
-            ->name('about');
+        Route::post('/reset-password', [AuthController::class, 'changePassword'])->name('password.reset');
 
         // Admin Leaves Management
         Route::get('/manageleaves/leaves', [ManageLeavesController::class, 'index'])
@@ -211,7 +200,7 @@ Route::middleware(['auth', EmployeeMiddleware::class])
             ->name('change-password');
 
         // Change Password
-        Route::post('/reset-password', [AuthController::class, 'changePassword'])->name('password.change');
+        Route::post('/reset-password', [AuthController::class, 'changePassword'])->name('password.reset');
     });
 
 /*
@@ -243,11 +232,28 @@ Route::middleware(['auth', HRMiddleware::class])
 
         // HR Attendance
         Route::inertia('/attendance', 'HR/Attendance/Index')->name('attendance');
+        // HR Attendance - NOW USING CONTROLLER TO FETCH DATA
+        Route::get('/attendance/employees', [HRAttendanceController::class, 'employees'])->name('attendance.employees'); // ← ADD FIRST
+        Route::get('/attendance', [HRAttendanceController::class, 'index'])->name('attendance');
+        Route::get('/attendance/{id}/edit', [HRAttendanceController::class, 'edit'])->name('attendance.edit');
+        Route::put('/attendance/{id}', [HRAttendanceController::class, 'update'])->name('attendance.update');
+        Route::delete('/attendance/{id}', [HRAttendanceController::class, 'destroy'])->name('attendance.destroy');
 
+        // HR Salary
         Route::inertia('/salary', 'HR/Salary/Index')->name('salary');
 
+        // HR Settings
         Route::inertia('/settings', 'HR/Settings/Index')->name('settings');
+
+        // Change Password Route
         Route::inertia('/change-password', 'HR/Settings/ChangePassword')->name('change-password');
+
+        // Change Password
+        Route::post('/reset-password', [AuthController::class, 'changePassword'])->name('password.reset');
+
+        // HR About and Support Pages
         Route::inertia('/about', 'HR/Settings/About')->name('about');
+
+        // HR Customer Support Page
         Route::inertia('/support', 'HR/Settings/CustomerSupport')->name('customer-support');
     });

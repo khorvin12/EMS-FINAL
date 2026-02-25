@@ -9,13 +9,6 @@ const props = defineProps({
 
 const searchTerm = ref('');
 
-const filteredLeaves = computed(() => {
-    if (!searchTerm.value) return props.leaves.data;
-    return props.leaves.data.filter(leave =>
-        leave.id.toString().includes(searchTerm.value)
-    );
-});
-
 const getStatusColor = (status) => {
     const colors = {
         pending: 'bg-yellow-400',
@@ -31,7 +24,7 @@ const getStatusText = (status) => {
 };
 
 const TableColumns = [
-    { label: 'Serial No.', key: 'id', align: 'left' },
+    { label: 'Serial No', key: 'id', align: 'left' },
     { label: 'Reason', key: 'reason', align: 'left' },
     { label: 'Date', key: 'date', align: 'left' },
     { label: 'Status', key: 'status', align: 'center' },
@@ -61,12 +54,12 @@ const LeaveDataTable = computed(() => {
 <template>
     <div class="flex flex-col p-6">
         <div class="max-w-8xl mx-auto">
-            <h1 class="text-center text-3xl font-bold mb-12">Your Leave Schedules</h1>
+            <h1 class="text-center text-3xl font-bold mb-12">Leave Details</h1>
 
             <div class="flex justify-between mb-6">
 
                 <input type="search" id="search" name="search" placeholder="Search By Serial No" v-model="searchTerm"
-                    class="bg-white rounded-md p-2 outline-none focus:outline-none focus:border-blue-400 border border-gray-200" />
+                    class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
                 <Link href="/employee/leaves/create"
                     class="bg-green-500 hover:bg-green-600 rounded-md px-4 py-2 font-semibold">
@@ -75,9 +68,9 @@ const LeaveDataTable = computed(() => {
 
             </div>
 
-            <div v-if="!leaves.data || leaves.data.length === 0" class="bg-white rounded-lg shadow-lg p-12 text-center">
+            <div v-if="!leaves.data || leaves.data.length === 0" class="bg-white rounded-lg shadow-lg p-12 text-center min-w-7xl mx-auto">
 
-                <p class="text-gray-500 text-lg mb-4">No leave requests yet</p>
+                <p class="text-gray-500 text-lg mb-6">No leave requests yet</p>
 
                 <Link href="/employee/leaves/create"
                     class="bg-green-500 hover:bg-green-600 rounded-md px-6 py-2 inline-block">

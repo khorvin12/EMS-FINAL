@@ -59,10 +59,22 @@ class AuthController extends Controller
             ]);
         }
 
-        $user->password = $request->password; // hashed automatically
+        // Update password (make sure it's hashed)
+        $user->password = Hash::make($request->password);
         $user->save();
 
-        return back()->with('success', 'Password changed successfully.');
+        // Logout user
+        Auth::logout();
+
+        // Invalidate session
+        $request->session()->invalidate();
+
+        // Regenerate CSRF token
+        $request->session()->regenerateToken();
+
+        // Redirect to login page
+        return redirect()->route('login')
+            ->with('success', 'Password changed successfully. Please login again.');
     }
 
     // Logout

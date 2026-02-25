@@ -18,12 +18,13 @@ const filteredEmployees = computed(() => {
   const searchLower = search.value.toLowerCase()
   return props.employees.data.filter(employee =>
     employee.name.toLowerCase().includes(searchLower) ||
-    employee.id.toString().includes(search.value)
+    employee.id.toString().includes(search.value) ||
+    employee.department?.name.toLowerCase().includes(searchLower)
   )
 })
 
 const tableColumns = [
-  { label: 'Employee ID', key: 'id' },
+  { label: 'Serial No', key: 'id' },
   { label: 'Name', key: 'name' },
   { label: 'Department', key: 'department' },
   { label: 'Action', key: 'actions', align: 'center' }
@@ -55,12 +56,12 @@ const actionButtons = [
   <div class="flex flex-col px-6">
 
     <!-- Title -->
-    <h1 class="text-3xl font-bold text-center mb-12">Manage Employees</h1>
+    <h1 class="text-4xl font-bold text-center mb-12">Manage Employees</h1>
 
     <!-- Search + Add Button -->
     <div class="flex justify-between items-center mb-6 gap-4 flex-wrap">
-      <input v-model="search" type="text" placeholder="Search by Name or ID"
-        class="bg-white p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-400" />
+      <input v-model="search" type="text" placeholder="Search by Serial No or Name..."
+        class="border border-gray-300 rounded-lg px-4 py-2 w-80 focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
       <Link href="/addnewemployee"
         class="bg-green-500 hover:bg-green-600 text-black font-semibold px-4 py-2 rounded-md">

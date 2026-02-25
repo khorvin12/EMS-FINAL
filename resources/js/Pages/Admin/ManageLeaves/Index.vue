@@ -33,12 +33,34 @@ const props = defineProps<{
     stats: Stats
 }>()
 
+const searchQuery = ref('')
+
 const selectedFilter = ref<'all' | 'pending' | 'approved' | 'rejected'>('all')
 
 const filteredLeaves = computed(() => {
-    const data = props.leaves.data
-    if (selectedFilter.value === 'all') return data
-    return data.filter(leave => leave.status === selectedFilter.value)
+    let data = props.leaves.data
+
+    // 🔹 Filter by status
+    if (selectedFilter.value !== 'all') {
+        data = data.filter(leave => leave.status === selectedFilter.value)
+    }
+
+    // 🔹 Filter by search (Serial No or Name)
+    if (searchQuery.value.trim() !== '') {
+        const query = searchQuery.value.toLowerCase()
+
+        data = data.filter((leave, index) => {
+            const serial = String(index + 1).padStart(3, '0')
+            const name = leave.user.name.toLowerCase()
+
+            return (
+                serial.includes(query) ||
+                name.includes(query)
+            )
+        })
+    }
+
+    return data
 })
 
 
@@ -70,8 +92,8 @@ const formatDate = (dateString: string) => {
 }
 
 const tableColumns = [
-    { label: 'Serial No.', key: 'number', align: 'left' },
-    { label: 'Employee ID', key: 'employee', align: 'left' },
+    { label: 'Serial No', key: 'number', align: 'left' },
+    { label: 'Name', key: 'employee', align: 'left' },
     { label: 'Reason', key: 'reason', align: 'left' },
     { label: 'Start Date', key: 'start_date', align: 'left' },
     { label: 'End Date', key: 'end_date', align: 'left' },
@@ -102,19 +124,27 @@ const emptyStateMessage = computed(() => {
     <div class="flex flex-col px-6">
 
         <!-- Header -->
-        <h1 class="text-3xl font-bold mb-12 text-center text-gray-800">
+        <h1 class="text-4xl font-bold mb-12 text-center text-gray-800">
             Manage Leaves
         </h1>
 
-        <div class="flex justify-center gap-4 mb-12 flex-wrap">
-            <button v-for="filter in filterButtons" :key="filter.value" @click="selectedFilter = filter.value" :class="[
-                selectedFilter === filter.value
-                    ? `${filter.color} text-white`
-                    : 'bg-white text-gray-700 hover:bg-gray-100',
-                'px-6 py-2 rounded-lg font-semibold shadow-md transition-colors'
-            ]">
-                {{ filter.label }} ({{ filter.count }})
-            </button>
+        <div class="flex justify-between mb-6">
+            <div>
+                <input v-model="searchQuery" type="text" placeholder="Search by Serial No or Name..."
+                class="border border-gray-300 rounded-lg px-4 py-2 w-80 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+            </div>
+
+            <div class="space-x-4">
+                <button v-for="filter in filterButtons" :key="filter.value" @click="selectedFilter = filter.value"
+                    :class="[
+                        selectedFilter === filter.value
+                            ? `${filter.color} text-white`
+                            : 'bg-white text-gray-700 hover:bg-gray-100',
+                        'px-6 py-2 rounded-lg font-semibold shadow-md transition-colors'
+                    ]">
+                    {{ filter.label }} ({{ filter.count }})
+                </button>
+            </div>
         </div>
 
         <!-- Empty State -->

@@ -25,8 +25,8 @@ const handleLogout = () => {
             <nav class="flex items-center justify-between font-bold p-6">
 
                 <!-- Username -->
-                <span class="text-3xl ml-4">
-                    {{ user?.name ?? 'Admin' }}
+                <span class="text-3xl">
+                    ADMINSTRATOR
                 </span>
 
                 <!-- Logout Button -->

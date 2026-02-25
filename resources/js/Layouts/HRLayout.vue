@@ -24,7 +24,7 @@ const handleLogout = () => {
         <header class="bg-blue-800 text-white shadow-md z-20">
             <nav class="flex items-center justify-between p-6 font-bold">
 
-                <span class="text-3xl ml-4">
+                <span class="text-3xl">
                     {{ user?.name ?? 'HR Manager' }}
                 </span>
 

@@ -10,20 +10,18 @@ const props = defineProps({
 const searchQuery = ref('');
 
 const filteredDepartments = computed(() => {
-    // 1. Extract the array from the paginator object
     const data = props.departments.data || [];
 
-    // 2. Return the data array if no search query
     if (!searchQuery.value) return data;
-
-    // 3. Filter the data array
     return data.filter(dept =>
-        dept.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+        dept.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        dept.id.toString().includes(searchQuery.value) ||
+        dept.manager_id?.toString().includes(searchQuery.value)
     );
 });
 
 const tableColumns = [
-    { label: 'Department ID', key: 'id' },
+    { label: 'Serial No', key: 'id' },
     { label: 'Department', key: 'department' },
     { label: 'Manager ID', key: 'manager id' },
     { label: 'Action', key: 'actions', align: 'center' }
@@ -56,11 +54,11 @@ const actionButtons = [
 <template>
     <div class="flex flex-col px-6">
 
-        <h1 class="text-center text-3xl font-bold mb-12">Manage Departments</h1>
+        <h1 class="text-center text-4xl font-bold mb-12">Manage Departments</h1>
 
         <div class="flex justify-between mb-6">
-            <input type="search" v-model="searchQuery" placeholder="Search by Name or ID"
-                class="bg-white border border-gray-300 rounded-md p-2 focus:border-blue-400 outline-none" />
+            <input v-model="searchQuery" type="text" placeholder="Search by Serial No or Department..."
+                class="border border-gray-300 rounded-lg px-4 py-2 w-80 focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
             <Link href="/adddepartment"
                 class="text-black font-semibold bg-green-500 hover:bg-green-600 rounded-md px-4 py-2">

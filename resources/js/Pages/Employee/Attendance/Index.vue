@@ -77,7 +77,7 @@ const formatTime = (timeString) => {
 <template>
 
     <Head title="Attendance" />
-    
+
     <div class="flex flex-col px-6">
         <!-- Header Section -->
         <div class="mb-8">
