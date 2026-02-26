@@ -143,12 +143,6 @@ const getTabStyle = (key) => {
                         class="bg-white rounded-md p-2 border border-gray-300 text-sm"
                     />
                 </div>
-                <button
-                    @click="searchQuery = ''; selectedEmp = 'list'"
-                    class="bg-blue-500 hover:bg-blue-400 text-white rounded-md px-4 py-2 text-sm font-medium"
-                >
-                    View by Employee
-                </button>
             </div>
         </div>
 

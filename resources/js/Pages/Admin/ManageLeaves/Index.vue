@@ -120,12 +120,6 @@ const emptyStateMessage = computed(() =>
                         {{ filter.label }} ({{ filter.count }})
                     </button>
                 </div>
-                <button
-                    @click="selectedEmp = 'list'"
-                    class="bg-blue-500 hover:bg-blue-400 text-white rounded-md px-4 py-2 text-sm font-medium"
-                >
-                    View by Employee
-                </button>
             </div>
 
             <!-- Empty State -->
