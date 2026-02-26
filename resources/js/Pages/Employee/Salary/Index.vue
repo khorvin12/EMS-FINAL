@@ -79,7 +79,7 @@ const calculatedSalary = computed(() => {
     }
 
     const totalDeductions = parseFloat(props.salary.deductions || 0);
-    const overtimePay     = overtimeRate * (props.attendance?.overtime_hours || 0);
+    const overtimePay = props.overtime_pay || props.attendance?.overtime_pay || (overtimeRate * (props.attendance?.overtime_hours || 0));
 
     return {
         gross: grossSalary,

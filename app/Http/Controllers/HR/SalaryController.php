@@ -27,7 +27,12 @@ class SalaryController extends Controller
                 'users.role',
                 'departments.name as department',
                 'users.salary',
-                'payrolls.net_salary'
+                'payrolls.net_salary',
+                'payrolls.deductions',
+                'payrolls.absence_deduction',
+                'payrolls.late_deduction',
+                'payrolls.undertime_deduction',
+                'payrolls.overtime_pay'
             )
             ->whereNotNull('users.salary')
             ->where('users.salary', '>', 0)
@@ -35,17 +40,24 @@ class SalaryController extends Controller
             ->orderBy('users.id')
             ->get()
             ->map(function ($user) {
-                $salary = floatval($user->salary ?? 0);
-                $netSalary = $user->net_salary ? floatval($user->net_salary) : $salary;
+                $salary    = floatval($user->salary ?? 0);
+                $generated = $user->net_salary !== null;
+                $netSalary = $generated ? floatval($user->net_salary) : $salary;
 
                 return [
-                    'id'            => $user->id,
-                    'employee_id'   => $user->id,
-                    'employee_name' => $user->name,
-                    'role'          => $user->role,
-                    'department'    => $user->department ?? 'Not Assigned',
-                    'full_salary'   => $salary,
-                    'net_salary'    => $netSalary,
+                    'id'                  => $user->id,
+                    'employee_id'         => $user->id,
+                    'employee_name'       => $user->name,
+                    'role'                => $user->role,
+                    'department'          => $user->department ?? 'Not Assigned',
+                    'full_salary'         => $salary,
+                    'net_salary'          => $netSalary,
+                    'total_deductions'    => $generated ? floatval($user->deductions)          : null,
+                    'absence_deduction'   => $generated ? floatval($user->absence_deduction)   : null,
+                    'late_deduction'      => $generated ? floatval($user->late_deduction)      : null,
+                    'undertime_deduction' => $generated ? floatval($user->undertime_deduction) : null,
+                    'overtime_pay'        => $generated ? floatval($user->overtime_pay ?? 0)   : null,
+                    'payroll_generated'   => $generated,
                 ];
             });
 
@@ -128,10 +140,10 @@ class SalaryController extends Controller
 
         return Inertia::render('HR/Salaries/View', [
             'employee' => [
-                'id'          => $user->id,
-                'employee_id' => $user->id,
-                'name'        => $user->name,
-                'department'  => $department,
+                'id'         => $user->id,
+                'employee_id'=> $user->id,
+                'name'       => $user->name,
+                'department' => $department,
             ],
             'salary' => [
                 'full_salary' => $salary,
@@ -176,6 +188,7 @@ class SalaryController extends Controller
                 ->with('error', 'Employee not found');
         }
 
+        $department         = $user->department ?? 'Not Assigned';
         $grossSalary        = floatval($user->salary ?? 0);
         $currentMonth       = Carbon::now()->month;
         $currentYear        = Carbon::now()->year;
@@ -218,15 +231,14 @@ class SalaryController extends Controller
             $workedHours   = max(0, round($workedMinutes / 60, 2));
 
             if ($workedHours >= 8.0) {
-                $hoursWorked    = 8.0;
                 $overtimeHours += round($workedHours - 8.0, 2);
             } else {
-                $hoursWorked     = $workedHours;
-                $undertimeHours += max(0, 8.0 - $hoursWorked);
+                $undertimeHours += max(0, 8.0 - $workedHours);
             }
 
-            $totalHoursWorked += $hoursWorked;
-            DB::table('attendances')->where('id', $record->id)->update(['hours_worked' => $hoursWorked]);
+            // Store actual hours worked so view() can display overtime correctly
+            $totalHoursWorked += min(8.0, $workedHours);
+            DB::table('attendances')->where('id', $record->id)->update(['hours_worked' => $workedHours]);
         }
 
         $dailyRate          = $grossSalary / $workingDaysInMonth;
