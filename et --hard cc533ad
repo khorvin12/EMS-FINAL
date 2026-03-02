@@ -1,0 +1,81 @@
+[33m8a035ae[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mTableChecking2[m[33m)[m Merge Trial into TableCheking - keep TableChecking as base
+[33mcc533ad[m[33m ([m[1;31morigin/TableChecking2[m[33m)[m Simidone
+[33m711a6a3[m Done-Table
+[33m30a2576[m Near-Done
+[33m661a8df[m Semi
+[33ma9f44c3[m Semi
+[33m319d77a[m SemiComplete
+[33m8211adc[m[33m ([m[1;31morigin/Trial[m[33m, [m[1;32mTrial[m[33m)[m Added HR Dashboard not complete
+[33m0802720[m[33m ([m[1;31morigin/TableCheking[m[33m, [m[1;31morigin/Master2[m[33m, [m[1;31morigin/Backend-SalaryReport[m[33m, [m[1;32mTableCheking[m[33m, [m[1;32mMaster2[m[33m)[m Ongoing-Simi-Done
+[33mfcae920[m Ongoingtable
+[33m2c02537[m Added HR Dashboard
+[33m83b9523[m OngoingChecking
+[33m855f159[m Fixing HR
+[33m223b64b[m ongoingCheckingTable
+[33mfa6b31d[m[33m ([m[1;31morigin/HR-Backend-Attendance-Ongoing[m[33m, [m[1;32mHR-Backend-Attendance-Ongoing[m[33m)[m SimiComplete
+[33m0f76f11[m Trial
+[33m0920ae0[m[33m ([m[1;31morigin/HR-Backend-Salary-Attendance[m[33m, [m[1;32mHR-Backend-Salary-Attendance[m[33m)[m Complete-Attendance/Salary
+[33mf2e39aa[m Complete-Attendance/Salary
+[33md799d83[m SemiDone
+[33m9280cab[m Simi-Attendance
+[33me5313e8[m Simi-Attendance
+[33maf8ead4[m[33m ([m[1;31morigin/HR-Backend-Salary[m[33m, [m[1;32mvv[m[33m, [m[1;32mHR-Backend-Salary[m[33m)[m HR-Backend-Salary-SimiDone
+[33m519434e[m[33m ([m[1;32mall[m[33m, [m[1;32mHR-Backend-Leave/View[m[33m)[m Backend-Leave
+[33m3f02530[m Resolve-Conflict
+[33m5f63f6f[m[33m ([m[1;31morigin/HR-Backend-Attendance[m[33m, [m[1;32mHR-Backend-Attendance[m[33m)[m Merge HR-Attendance into HR-Backend-Attendance
+[33m265430f[m[33m ([m[1;32mHR-Backend-Layout[m[33m)[m Done-Layout
+[33ma6dddd5[m ConnectHR
+[33m3808d52[m[33m ([m[1;31morigin/HR-Backend-Layout[m[33m)[m Merge HR-Layout into HR-Backend-Layout
+[33mc932a54[m[33m ([m[1;32mHR-Layout[m[33m)[m Updated Color
+[33m3fef898[m[33m ([m[1;31morigin/Employee-Attendance-Backend[m[33m, [m[1;31morigin/AdminComplete[m[33m, [m[1;31morigin/Admin-Leaves-Backend[m[33m, [m[1;32mEmployee-Attendance-Backend[m[33m, [m[1;32mAdminComplete[m[33m, [m[1;32mAdmin-Leaves-Backend[m[33m)[m Remove accidental generated file
+[33m138c5bf[m complete-leaves
+[33m6e76883[m[33m ([m[1;31morigin/HR-LeaveView[m[33m, [m[1;32mHR-LeaveView[m[33m, [m[1;32mHR-Leave[m[33m)[m Added HR Leave View
+[33m2e4abf6[m[33m ([m[1;31morigin/HR-Leave[m[33m)[m Added HR Leave Management
+[33m7c0a3a2[m Updated HR Layout
+[33me92c743[m[33m ([m[1;31morigin/HR-Attendance[m[33m, [m[1;32mHR-Attendance[m[33m)[m HR Attendance added
+[33m52218ed[m Leaves
+[33mbc7c7af[m Merge leaves-jade into Admin-Leaves-Backend
+[33m289d965[m[33m ([m[1;31morigin/leaves-jade[m[33m, [m[1;32mleaves-jade[m[33m)[m Merge Admin-Leaves into leaves-jade - resolved all conflicts
+[33m4ea022d[m[33m ([m[1;32mAdd-Employee-Backend[m[33m)[m Employee
+[33m00e1352[m[33m ([m[1;31morigin/Add-Employee-Backend[m[33m)[m Merge branch 'Add-Employee-Backend' of https://github.com/khorvin12/EMS-FINAL into Add-Employee-Backend
+[33m3ef02fb[m AdminWithEmployee
+[33m5cc09ac[m Merge branch 'Add-Employee-Backend' of https://github.com/khorvin12/EMS-FINAL into Add-Employee-Backend
+[33m32ec03b[m Merge Test-Nico into Add-Employee-Backend
+[33m8acaf56[m[33m ([m[1;31morigin/Admin-Employeeedit[m[33m, [m[1;31morigin/Admin-Employee-Backend[m[33m, [m[1;32mAdmin-Employeeedit[m[33m, [m[1;32mAdmin-Employee-Backend[m[33m)[m Complete-view-walapa
+[33m70df1fb[m[33m ([m[1;31morigin/Test-Nico[m[33m, [m[1;32mTest-Nico[m[33m)[m Describe what you changed
+[33m4180ea9[m Leaves-jade
+[33m64f924d[m[33m ([m[1;31morigin/Admin-Employee-to-department[m[33m, [m[1;32mAdmin-Employee-to-department[m[33m)[m Department
+[33m0034107[m[33m ([m[1;31morigin/Admin-Employee-view[m[33m, [m[1;31morigin/Admin-Employee-Dashboard[m[33m, [m[1;32mAdmin-Employee-view[m[33m, [m[1;32mAdmin-Employee-Dashboard[m[33m)[m List-Employee
+[33m4d670a0[m List-Employee
+[33m6038ee6[m[33m ([m[1;31morigin/Admin-Employee-Edit[m[33m, [m[1;32mAdmin-Employee-Edit[m[33m)[m ADD-and-Edit-Department
+[33mfa53ca0[m Merge Admin-EditDepartment - resolve Layout conflict
+[33mcd715a6[m Merge Admin-EditDepartment
+[33mef58611[m Department-Backend
+[33m9a6b050[m Department-Backend
+[33m95033d4[m Merge Admin-AddNewDepartment
+[33m19cd716[m Merge Admin-AddNewDepartment
+[33m739b7a3[m DepartmentManage
+[33m1690440[m Merge Admin-ManageDepartment into Add-Employee-Backend
+[33me4da369[m Dashboard-Employee-count
+[33me468bd2[m[33m ([m[1;32mEmploKER[m[33m)[m Add-Employee-Backend
+[33mb1101be[m Add-Employee-Backend
+[33m38c302c[m[33m ([m[1;31morigin/add[m[33m)[m add dash
+[33m3d283f6[m added HR Layout
+[33m69afcbe[m[33m ([m[1;31morigin/Admin-EditDepartment[m[33m)[m Updated
+[33m93271e7[m addker
+[33m9f35149[m Added Edit Department
+[33m4b0f922[m[33m ([m[1;31morigin/Admin-AddNewDepartment[m[33m, [m[1;32mAdmin-AddNewDepartment[m[33m)[m Added AddNewDepartment
+[33m1e4c0b4[m[33m ([m[1;31morigin/Admin-ManageDepartment[m[33m)[m Added ManageDepartment
+[33macb92a4[m[33m ([m[1;31morigin/AdminDashboard[m[33m)[m Added Admin Dashboard
+[33m968ce81[m Added Admin Layout
+[33m85cb8bc[m Save ADD
+[33m216eff5[m EmploKER
+[33m6140021[m[33m ([m[1;31morigin/Layouts[m[33m, [m[1;32mLayouts[m[33m)[m updated Layout and Dashboard
+[33m7ca504d[m Add Layout and Dashboard
+[33mb0f4837[m[33m ([m[1;31morigin/login[m[33m)[m nico
+[33m5f65609[m[33m ([m[1;31morigin/master[m[33m, [m[1;32mmaster[m[33m)[m merged with master
+[33ma052edb[m[33m ([m[1;31morigin/try[m[33m, [m[1;31morigin/login-design[m[33m, [m[1;32mtry[m[33m)[m Update routes and remove Home.vue
+[33mf08a193[m Final login page
+[33m3f4d02a[m Add simple login page
+[33m9be7da8[m Add simple login page
+[33m4509f86[m Initial commit
