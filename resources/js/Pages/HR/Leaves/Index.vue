@@ -2,314 +2,172 @@
 import { Link } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 
+// Receive data from controller
 const props = defineProps({
-    leaves: Array,
+    leaves: Object,
     stats: Object
 });
 
+// Search and filter state
 const searchQuery = ref('');
-const dateFilter  = ref('');
-const activeTab   = ref('all'); // 'all' | 'pending' | 'approved' | 'rejected'
-const selectedEmp = ref(null);
+const dateFilter = ref('');
 
-// Group leaves by employee for "View by Employee" mode
-const employeeGroups = computed(() => {
-    const map = {};
-    (props.leaves || []).forEach(leave => {
-        const key = leave.user.id;
-        if (!map[key]) {
-            map[key] = {
-                user_id: leave.user.id,
-                name:    leave.user.name,
-                email:   leave.user.email,
-                leaves:  []
-            };
-        }
-        map[key].leaves.push(leave);
-    });
-    return Object.values(map);
-});
-
-const filteredEmployees = computed(() => {
-    if (!searchQuery.value) return employeeGroups.value;
-    const q = searchQuery.value.toLowerCase();
-    return employeeGroups.value.filter(e =>
-        e.name?.toLowerCase().includes(q) ||
-        e.user_id?.toString().includes(q)
-    );
-});
-
-// Tab counts derived from raw leaves (always reflect full data)
-const tabCounts = computed(() => {
-    const all      = props.leaves || [];
-    return {
-        all:      all.length,
-        pending:  all.filter(l => l.status === 'pending').length,
-        approved: all.filter(l => l.status === 'approved').length,
-        rejected: all.filter(l => l.status === 'rejected').length,
-    };
-});
-
+// Filtered leaves based on search and date
 const filteredLeaves = computed(() => {
-    let result = props.leaves || [];
+    let result = props.leaves?.data || [];
 
-    // Tab filter
-    if (activeTab.value !== 'all') {
-        result = result.filter(l => l.status === activeTab.value);
-    }
-
-    // Search filter
+    // Search by employee name or ID
     if (searchQuery.value) {
-        const q = searchQuery.value.toLowerCase();
-        result = result.filter(l =>
-            l.user.name.toLowerCase().includes(q) ||
-            l.id.toString().includes(q)
+        result = result.filter(leave =>
+            leave.user.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            leave.id.toString().includes(searchQuery.value)
         );
     }
 
-    // Date filter
+    // Filter by date
     if (dateFilter.value) {
-        result = result.filter(l =>
-            l.start_date <= dateFilter.value && l.end_date >= dateFilter.value
+        result = result.filter(leave =>
+            leave.start_date <= dateFilter.value && leave.end_date >= dateFilter.value
         );
     }
 
     return result;
 });
 
-const tabs = computed(() => [
-    { key: 'all',      label: 'All',      count: tabCounts.value.all },
-    { key: 'pending',  label: 'Pending',  count: tabCounts.value.pending },
-    { key: 'approved', label: 'Approved', count: tabCounts.value.approved },
-    { key: 'rejected', label: 'Rejected', count: tabCounts.value.rejected },
-]);
-
+// Format date helper
 const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
 };
 
+// Status badge color
 const getStatusColor = (status) => {
-    switch (status) {
-        case 'approved': return 'bg-green-500 text-white';
-        case 'rejected': return 'bg-red-500 text-white';
-        case 'pending':  return 'bg-yellow-500 text-white';
-        default:         return 'bg-gray-500 text-white';
+    // Convert to lowercase to ensure it matches regardless of database formatting
+    const s = status?.toLowerCase();
+
+    switch (s) {
+        case 'approved': return 'bg-green-500 text-black';
+        case 'rejected': return 'bg-red-500 text-black';
+        case 'pending': return 'bg-yellow-500 text-black';
+        default: return 'bg-gray-500 text-black';
     }
 };
 
-const getTabStyle = (key) => {
-    const base = 'px-4 py-1.5 rounded-md text-sm font-medium border transition-colors';
-    return activeTab.value === key
-        ? `${base} bg-blue-500 text-white border-blue-500`
-        : `${base} bg-white text-gray-700 border-gray-300 hover:bg-gray-50`;
-};
+const TableColumns = [
+    { name: 'Serial No.', key: 'serial' },
+    { name: 'Employee ID', key: 'employee_id' },
+    { name: 'Name', key: 'name' },
+    { name: 'Start Date', key: 'start_date' },
+    { name: 'End Date', key: 'end_date' },
+    { name: 'Reason', key: 'reason' },
+    { name: 'Status', key: 'status', align: 'center' },
+    { name: 'Action', key: 'action', align: 'center' }
+];
+
+const LeaveDataTable = computed(() => {
+    return filteredLeaves.value.map((leave, index) => ({
+        serial: index + 1,
+        employee_id: leave.user?.id || 'N/A',
+        name: leave.user?.name || 'Unknown',
+        start_date: formatDate(leave.start_date),
+        end_date: formatDate(leave.end_date),
+        reason: leave.reason,
+        status: leave.status,
+        id: leave.id
+    }));
+});
 </script>
 
 <template>
-    <h1 class="text-center text-3xl font-bold mb-8">Manage Leave Request</h1>
+    <div class="flex flex-col">
+        <div class="max-w-8xl mx-auto">
+            <!-- Content Title -->
+            <h1 class="text-center text-3xl font-bold mb-12">Manage Leave Request</h1>
 
-    <!-- ── ALL RECORDS VIEW ── -->
-    <template v-if="!selectedEmp">
+            <div class="flex items-center justify-between mb-6">
+                <!-- Search -->
+                <input v-model="searchQuery" type="search" placeholder="Search By Name or ID"
+                    class="bg-white rounded-md p-2 border border-gray-300 focus:outline-none focus:border-blue-400" />
 
-        <!-- Tab bar + actions row -->
-        <div class="flex items-center justify-between mb-6">
-
-            <!-- Status tabs -->
-            <div class="flex items-center gap-2">
-                <button
-                    v-for="tab in tabs"
-                    :key="tab.key"
-                    @click="activeTab = tab.key"
-                    :class="getTabStyle(tab.key)"
-                >
-                    {{ tab.label }} ({{ tab.count }})
-                </button>
-            </div>
-
-            <!-- Right-side controls -->
-            <div class="flex items-center gap-4">
-                <input
-                    v-model="searchQuery"
-                    type="search"
-                    placeholder="Search by Name or ID"
-                    class="bg-white rounded-md p-2 border border-gray-300 text-sm"
-                />
+                <!-- Date Filter -->
                 <div class="flex items-center gap-2">
-                    <label class="text-sm font-medium text-gray-600">Filter by Date</label>
-                    <input
-                        v-model="dateFilter"
-                        type="date"
-                        class="bg-white rounded-md p-2 border border-gray-300 text-sm"
-                    />
+                    <label class="text-sm font-medium">Filter by Date</label>
+                    <input v-model="dateFilter" type="date" name="date"
+                        class="bg-white rounded-md p-2 border border-gray-300 focus:outline-none focus:border-blue-400">
                 </div>
             </div>
-        </div>
 
-        <!-- Table -->
-        <table class="w-full shadow-lg overflow-hidden table-fixed bg-white rounded-lg">
-            <thead>
-                <tr class="bg-gray-400 text-black font-medium text-sm">
-                    <th class="p-4">No.</th>
-                    <th class="p-4">Employee</th>
-                    <th class="p-4">Reason</th>
-                    <th class="p-4">Start Date</th>
-                    <th class="p-4">End Date</th>
-                    <th class="p-4">Status</th>
-                    <th class="p-4">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-if="filteredLeaves.length === 0">
-                    <td colspan="7" class="text-center p-8 text-gray-500">No leave requests found</td>
-                </tr>
-                <tr
-                    v-for="(leave, index) in filteredLeaves"
-                    :key="leave.id"
-                    class="bg-white text-center border-slate-200 border-t"
-                >
-                    <td class="p-4 text-gray-600">{{ String(index + 1).padStart(3, '0') }}</td>
-                    <td class="p-4 font-medium">{{ leave.user.name }}</td>
-                    <td class="p-4 text-gray-600">{{ leave.reason }}</td>
-                    <td class="p-4">{{ formatDate(leave.start_date) }}</td>
-                    <td class="p-4">{{ formatDate(leave.end_date) }}</td>
-                    <td class="p-4">
-                        <span
-                            :class="getStatusColor(leave.status)"
-                            class="px-3 py-1 rounded-full text-xs font-semibold"
-                        >
-                            {{ leave.status.charAt(0).toUpperCase() + leave.status.slice(1) }}
-                        </span>
-                    </td>
-                    <td class="p-4">
-                        <Link
-                            :href="`/hr/leaves/review/${leave.id}`"
-                            class="bg-blue-500 hover:bg-blue-400 rounded-md px-4 py-1 text-white text-sm"
-                        >
-                            Review
-                        </Link>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+            <!-- Stats Summary (Optional) -->
+            <div v-if="stats" class="grid grid-cols-4 gap-4 mb-6">
+                <div class="bg-white rounded-lg p-4 shadow">
+                    <p class="text-sm text-gray-600">Total</p>
+                    <p class="text-2xl font-bold">{{ stats.all }}</p>
+                </div>
 
-        <!-- Row count -->
-        <p class="text-center text-sm text-gray-500 mt-4">
-            Showing {{ filteredLeaves.length }} of {{ (props.leaves || []).length }} leave requests
-        </p>
-    </template>
+                <div class="bg-yellow-100 rounded-lg p-4 shadow">
+                    <p class="text-sm text-gray-600">Pending</p>
+                    <p class="text-2xl font-bold">{{ stats.pending }}</p>
+                </div>
 
-    <!-- ── VIEW BY EMPLOYEE LIST ── -->
-    <template v-else-if="selectedEmp === 'list'">
+                <div class="bg-green-100 rounded-lg p-4 shadow">
+                    <p class="text-sm text-gray-600">Approved</p>
+                    <p class="text-2xl font-bold">{{ stats.approved }}</p>
+                </div>
 
-        <div class="flex items-center justify-between mb-6">
-            <input
-                v-model="searchQuery"
-                type="search"
-                placeholder="Search By Name or ID"
-                class="bg-white rounded-md p-2 border border-gray-300 text-sm"
-            />
-            <button
-                @click="searchQuery = ''; selectedEmp = null"
-                class="bg-white rounded-md px-4 py-2 text-sm font-medium text-gray-600 border border-gray-300 hover:bg-gray-50"
-            >
-                ← All Records
-            </button>
-        </div>
-
-        <table class="w-full shadow-lg overflow-hidden table-fixed bg-white rounded-lg">
-            <thead>
-                <tr class="bg-gray-400 text-black font-medium text-sm">
-                    <th class="p-4">SNO</th>
-                    <th class="p-4">Employee ID</th>
-                    <th class="p-4">Employee Name</th>
-                    <th class="p-4">Total Leaves</th>
-                    <th class="p-4">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-if="filteredEmployees.length === 0">
-                    <td colspan="5" class="p-8 text-center text-gray-500">No employees found</td>
-                </tr>
-                <tr
-                    v-for="(emp, index) in filteredEmployees"
-                    :key="emp.user_id"
-                    class="bg-white text-center border-slate-200 border-t"
-                >
-                    <td class="p-4">{{ index + 1 }}</td>
-                    <td class="p-4">{{ emp.user_id }}</td>
-                    <td class="p-4 font-medium">{{ emp.name }}</td>
-                    <td class="p-4">{{ emp.leaves.length }}</td>
-                    <td class="p-4">
-                        <button
-                            @click="selectedEmp = emp"
-                            class="bg-blue-500 hover:bg-blue-400 text-white rounded-md px-4 py-1 text-sm font-medium"
-                        >
-                            View
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </template>
-
-    <!-- ── INDIVIDUAL EMPLOYEE LEAVE DETAIL ── -->
-    <template v-else>
-
-        <div class="flex items-center justify-between mb-6">
-            <button
-                @click="selectedEmp = 'list'"
-                class="bg-white rounded-md px-4 py-2 text-sm font-medium text-gray-600 border border-gray-300 hover:bg-gray-50"
-            >
-                ← Back to Employees
-            </button>
-            <div class="bg-white rounded-md px-4 py-2 text-sm border border-gray-300">
-                <span class="font-semibold text-gray-700">{{ selectedEmp.name }}</span>
+                <div class="bg-red-100 rounded-lg p-4 shadow">
+                    <p class="text-sm text-gray-600">Rejected</p>
+                    <p class="text-2xl font-bold">{{ stats.rejected }}</p>
+                </div>
             </div>
-        </div>
 
-        <table class="w-full shadow-lg overflow-hidden table-fixed bg-white rounded-lg">
-            <thead>
-                <tr class="bg-gray-400 text-black font-medium text-sm">
-                    <th class="p-4">SNO</th>
-                    <th class="p-4">Start Date</th>
-                    <th class="p-4">End Date</th>
-                    <th class="p-4">Reason</th>
-                    <th class="p-4">Status</th>
-                    <th class="p-4">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-if="!selectedEmp.leaves?.length">
-                    <td colspan="6" class="p-8 text-center text-gray-500">No leave records found</td>
-                </tr>
-                <tr
-                    v-for="(leave, index) in selectedEmp.leaves"
-                    :key="leave.id"
-                    class="bg-white text-center border-slate-200 border-t"
-                >
-                    <td class="p-4">{{ index + 1 }}</td>
-                    <td class="p-4">{{ formatDate(leave.start_date) }}</td>
-                    <td class="p-4">{{ formatDate(leave.end_date) }}</td>
-                    <td class="p-4">{{ leave.reason }}</td>
-                    <td class="p-4">
-                        <span
-                            :class="getStatusColor(leave.status)"
-                            class="px-3 py-1 rounded-full text-xs font-semibold"
-                        >
-                            {{ leave.status.charAt(0).toUpperCase() + leave.status.slice(1) }}
-                        </span>
-                    </td>
-                    <td class="p-4">
-                        <Link
-                            :href="`/hr/leaves/review/${leave.id}`"
-                            class="bg-blue-500 hover:bg-blue-400 rounded-md px-4 py-1 text-white text-sm"
-                        >
-                            Review
-                        </Link>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </template>
+            <table class="w-full shadow-lg overflow-hidden table-fixed bg-white rounded-lg text-left">
+                <thead>
+                    <tr class="bg-gray-400 text-black">
+                        <th v-for="column in TableColumns" :key="column.key" :class="[
+                            'p-6',
+                            column.align === 'center' ? 'text-center' : ''
+                        ]">
+                            {{ column.name }}
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <!-- Show message if no leaves found -->
+                    <tr v-if="!filteredLeaves || filteredLeaves.length === 0">
+                        <td colspan="8" class="text-center p-8 text-gray-500">
+                            No leave requests found
+                        </td>
+                    </tr>
+
+                    <!-- Display each leave request -->
+                    <tr v-for="(row, index) in LeaveDataTable" :key="row.id"
+                        class="bg-white text-left border-slate-200 border-t-4">
+                        <td class="px-6 py-4">{{ index + 1 }}</td>
+                        <td class="px-6 py-4">{{ row.user?.id || 'N/A' }}</td>
+                        <td class="px-6 py-4">{{ row.user?.name || 'Unknown' }}</td>
+                        <td class="px-6 py-4">{{ formatDate(row.start_date) }}</td>
+                        <td class="px-6 py-4">{{ formatDate(row.end_date) }}</td>
+                        <td class="px-6 py-4">{{ row.reason }}</td>
+                        <td class="px-6 py-4 text-center">
+                            <span :class="getStatusColor(row.status)"
+                                class="px-4 py-2 rounded-full text-sm font-semibold inline-block text-black">
+                                {{ row.status }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <Link :href="`/hr/leaves/review/${row.id}`"
+                                class="bg-blue-500 hover:bg-blue-600 rounded-lg px-4 py-2 text-sm font-semibold inline-block">
+                                View
+                            </Link>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </template>

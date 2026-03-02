@@ -21,13 +21,17 @@ const getStatusText = (status) => {
 </script>
 
 <template>
-    <div class="min-h-screen bg-gray-100 p-6">
+    <div class="">
         <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+
             <div class="flex justify-between items-center mb-6">
+
                 <h2 class="text-2xl font-bold">Leave Details</h2>
+
                 <Link href="/employee/leaves" class="text-2xl font-bold hover:text-red-600 transition">
                     ×
                 </Link>
+                
             </div>
 
             <div class="space-y-4">

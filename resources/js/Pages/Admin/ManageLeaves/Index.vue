@@ -1,15 +1,25 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3'
 import { ref, computed } from 'vue'
+import PaginationLinks from '../../Components/PaginationLinks.vue';
 
 interface Leave {
     id: number
-    user: { name: string; id: number }
+    user: { name: string }
     reason: string
     description?: string
     start_date: string
     end_date: string
     status: 'pending' | 'approved' | 'rejected'
+}
+
+interface PaginatedData<T> {
+    data: T[]
+    current_page: number
+    last_page: number
+    prev_page_url: string | null
+    next_page_url: string | null
+    total: number
 }
 
 interface Stats {
@@ -19,257 +29,175 @@ interface Stats {
 }
 
 const props = defineProps<{
-    leaves: Leave[]
+    leaves: PaginatedData<Leave>
     stats: Stats
 }>()
 
+const searchQuery = ref('')
+
 const selectedFilter = ref<'all' | 'pending' | 'approved' | 'rejected'>('all')
-const selectedEmp    = ref<null | 'list' | any>(null)
-const searchQuery    = ref('')
-
-// Group leaves by employee for View by Employee mode
-const employeeGroups = computed(() => {
-    const map: Record<number, any> = {}
-    props.leaves.forEach(leave => {
-        const key = leave.user.id
-        if (!map[key]) {
-            map[key] = { user_id: leave.user.id, name: leave.user.name, leaves: [] }
-        }
-        map[key].leaves.push(leave)
-    })
-    return Object.values(map)
-})
-
-const filteredEmployees = computed(() => {
-    if (!searchQuery.value) return employeeGroups.value
-    const q = searchQuery.value.toLowerCase()
-    return employeeGroups.value.filter((e: any) =>
-        e.name?.toLowerCase().includes(q) ||
-        e.user_id?.toString().includes(q)
-    )
-})
 
 const filteredLeaves = computed(() => {
-    let result = selectedFilter.value === 'all'
-        ? props.leaves
-        : props.leaves.filter(l => l.status === selectedFilter.value)
-    return result
+    let data = props.leaves.data
+
+    // 🔹 Filter by status
+    if (selectedFilter.value !== 'all') {
+        data = data.filter(leave => leave.status === selectedFilter.value)
+    }
+
+    // 🔹 Filter by search (Serial No or Name)
+    if (searchQuery.value.trim() !== '') {
+        const query = searchQuery.value.toLowerCase()
+
+        data = data.filter((leave, index) => {
+            const serial = String(index + 1).padStart(3, '0')
+            const name = leave.user.name.toLowerCase()
+
+            return (
+                serial.includes(query) ||
+                name.includes(query)
+            )
+        })
+    }
+
+    return data
 })
 
+
 const filterButtons = computed(() => [
-    { label: 'All',      value: 'all'      as const, count: props.leaves.length,  color: 'bg-blue-600' },
-    { label: 'Pending',  value: 'pending'  as const, count: props.stats.pending,  color: 'bg-yellow-500' },
+    { label: 'All', value: 'all' as const, count: props.leaves.total, color: 'bg-blue-600' },
+    { label: 'Pending', value: 'pending' as const, count: props.stats.pending, color: 'bg-yellow-500' },
     { label: 'Approved', value: 'approved' as const, count: props.stats.approved, color: 'bg-green-500' },
     { label: 'Rejected', value: 'rejected' as const, count: props.stats.rejected, color: 'bg-red-500' }
 ])
 
+
 const statusConfig: Record<string, { color: string; label: string }> = {
-    pending:  { color: 'bg-yellow-400', label: 'Pending' },
-    approved: { color: 'bg-green-400',  label: 'Approved' },
-    rejected: { color: 'bg-red-400',    label: 'Rejected' }
+    pending: { color: 'bg-yellow-400', label: 'Pending' },
+    approved: { color: 'bg-green-500', label: 'Approved' },
+    rejected: { color: 'bg-red-500', label: 'Rejected' }
 }
 
-const getStatusConfig = (status: string) => statusConfig[status] || { color: 'bg-gray-400', label: 'Unknown' }
+const getStatusConfig = (status: string) => {
+    return statusConfig[status] || { color: 'bg-gray-400', label: 'Unknown' }
+}
 
 const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-        year: 'numeric', month: 'short', day: 'numeric'
+    const date = new Date(dateString)
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
     })
 }
 
+const tableColumns = [
+    { label: 'Serial No', key: 'number', align: 'left' },
+    { label: 'Name', key: 'employee', align: 'left' },
+    { label: 'Reason', key: 'reason', align: 'left' },
+    { label: 'Start Date', key: 'start_date', align: 'left' },
+    { label: 'End Date', key: 'end_date', align: 'left' },
+    { label: 'Status', key: 'status', align: 'center' },
+    { label: 'Actions', key: 'actions', align: 'center' }
+]
+
 const leaveTableData = computed(() =>
     filteredLeaves.value.map((leave, index) => ({
-        number:     String(index + 1).padStart(3, '0'),
-        employee:   leave.user.name,
-        reason:     leave.reason,
+        number: String(index + 1).padStart(3, '0'),
+        employee: leave.user.name,
+        reason: leave.reason,
         start_date: formatDate(leave.start_date),
-        end_date:   formatDate(leave.end_date),
-        status:     getStatusConfig(leave.status),
-        id:         leave.id
+        end_date: formatDate(leave.end_date),
+        status: getStatusConfig(leave.status),
+        id: leave.id
     }))
 )
 
-const emptyStateMessage = computed(() =>
-    selectedFilter.value === 'all'
+const emptyStateMessage = computed(() => {
+    return selectedFilter.value === 'all'
         ? 'No leave requests submitted yet'
         : `No ${selectedFilter.value} leave requests`
-)
+})
 </script>
 
 <template>
-    <main class="p-6 min-h-screen bg-gray-50">
-        <h1 class="text-3xl font-bold mb-8 text-center text-gray-800">Manage Leaves</h1>
+    <div class="flex flex-col px-6">
 
-        <!-- ── ALL RECORDS VIEW ── -->
-        <template v-if="!selectedEmp">
+        <!-- Header -->
+        <h1 class="text-4xl font-bold mb-12 text-center text-gray-800">
+            Manage Leaves
+        </h1>
 
-            <!-- Filter tabs + View by Employee button -->
-            <div class="flex items-center justify-between mb-8 flex-wrap gap-4">
-                <div class="flex gap-4 flex-wrap">
-                    <button
-                        v-for="filter in filterButtons"
-                        :key="filter.value"
-                        @click="selectedFilter = filter.value"
-                        :class="[
-                            selectedFilter === filter.value
-                                ? `${filter.color} text-white`
-                                : 'bg-white text-gray-700 hover:bg-gray-100',
-                            'px-6 py-2 rounded-lg font-semibold shadow-md transition-colors'
-                        ]"
-                    >
-                        {{ filter.label }} ({{ filter.count }})
-                    </button>
-                </div>
+        <div class="flex justify-between mb-6">
+            <div>
+                <input v-model="searchQuery" type="text" placeholder="Search by Serial No or Name..."
+                class="border border-gray-300 rounded-lg px-4 py-2 w-80 focus:outline-none focus:ring-2 focus:ring-blue-400" />
             </div>
 
-            <!-- Empty State -->
-            <div v-if="leaveTableData.length === 0" class="bg-white rounded-lg shadow-md p-12 text-center">
-                <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                </svg>
-                <p class="text-gray-500 text-lg">{{ emptyStateMessage }}</p>
-            </div>
-
-            <!-- Leave Table -->
-            <div v-else class="bg-white rounded-lg shadow-md overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="text-base min-w-full text-left">
-                        <thead class="bg-gray-100">
-                            <tr>
-                                <th class="px-6 py-4 border-b-2 border-gray-200 text-gray-700 font-bold">No.</th>
-                                <th class="px-6 py-4 border-b-2 border-gray-200 text-gray-700 font-bold">Employee</th>
-                                <th class="px-6 py-4 border-b-2 border-gray-200 text-gray-700 font-bold">Reason</th>
-                                <th class="px-6 py-4 border-b-2 border-gray-200 text-gray-700 font-bold">Start Date</th>
-                                <th class="px-6 py-4 border-b-2 border-gray-200 text-gray-700 font-bold">End Date</th>
-                                <th class="px-6 py-4 border-b-2 border-gray-200 text-gray-700 font-bold text-center">Status</th>
-                                <th class="px-6 py-4 border-b-2 border-gray-200 text-gray-700 font-bold text-center">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="row in leaveTableData" :key="row.id" class="hover:bg-gray-50 transition-colors">
-                                <td class="px-6 py-4 border-b border-gray-200">{{ row.number }}</td>
-                                <td class="px-6 py-4 border-b border-gray-200">{{ row.employee }}</td>
-                                <td class="px-6 py-4 border-b border-gray-200">{{ row.reason }}</td>
-                                <td class="px-6 py-4 border-b border-gray-200">{{ row.start_date }}</td>
-                                <td class="px-6 py-4 border-b border-gray-200">{{ row.end_date }}</td>
-                                <td class="px-6 py-4 border-b border-gray-200 text-center">
-                                    <span :class="[row.status.color, 'py-2 px-4 rounded-md text-sm shadow-sm font-bold text-white inline-block']">
-                                        {{ row.status.label }}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-center border-b border-gray-200">
-                                    <Link :href="`/manageleaves/leaves/review/${row.id}`">
-                                        <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg shadow-md transition-colors">
-                                            Review
-                                        </button>
-                                    </Link>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div v-if="leaveTableData.length > 0" class="mt-4 text-center text-gray-600">
-                Showing {{ leaveTableData.length }} of {{ leaves.length }} leave requests
-            </div>
-        </template>
-
-        <!-- ── VIEW BY EMPLOYEE LIST ── -->
-        <template v-else-if="selectedEmp === 'list'">
-            <div class="flex items-center justify-between mb-6">
-                <input v-model="searchQuery" type="search" placeholder="Search By Name or ID"
-                    class="bg-white rounded-md p-2 border border-gray-300" />
-                <button @click="searchQuery = ''; selectedEmp = null"
-                    class="bg-white rounded-md px-4 py-2 text-sm font-medium text-gray-600 border border-gray-300 hover:bg-gray-50">
-                    ← All Records
+            <div class="space-x-4">
+                <button v-for="filter in filterButtons" :key="filter.value" @click="selectedFilter = filter.value"
+                    :class="[
+                        selectedFilter === filter.value
+                            ? `${filter.color} text-white`
+                            : 'bg-white text-gray-700 hover:bg-gray-100',
+                        'px-6 py-2 rounded-lg font-semibold shadow-md transition-colors'
+                    ]">
+                    {{ filter.label }} ({{ filter.count }})
                 </button>
             </div>
+        </div>
 
-            <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                <table class="text-base min-w-full text-left">
-                    <thead class="bg-gray-100">
-                        <tr>
-                            <th class="px-6 py-4 border-b-2 border-gray-200 text-gray-700 font-bold">SNO</th>
-                            <th class="px-6 py-4 border-b-2 border-gray-200 text-gray-700 font-bold">Employee ID</th>
-                            <th class="px-6 py-4 border-b-2 border-gray-200 text-gray-700 font-bold">Employee Name</th>
-                            <th class="px-6 py-4 border-b-2 border-gray-200 text-gray-700 font-bold text-center">Total Leaves</th>
-                            <th class="px-6 py-4 border-b-2 border-gray-200 text-gray-700 font-bold text-center">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-if="filteredEmployees.length === 0">
-                            <td colspan="5" class="p-8 text-center text-gray-500">No employees found</td>
-                        </tr>
-                        <tr v-for="(emp, index) in filteredEmployees" :key="emp.user_id"
-                            class="hover:bg-gray-50 transition-colors">
-                            <td class="px-6 py-4 border-b border-gray-200">{{ index + 1 }}</td>
-                            <td class="px-6 py-4 border-b border-gray-200">{{ emp.user_id }}</td>
-                            <td class="px-6 py-4 border-b border-gray-200">{{ emp.name }}</td>
-                            <td class="px-6 py-4 border-b border-gray-200 text-center">{{ emp.leaves.length }}</td>
-                            <td class="px-6 py-4 border-b border-gray-200 text-center">
-                                <button @click="selectedEmp = emp"
-                                    class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg shadow-md transition-colors">
-                                    View
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </template>
+        <!-- Empty State -->
+        <div v-if="leaveTableData.length === 0" class="bg-white rounded-lg shadow-md p-12 text-center">
+            <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <p class="text-gray-500 text-lg">{{ emptyStateMessage }}</p>
+        </div>
 
-        <!-- ── INDIVIDUAL EMPLOYEE LEAVE DETAIL ── -->
-        <template v-else>
-            <div class="flex items-center justify-between mb-6">
-                <button @click="selectedEmp = 'list'"
-                    class="bg-white rounded-md px-4 py-2 text-sm font-medium text-gray-600 border border-gray-300 hover:bg-gray-50">
-                    ← Back to Employees
-                </button>
-                <div class="bg-white rounded-md px-4 py-2 text-sm border border-gray-300 flex items-center gap-2">
-                    <span class="font-semibold text-gray-700">{{ selectedEmp.name }}</span>
-                </div>
-            </div>
+        <!-- Leave Table -->
+        <div v-else class="bg-white rounded-lg shadow-lg overflow-x-auto">
+            <table class="min-w-full text-left">
+                <!-- Table Header -->
+                <thead class="bg-gray-400 text-black font-medium">
+                    <tr>
+                        <th v-for="column in tableColumns" :key="column.key" :class="[
+                            column.align === 'center' ? 'text-center' : ''
+                        ]">
+                            {{ column.label }}
+                        </th>
+                    </tr>
+                </thead>
 
-            <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                <table class="text-base min-w-full text-left">
-                    <thead class="bg-gray-100">
-                        <tr>
-                            <th class="px-6 py-4 border-b-2 border-gray-200 text-gray-700 font-bold">SNO</th>
-                            <th class="px-6 py-4 border-b-2 border-gray-200 text-gray-700 font-bold">Start Date</th>
-                            <th class="px-6 py-4 border-b-2 border-gray-200 text-gray-700 font-bold">End Date</th>
-                            <th class="px-6 py-4 border-b-2 border-gray-200 text-gray-700 font-bold">Reason</th>
-                            <th class="px-6 py-4 border-b-2 border-gray-200 text-gray-700 font-bold text-center">Status</th>
-                            <th class="px-6 py-4 border-b-2 border-gray-200 text-gray-700 font-bold text-center">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-if="!selectedEmp.leaves?.length">
-                            <td colspan="6" class="p-8 text-center text-gray-500">No leave records found</td>
-                        </tr>
-                        <tr v-for="(leave, index) in selectedEmp.leaves" :key="leave.id"
-                            class="hover:bg-gray-50 transition-colors">
-                            <td class="px-6 py-4 border-b border-gray-200">{{ index + 1 }}</td>
-                            <td class="px-6 py-4 border-b border-gray-200">{{ formatDate(leave.start_date) }}</td>
-                            <td class="px-6 py-4 border-b border-gray-200">{{ formatDate(leave.end_date) }}</td>
-                            <td class="px-6 py-4 border-b border-gray-200">{{ leave.reason }}</td>
-                            <td class="px-6 py-4 border-b border-gray-200 text-center">
-                                <span :class="[getStatusConfig(leave.status).color, 'py-2 px-4 rounded-md text-sm shadow-sm font-bold text-white inline-block']">
-                                    {{ getStatusConfig(leave.status).label }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 border-b border-gray-200 text-center">
-                                <Link :href="`/manageleaves/leaves/review/${leave.id}`">
-                                    <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg shadow-md transition-colors">
-                                        Review
-                                    </button>
-                                </Link>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </template>
+                <tbody>
+                    <tr v-for="row in leaveTableData" :key="row.id" class="border-t-4 border-slate-200">
+                        <td>{{ row.number }}</td>
+                        <td>{{ row.employee }}</td>
+                        <td>{{ row.reason }}</td>
+                        <td>{{ row.start_date }}</td>
+                        <td>{{ row.end_date }}</td>
+                        <td class="text-center">
+                            <span :class="[
+                                row.status.color,
+                                'py-2 px-4 rounded-full shadow-sm text-sm font-semibold text-black inline-block'
+                            ]">
+                                {{ row.status.label }}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <Link :href="`/manageleaves/leaves/review/${row.id}`"
+                                class="bg-blue-500 hover:bg-blue-600 text-black text-sm font-semibold py-2 px-4 rounded-lg shadow-md transition-colors inline-block">
+                                Review
+                            </Link>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-    </main>
+        <div class="mt-6">
+            <PaginationLinks :paginator="leaves" />
+        </div>
+    </div>
 </template>

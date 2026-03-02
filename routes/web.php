@@ -1,18 +1,21 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Employee\SalaryController;
-use App\Http\Controllers\Employee\AttendanceController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\ManageLeavesController;
-use App\Http\Controllers\Employee\LeaveController;
+
 use App\Http\Controllers\HR\AttendanceController as HRAttendanceController;
-use App\Http\Controllers\HR\SalaryController as HRSalaryController; // Add this line
+
+use App\Http\Controllers\Employee\SalaryController;
+use App\Http\Controllers\Employee\AttendanceController;
+use App\Http\Controllers\Employee\LeaveController;
 
 // Middleware
 use App\Http\Middleware\AdminMiddleware;
@@ -61,12 +64,13 @@ Route::middleware(['auth', AdminMiddleware::class])
 
         Route::post('/adddepartment', [DepartmentController::class, 'store']);
 
-        Route::get('/editdepartment/{id}', [DepartmentController::class, 'edit'])
-            ->name('editdepartment');
+        Route::get('/departments/{department}/edit', [DepartmentController::class, 'edit'])
+            ->name('departments.edit');
 
         Route::put('/editdepartment/{id}', [DepartmentController::class, 'update']);
 
-        Route::delete('/departments/{id}', [DepartmentController::class, 'destroy']);
+        Route::delete('/departments/{department}', [DepartmentController::class, 'destroy'])
+            ->name('departments.destroy');
 
         // Employee Management Pages
         Route::get('/manageemployees', [EmployeeController::class, 'index'])
@@ -96,8 +100,11 @@ Route::middleware(['auth', AdminMiddleware::class])
             ->name('employees.store');
 
         // Admin Settings
-        Route::inertia('/adminsettings', 'Admin/Settings/adminsettings')
-            ->name('adminsettings');
+        Route::inertia('/settings', 'Admin/Settings/AdminSettings')
+            ->name('settings');
+
+        // Change Password
+        Route::post('/reset-password', [AuthController::class, 'changePassword'])->name('password.reset');
 
         // Admin Leaves Management
         Route::get('/manageleaves/leaves', [ManageLeavesController::class, 'index'])
@@ -125,10 +132,48 @@ Route::middleware(['auth', EmployeeMiddleware::class])
     ->group(function () {
 
         // Employee Dashboard
-        Route::get('/dashboard', fn() => Inertia::render('Employee/Dashboard'))
+        Route::get('/dashboard', function () {
+
+            $user = Auth::user();
+
+            $attendanceHistory = DB::table('attendances')
+                ->where('user_id', $user->id)
+                ->orderBy('date', 'desc')
+                ->limit(5)
+                ->get();
+
+            $presentDays = DB::table('attendances')
+                ->where('user_id', $user->id)
+                ->whereMonth('date', now()->month)
+                ->where('status', 'present')
+                ->count();
+
+            // Pending leave count
+            $pendingLeaves = DB::table('leaves')
+                ->where('user_id', $user->id)
+                ->where('status', 'pending')
+                ->count();
+
+            // Total hours this month
+            $totalHours = DB::table('attendances')
+                ->where('user_id', $user->id)
+                ->whereMonth('date', now()->month)
+                ->sum('hours');
+
+            // Example hourly rate (you can store this in users table later)
+            $hourlyRate = 150;
+
+            $estimatedSalary = $totalHours * $hourlyRate;
+
+            return Inertia::render('Employee/Dashboard', [
+                'attendanceHistory' => $attendanceHistory,
+                'presentDays' => $presentDays,
+                'pendingLeaves' => $pendingLeaves,
+                'estimatedSalary' => $estimatedSalary,
+            ]);
+        })
             ->name('dashboard');
 
-        Route::inertia('/index', 'Employee/Index')->name('index');
 
         // Employee Leave Routes
         Route::get('/leaves', [LeaveController::class, 'index'])->name('leaves');
@@ -137,7 +182,7 @@ Route::middleware(['auth', EmployeeMiddleware::class])
         Route::get('/leaves/{leave}', [LeaveController::class, 'show'])->name('view-leave');
 
         // Employee Salary Routes
-        Route::get('/employee-salary', [SalaryController::class, 'index'])->name('employee-salary');
+        Route::get('/salary', [SalaryController::class, 'index'])->name('salary');
 
         // Employee Attendance Routes
         Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance');
@@ -145,6 +190,17 @@ Route::middleware(['auth', EmployeeMiddleware::class])
 
         // Employee Settings Routes
         Route::inertia('/settings', 'Employee/Settings/Index')->name('settings');
+
+        Route::inertia('/about', 'Employee/Settings/About')->name('about');
+
+         Route::inertia('/support', 'Employee/Settings/CustomerSupport')->name('customer-support');
+
+        // Change Password Route
+        Route::inertia('/change-password', 'Employee/Settings/ChangePassword')
+            ->name('change-password');
+
+        // Change Password
+        Route::post('/reset-password', [AuthController::class, 'changePassword'])->name('password.reset');
     });
 
 /*
@@ -161,16 +217,6 @@ Route::middleware(['auth', HRMiddleware::class])
         Route::get('/dashboard', fn() => Inertia::render('HR/Dashboard'))
             ->name('dashboard');
 
-        Route::inertia('/index', 'HR/Index')->name('index');
-
-        // HR Salary Routes - ADD THESE LINES
-        Route::get('/salaries', [HRSalaryController::class, 'index'])->name('salaries.index');
-        Route::get('/salaries/{employeeId}', [HRSalaryController::class, 'view'])->name('salaries.view');
-        Route::post('/salaries/{employeeId}/generate-payroll', [HRSalaryController::class, 'generatePayroll'])->name('salaries.generatePayroll');
-
-        // Remove or comment out this old route if it exists
-        // Route::inertia('/salary', 'HR/Salaries/Salary')->name('salary');
-    
         // HR Leaves Management - NOW USING THE SAME CONTROLLER AS ADMIN
         Route::get('/leaves', [ManageLeavesController::class, 'index'])
             ->name('leaves.index');
@@ -184,6 +230,8 @@ Route::middleware(['auth', HRMiddleware::class])
         Route::post('/leaves/{leave}/reject', [ManageLeavesController::class, 'reject'])
             ->name('leaves.reject');
 
+        // HR Attendance
+        Route::inertia('/attendance', 'HR/Attendance/Index')->name('attendance');
         // HR Attendance - NOW USING CONTROLLER TO FETCH DATA
         Route::get('/attendance/employees', [HRAttendanceController::class, 'employees'])->name('attendance.employees'); // ← ADD FIRST
         Route::get('/attendance', [HRAttendanceController::class, 'index'])->name('attendance');
@@ -191,6 +239,21 @@ Route::middleware(['auth', HRMiddleware::class])
         Route::put('/attendance/{id}', [HRAttendanceController::class, 'update'])->name('attendance.update');
         Route::delete('/attendance/{id}', [HRAttendanceController::class, 'destroy'])->name('attendance.destroy');
 
-        // HR Settings Routes
+        // HR Salary
+        Route::inertia('/salary', 'HR/Salary/Index')->name('salary');
+
+        // HR Settings
         Route::inertia('/settings', 'HR/Settings/Index')->name('settings');
+
+        // Change Password Route
+        Route::inertia('/change-password', 'HR/Settings/ChangePassword')->name('change-password');
+
+        // Change Password
+        Route::post('/reset-password', [AuthController::class, 'changePassword'])->name('password.reset');
+
+        // HR About and Support Pages
+        Route::inertia('/about', 'HR/Settings/About')->name('about');
+
+        // HR Customer Support Page
+        Route::inertia('/support', 'HR/Settings/CustomerSupport')->name('customer-support');
     });

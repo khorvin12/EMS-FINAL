@@ -105,12 +105,12 @@ class ManageLeavesController extends Controller
      * Both Admin and HR can see ALL leave requests
      */
     private function getFormattedLeaves()
-    {
-        return Leave::with('user')
-            ->orderBy('created_at', 'desc')
-            ->get()
-            ->map(fn($leave) => $this->formatLeaveData($leave));
-    }
+{
+    return Leave::with('user')
+        ->orderBy('created_at', 'desc')
+        ->paginate(6) // Change this to the number of items per page
+        ->through(fn($leave) => $this->formatLeaveData($leave));
+}
 
     /**
      * Format individual leave data

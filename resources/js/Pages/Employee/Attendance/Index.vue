@@ -1,8 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { Head, router, usePage } from '@inertiajs/vue3';
-
-const page = usePage();
+import { Head, router } from '@inertiajs/vue3';
 
 const props = defineProps({
     employee: {
@@ -13,10 +11,6 @@ const props = defineProps({
         type: Object,
         default: null
     },
-    attendanceHistory: {
-        type: Array,
-        default: () => []
-    }
 });
 
 const processing = ref(false);
@@ -29,13 +23,12 @@ setInterval(() => {
     currentTime.value = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
 }, 1000);
 
-// FIXED: Changed time_in/time_out to check_in/check_out
-const canTimeIn = computed(() => !props.todayAttendance || !props.todayAttendance.check_in);
-const canTimeOut = computed(() => props.todayAttendance && props.todayAttendance.check_in && !props.todayAttendance.check_out);
+const canTimeIn = computed(() => !props.todayAttendance || !props.todayAttendance.time_in);
+const canTimeOut = computed(() => props.todayAttendance && props.todayAttendance.time_in && !props.todayAttendance.time_out);
 
 const timeIn = () => {
     processing.value = true;
-    
+
     router.post('/employee/attendance/record', {
         type: 'time_in'
     }, {
@@ -56,7 +49,7 @@ const timeIn = () => {
 
 const timeOut = () => {
     processing.value = true;
-    
+
     router.post('/employee/attendance/record', {
         type: 'time_out'
     }, {
@@ -75,35 +68,17 @@ const timeOut = () => {
     });
 };
 
-const getStatusColor = (status) => {
-    const colors = {
-        'present': 'bg-green-100 text-green-800',
-        'late': 'bg-yellow-100 text-yellow-800',
-        'absent': 'bg-red-100 text-red-800',
-        'on_leave': 'bg-blue-100 text-blue-800'
-    };
-    return colors[status] || 'bg-gray-100 text-gray-800';
-};
-
-const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-};
-
 const formatTime = (timeString) => {
     if (!timeString) return '--';
-    // Handle HH:MM:SS format from database
-    const [hours, minutes] = timeString.toString().split(':');
-    const hour = parseInt(hours);
-    const ampm = hour >= 12 ? 'PM' : 'AM';
-    const displayHour = hour % 12 || 12;
-    return `${displayHour.toString().padStart(2, '0')}:${minutes} ${ampm}`;
+    return new Date('2000-01-01 ' + timeString).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
 };
 </script>
 
 <template>
+
     <Head title="Attendance" />
 
-    <div class="max-w-7xl mx-auto">
+    <div class="flex flex-col px-6">
         <!-- Header Section -->
         <div class="mb-8">
             <h2 class="text-3xl font-bold text-gray-900 mb-2">Attendance Tracker</h2>
@@ -117,8 +92,8 @@ const formatTime = (timeString) => {
                 <div>
                     <div class="bg-gray-50 rounded-lg p-6 mb-6">
                         <p class="text-sm text-gray-600 mb-1">Employee ID</p>
-                        <p class="text-xl font-bold text-gray-900 mb-4">{{ employee.id }}</p>
-                        
+                        <p class="text-xl font-bold text-gray-900 mb-4">{{ employee.employee_id }}</p>
+
                         <p class="text-sm text-gray-600 mb-1">Name</p>
                         <p class="text-xl font-bold text-gray-900">{{ employee.name }}</p>
                     </div>
@@ -134,18 +109,18 @@ const formatTime = (timeString) => {
                     <!-- Today's Status -->
                     <div v-if="todayAttendance" class="bg-gray-50 rounded-lg p-6 mb-6">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Today's Attendance</h3>
-                        
+
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <p class="text-xs text-gray-600 uppercase mb-1">Time In</p>
                                 <p class="text-2xl font-bold text-green-600">
-                                    {{ todayAttendance.check_in ? formatTime(todayAttendance.check_in) : '--' }}
+                                    {{ todayAttendance.time_in ? formatTime(todayAttendance.time_in) : '--' }}
                                 </p>
                             </div>
                             <div>
                                 <p class="text-xs text-gray-600 uppercase mb-1">Time Out</p>
                                 <p class="text-2xl font-bold text-red-600">
-                                    {{ todayAttendance.check_out ? formatTime(todayAttendance.check_out) : '--' }}
+                                    {{ todayAttendance.time_out ? formatTime(todayAttendance.time_out) : '--' }}
                                 </p>
                             </div>
                         </div>
@@ -158,12 +133,8 @@ const formatTime = (timeString) => {
 
                     <!-- Action Buttons -->
                     <div class="space-y-4">
-                        <button
-                            v-if="canTimeIn"
-                            @click="timeIn"
-                            :disabled="processing"
-                            class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                        >
+                        <button v-if="canTimeIn" @click="timeIn" :disabled="processing"
+                            class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
                             <span v-if="!processing">
                                 <i class="fa fa-sign-in mr-2"></i>
                                 Clock In
@@ -173,12 +144,8 @@ const formatTime = (timeString) => {
                             </span>
                         </button>
 
-                        <button
-                            v-if="canTimeOut"
-                            @click="timeOut"
-                            :disabled="processing"
-                            class="w-full bg-gradient-to-r from-red-500 to-red-600 text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                        >
+                        <button v-if="canTimeOut" @click="timeOut" :disabled="processing"
+                            class="w-full bg-gradient-to-r from-red-500 to-red-600 text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
                             <span v-if="!processing">
                                 <i class="fa fa-sign-out mr-2"></i>
                                 Clock Out
@@ -194,55 +161,6 @@ const formatTime = (timeString) => {
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Attendance History -->
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div class="p-6 bg-gray-50 border-b border-gray-200">
-                <h3 class="text-xl font-bold text-gray-900">Attendance History</h3>
-            </div>
-
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="bg-gray-100 border-b border-gray-200">
-                        <tr>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Time In</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Time Out</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Hours</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        <tr v-for="record in attendanceHistory" :key="record.id" class="hover:bg-gray-50 transition">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                                {{ formatDate(record.date) }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                {{ formatTime(record.check_in) }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                {{ formatTime(record.check_out) }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-semibold">
-                                {{ record.hours || 0 }} hrs
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span :class="getStatusColor(record.status)" class="px-3 py-1 rounded-full text-xs font-semibold uppercase">
-                                    {{ record.status }}
-                                </span>
-                            </td>
-                        </tr>
-
-                        <tr v-if="attendanceHistory.length === 0">
-                            <td colspan="5" class="px-6 py-12 text-center text-gray-500">
-                                <i class="fa fa-calendar-times-o text-4xl mb-3 block"></i>
-                                <p>No attendance records found</p>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
         </div>
     </div>

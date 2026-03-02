@@ -14,7 +14,7 @@ class EmployeeController extends Controller
 {
     public function index()
     {
-        $employees = User::with('department')->paginate(10);
+        $employees = User::with('department')->paginate(6);
 
         return Inertia::render('Admin/ManageEmployees/ManageEmployee', [
             'employees' => $employees

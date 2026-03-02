@@ -57,12 +57,12 @@ const getStatusText = (status) => {
         .join(' ');
 };
 
-const getHours = (checkIn, checkOut) => {
-    if (!checkIn || !checkOut) return 0;
+const getHours = (timeIn, timeOut) => {
+    if (!timeIn || !timeOut) return 0;
     try {
-        const timeIn = new Date(`2000-01-01 ${checkIn}`);
-        const timeOut = new Date(`2000-01-01 ${checkOut}`);
-        const hours = (timeOut - timeIn) / (1000 * 60 * 60) - 1;
+        const timeInDate = new Date(`2000-01-01 ${timeIn}`);
+        const timeOutDate = new Date(`2000-01-01 ${timeOut}`);
+        const hours = (timeOutDate - timeInDate) / (1000 * 60 * 60) - 1;
         return Math.max(0, Math.round(hours));
     } catch (e) {
         return 0;
@@ -82,12 +82,21 @@ const getHours = (checkIn, checkOut) => {
                 class="outline-none px-2"
             />
         </div>
+
+        <!-- View by Employee button -->
+        <Link
+            href="/hr/attendance/employees"
+            class="bg-blue-500 hover:bg-blue-400 text-white rounded-md px-4 py-2 text-sm font-medium"
+        >
+            View by Employee
+        </Link>
     </div>
 
     <table class="w-full shadow-lg overflow-hidden table-fixed bg-white rounded-lg">
         <thead>
             <tr class="bg-gray-400 text-black font-medium">
                 <th class="p-4">SNO</th>
+                <th class="p-6">Employee ID</th>
                 <th class="p-6">Employee Name</th>
                 <th class="p-4">Date</th>
                 <th class="p-4">Check In</th>
@@ -105,11 +114,12 @@ const getHours = (checkIn, checkOut) => {
                 class="bg-white-100 text-center border-slate-200 border-t-4"
             >
                 <td class="p-4">{{ index + 1 }}</td>
+                <td class="p-4">{{ attendance.employee_id }}</td>
                 <td class="p-4">{{ attendance.employee_name || 'N/A' }}</td>
                 <td class="p-4">{{ formatDate(attendance.date) }}</td>
-                <td class="p-4">{{ formatTime(attendance.check_in) }}</td>
-                <td class="p-4">{{ formatTime(attendance.check_out) }}</td>
-                <td class="p-4">{{ getHours(attendance.check_in, attendance.check_out) }}</td>
+                <td class="p-4">{{ formatTime(attendance.time_in) }}</td>
+                <td class="p-4">{{ formatTime(attendance.time_out) }}</td>
+                <td class="p-4">{{ getHours(attendance.time_in, attendance.time_out) }}</td>
                 <td class="p-4">
                     <button :class="getStatusClass(attendance.status)" class="rounded-sm px-2 py-1 text-white">
                         {{ getStatusText(attendance.status) }}
