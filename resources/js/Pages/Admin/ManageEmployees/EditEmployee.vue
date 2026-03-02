@@ -14,11 +14,11 @@ const form = useForm({
     last_name: props.employee?.last_name || "",
     email: props.employee?.email || "",
     phone: props.employee?.phone || "",
-    dob: props.employee?.dob || "",
+dob: props.employee?.dob ? props.employee.dob.substring(0, 10) : "",
     gender: props.employee?.gender || "",
     civil_status: props.employee?.civil_status || "",
     department_id: props.employee?.department_id || "",
-    hire_date: props.employee?.hire_date || "",
+hire_date: props.employee?.hire_date ? props.employee.hire_date.substring(0, 10) : "",
     salary: props.employee?.salary || "",
     role: props.employee?.role || "",
 });
@@ -109,29 +109,25 @@ function submit() {
                     }}</label>
 
                     <!-- Text/Email/Number/Date Inputs -->
-                    <input
-                        v-if="
-                            ['text', 'email', 'number', 'date'].includes(
-                                field.type,
-                            )
-                        "
-                        v-model="form[field.name]"
-                        :type="field.type"
-                        :placeholder="field.placeholder"
-                        :step="field.step"
-                        class="w-full border rounded px-3 py-2 mt-1"
-                        :class="{ 'border-red-500': form.errors[field.name] }"
-                        required
-                    />
+<input
+    v-if="['text', 'email', 'number', 'date'].includes(field.type)"
+    v-model="form[field.name]"
+    :type="field.type"
+    :placeholder="field.placeholder"
+    :step="field.step"
+    class="w-full border rounded px-3 py-2 mt-1"
+    :class="{ 'border-red-500': form.errors[field.name] }"
+    :required="form.role !== 'hr' && form.role !== 'admin' ? true : ['first_name', 'last_name', 'email'].includes(field.name)"
+/>
 
                     <!-- Select Inputs -->
-                    <select
-                        v-else-if="field.type === 'select'"
-                        v-model="form[field.name]"
-                        class="w-full border rounded px-3 py-2 mt-1"
-                        :class="{ 'border-red-500': form.errors[field.name] }"
-                        required
-                    >
+<select
+    v-else-if="field.type === 'select'"
+    v-model="form[field.name]"
+    class="w-full border rounded px-3 py-2 mt-1"
+    :class="{ 'border-red-500': form.errors[field.name] }"
+    :required="form.role !== 'hr' && form.role !== 'admin' ? true : field.name === 'role'"
+>
                         <option v-if="field.placeholder" value="">
                             {{ field.placeholder }}
                         </option>

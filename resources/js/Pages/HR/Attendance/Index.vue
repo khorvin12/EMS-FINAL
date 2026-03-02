@@ -88,7 +88,6 @@ const getHours = (checkIn, checkOut) => {
         <thead>
             <tr class="bg-gray-400 text-black font-medium">
                 <th class="p-4">SNO</th>
-                <th class="p-6">Employee ID</th>
                 <th class="p-6">Employee Name</th>
                 <th class="p-4">Date</th>
                 <th class="p-4">Check In</th>
@@ -106,7 +105,6 @@ const getHours = (checkIn, checkOut) => {
                 class="bg-white-100 text-center border-slate-200 border-t-4"
             >
                 <td class="p-4">{{ index + 1 }}</td>
-                <td class="p-4">{{ attendance.employee_id }}</td>
                 <td class="p-4">{{ attendance.employee_name || 'N/A' }}</td>
                 <td class="p-4">{{ formatDate(attendance.date) }}</td>
                 <td class="p-4">{{ formatTime(attendance.check_in) }}</td>

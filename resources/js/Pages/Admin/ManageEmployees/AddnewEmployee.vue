@@ -66,24 +66,24 @@ const formFields = [
         <label class="text-sm font-semibold">{{ field.label }}</label>
         
         <!-- Text/Email/Number/Date Inputs -->
-        <input 
-          v-if="['text', 'email', 'number', 'date'].includes(field.type)"
-          :type="field.type"
-          v-model="form[field.name]"
-          :placeholder="field.placeholder"
-          class="w-full mt-1 border rounded px-3 py-2"
-          :class="{ 'border-red-500': form.errors[field.name] }"
-          required 
-        />
+<input 
+  v-if="['text', 'email', 'number', 'date'].includes(field.type)"
+  :type="field.type"
+  v-model="form[field.name]"
+  :placeholder="field.placeholder"
+  class="w-full mt-1 border rounded px-3 py-2"
+  :class="{ 'border-red-500': form.errors[field.name] }"
+  :required="form.role !== 'hr' && form.role !== 'admin' ? true : ['first_name', 'last_name', 'email'].includes(field.name)"
+/>
         
         <!-- Select Inputs -->
-        <select 
-          v-else-if="field.type === 'select'"
-          v-model="form[field.name]"
-          class="w-full mt-1 border rounded px-3 py-2"
-          :class="{ 'border-red-500': form.errors[field.name] }"
-          required
-        >
+<select 
+  v-else-if="field.type === 'select'"
+  v-model="form[field.name]"
+  class="w-full mt-1 border rounded px-3 py-2"
+  :class="{ 'border-red-500': form.errors[field.name] }"
+  :required="form.role !== 'hr' && form.role !== 'admin' ? true : field.name === 'role'"
+>
           <option v-if="field.placeholder" value="">{{ field.placeholder }}</option>
           
           <!-- For department options (array of objects) -->

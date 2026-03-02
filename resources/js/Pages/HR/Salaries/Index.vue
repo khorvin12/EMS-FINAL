@@ -26,8 +26,7 @@ const filteredSalaries = computed(() => {
 
     if (searchQuery.value) {
         result = result.filter(s =>
-            s.employee_id.toString().includes(searchQuery.value) ||
-            s.employee_name.toLowerCase().includes(searchQuery.value.toLowerCase())
+s.employee_name.toLowerCase().includes(searchQuery.value.toLowerCase())
         );
     }
 
@@ -54,18 +53,6 @@ const formatCurrency = (value) => {
         />
 
         <div class="flex items-center gap-4">
-            <label class="flex items-center gap-2 cursor-pointer select-none">
-                <input type="checkbox" v-model="showEmployee" class="w-4 h-4 accent-green-500" />
-                <span class="text-sm font-medium text-gray-700">Show Employee</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer select-none">
-                <input type="checkbox" v-model="showHR" class="w-4 h-4 accent-blue-500" />
-                <span class="text-sm font-medium text-gray-700">Show HR</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer select-none">
-                <input type="checkbox" v-model="showAdmin" class="w-4 h-4 accent-red-500" />
-                <span class="text-sm font-medium text-gray-700">Show Admin</span>
-            </label>
         </div>
 
         <Link
@@ -80,7 +67,6 @@ const formatCurrency = (value) => {
         <thead>
             <tr class="bg-gray-400 text-black font-medium text-lg text-left">
                 <th class="p-6">Serial No</th>
-                <th class="p-6">Employee ID</th>
                 <th class="p-6">Employee Name</th>
                 <th class="p-6">Role</th>
                 <th class="p-6">Department</th>
@@ -96,7 +82,6 @@ const formatCurrency = (value) => {
                 class="border-t-4 border-gray-200 hover:bg-gray-50"
             >
                 <td class="p-6">{{ index + 1 }}</td>
-                <td class="p-6">{{ salary.employee_id }}</td>
                 <td class="p-6">{{ salary.employee_name }}</td>
                 <td class="p-6">
                     <span :class="{

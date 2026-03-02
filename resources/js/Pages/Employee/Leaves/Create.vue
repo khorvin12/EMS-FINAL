@@ -73,20 +73,12 @@ const cancel = () => {
                 </div>
 
                 <div class="grid grid-cols-1 gap-1">
-                    <label>Reason</label>
-                    <input
-                        type="text"
-                        v-model="form.reason"
-                        placeholder="Title"
-                        class="p-2 rounded-md border border-gray-300"
-                        required
-                    />
                     <span v-if="form.errors.reason" class="text-red-500 text-sm">{{ form.errors.reason }}</span>
                     
                     <textarea
                         rows="6"
-                        v-model="form.description"
-                        placeholder="Description"
+                        v-model="form.reason"
+                        placeholder="Reason"
                         class="p-2 rounded-md border border-gray-300"
                     />
                 </div>

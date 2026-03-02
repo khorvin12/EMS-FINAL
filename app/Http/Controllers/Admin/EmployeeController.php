@@ -14,9 +14,7 @@ class EmployeeController extends Controller
 {
     public function index()
     {
-        $employees = User::with('department')
-            ->where('role', '!=', 'admin')
-            ->paginate(10);
+        $employees = User::with('department')->paginate(10);
 
         return Inertia::render('Admin/ManageEmployees/ManageEmployee', [
             'employees' => $employees
@@ -49,7 +47,7 @@ class EmployeeController extends Controller
     public function edit($id)
     {
         return Inertia::render('Admin/ManageEmployees/EditEmployee', [
-            'employee'    => User::findOrFail($id),
+            'employee' => User::findOrFail($id),
             'departments' => $this->getDepartments()
         ]);
     }
@@ -75,36 +73,38 @@ class EmployeeController extends Controller
 
     private function validateEmployee(Request $request, $id = null)
     {
+        $isHRorAdmin = in_array($request->role, ['hr', 'admin']);
+
         return $request->validate([
-            'first_name'    => 'required|string|max:255',
-            'last_name'     => 'required|string|max:255',
-            'email'         => 'required|email|unique:users,email' . ($id ? ",$id" : ''),
-            'phone'         => 'required|string|max:15',
-            'department_id' => 'required|exists:departments,id',
-            'dob'           => 'required|date',
-            'gender'        => 'required|string',
-            'civil_status'  => 'required|string',
-            'role'          => 'required|in:employee,hr,admin',
-            'hire_date'     => 'required|date',
-            'salary'        => 'required|numeric|min:0',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email' . ($id ? ",$id" : ''),
+            'phone' => 'nullable|string|max:15',
+            'department_id' => $isHRorAdmin ? 'nullable|exists:departments,id' : 'required|exists:departments,id',
+            'dob' => 'nullable|date',
+            'gender' => 'nullable|string',
+            'civil_status' => 'nullable|string',
+            'role' => 'required|in:employee,hr,admin',
+            'hire_date' => 'nullable|date',
+            'salary' => $isHRorAdmin ? 'nullable|numeric|min:0' : 'required|numeric|min:0',
         ]);
     }
 
     private function prepareEmployeeData(array $validated, $isNew = true)
     {
         $data = [
-            'first_name'    => $validated['first_name'],
-            'last_name'     => $validated['last_name'],
-            'email'         => $validated['email'],
-            'phone'         => $validated['phone'],
+            'first_name' => $validated['first_name'],
+            'last_name' => $validated['last_name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'],
             'department_id' => $validated['department_id'],
-            'dob'           => $validated['dob'],
-            'gender'        => $validated['gender'],
-            'civil_status'  => $validated['civil_status'],
-            'role'          => $validated['role'],
-            'role_id'       => Role::where('name', $validated['role'])->value('id'),
-            'hire_date'     => $validated['hire_date'],
-            'salary'        => $validated['salary'],
+            'dob' => $validated['dob'],
+            'gender' => $validated['gender'],
+            'civil_status' => $validated['civil_status'],
+            'role' => $validated['role'],
+            'role_id' => Role::where('name', $validated['role'])->value('id'),
+            'hire_date' => $validated['hire_date'],
+            'salary' => $validated['salary'],
         ];
 
         if ($isNew) {
