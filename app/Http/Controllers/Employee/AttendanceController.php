@@ -25,7 +25,7 @@ class AttendanceController extends Controller
             ->where('employee_id', $user->id)
             ->select('id', 'employee_id', 'date', 'check_in', 'check_out', 'status')
             ->orderBy('date', 'desc')
-            ->limit(30)
+            ->limit(5)
             ->get()
             ->map(function ($attendance) {
                 return [

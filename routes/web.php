@@ -10,6 +10,7 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\ManageLeavesController;
+use App\Http\Controllers\Employee\DashboardController;
 use App\Http\Controllers\Employee\LeaveController;
 use App\Http\Controllers\HR\AttendanceController as HRAttendanceController;
 use App\Http\Controllers\HR\SalaryController as HRSalaryController; // Add this line
@@ -66,7 +67,8 @@ Route::middleware(['auth', AdminMiddleware::class])
 
         Route::put('/editdepartment/{id}', [DepartmentController::class, 'update']);
 
-        Route::delete('/departments/{id}', [DepartmentController::class, 'destroy']);
+        Route::delete('/departments/{id}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
+
 
         // Employee Management Pages
         Route::get('/manageemployees', [EmployeeController::class, 'index'])
@@ -96,8 +98,11 @@ Route::middleware(['auth', AdminMiddleware::class])
             ->name('employees.store');
 
         // Admin Settings
-        Route::inertia('/adminsettings', 'Admin/Settings/adminsettings')
+        Route::inertia('/settings', 'Admin/Settings/AdminSettings')
             ->name('adminsettings');
+
+        // Change Password
+        Route::post('/reset-password', [AuthController::class, 'changePassword'])->name('password.reset');
 
         // Admin Leaves Management
         Route::get('/manageleaves/leaves', [ManageLeavesController::class, 'index'])
@@ -125,10 +130,8 @@ Route::middleware(['auth', EmployeeMiddleware::class])
     ->group(function () {
 
         // Employee Dashboard
-        Route::get('/dashboard', fn() => Inertia::render('Employee/Dashboard'))
+        Route::get('/dashboard', [DashboardController::class, 'index'])
             ->name('dashboard');
-
-        Route::inertia('/index', 'Employee/Index')->name('index');
 
         // Employee Leave Routes
         Route::get('/leaves', [LeaveController::class, 'index'])->name('leaves');
@@ -137,7 +140,7 @@ Route::middleware(['auth', EmployeeMiddleware::class])
         Route::get('/leaves/{leave}', [LeaveController::class, 'show'])->name('view-leave');
 
         // Employee Salary Routes
-        Route::get('/employee-salary', [SalaryController::class, 'index'])->name('employee-salary');
+        Route::get('/salary', [SalaryController::class, 'index'])->name('employee-salary');
 
         // Employee Attendance Routes
         Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance');
@@ -145,6 +148,8 @@ Route::middleware(['auth', EmployeeMiddleware::class])
 
         // Employee Settings Routes
         Route::inertia('/settings', 'Employee/Settings/Index')->name('settings');
+
+        Route::post('/reset-password', [AuthController::class, 'changePassword'])->name('password.reset');
     });
 
 /*
@@ -158,13 +163,11 @@ Route::middleware(['auth', HRMiddleware::class])
     ->name('hr.')
     ->group(function () {
 
-        Route::get('/dashboard', fn() => Inertia::render('HR/Dashboard'))
+        Route::get('/dashboard', fn() => Inertia::render('HR/Index'))
             ->name('dashboard');
 
-        Route::inertia('/index', 'HR/Index')->name('index');
-
         // HR Salary Routes - ADD THESE LINES
-        Route::get('/salaries', [HRSalaryController::class, 'index'])->name('salaries.index');
+        Route::get('/salary', [HRSalaryController::class, 'index'])->name('salary.index');
         Route::get('/salaries/{employeeId}', [HRSalaryController::class, 'view'])->name('salaries.view');
         Route::post('/salaries/{employeeId}/generate-payroll', [HRSalaryController::class, 'generatePayroll'])->name('salaries.generatePayroll');
 
@@ -193,4 +196,7 @@ Route::middleware(['auth', HRMiddleware::class])
 
         // HR Settings Routes
         Route::inertia('/settings', 'HR/Settings/Index')->name('settings');
+
+        // Change Password
+        Route::post('/reset-password', [AuthController::class, 'changePassword'])->name('password.reset');
     });

@@ -1,6 +1,7 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
+import PaginationLinks from '../../Components/PaginationLinks.vue';
 
 const props = defineProps({
     attendanceHistory: {
@@ -12,10 +13,7 @@ const props = defineProps({
 const searchQuery = ref('');
 
 const filteredAttendances = computed(() => {
-    if (!searchQuery.value) {
-        return props.attendanceHistory;
-    }
-    return props.attendanceHistory.filter(attendance => 
+    return props.attendanceHistory.data.filter(attendance =>
         attendance.id?.toString().includes(searchQuery.value) ||
         attendance.employee_id?.toString().includes(searchQuery.value) ||
         attendance.employee_name?.toLowerCase().includes(searchQuery.value.toLowerCase())
@@ -68,86 +66,96 @@ const getHours = (checkIn, checkOut) => {
         return 0;
     }
 };
+
+const actionButtons = [
+    {
+        label: 'Edit',
+        href: (id) => `/hr/attendance/${id}/edit`,
+        color: 'bg-yellow-400 hover:bg-yellow-500'
+    },
+    {
+        label: 'Delete',
+        href: (id) => `/hr/attendance/${id}`,
+        color: 'bg-red-500 hover:bg-red-600',
+        method: 'delete',
+        as: 'button'
+    }
+];
+
+const Tablecolumns = [
+    { label: 'Serial No', key: 'serial_no' },
+    { label: 'Employee ID', key: 'employee_id' },
+    { label: 'Name', key: 'employee_name' },
+    { label: 'Date', key: 'date' },
+    { label: 'Check In', key: 'check_in' },
+    { label: 'Check Out', key: 'check_out' },
+    { label: 'Hours', key: 'hours' },
+    { label: 'Status', key: 'status', align: 'center' },
+    { label: 'Action', key: 'actions', align: 'center' }
+];
 </script>
 
 <template>
-    <h1 class="text-center text-3xl font-bold mb-12">Employee Attendance</h1>
+    <div class="flex flex-col px-6">
+        
+        <h1 class="text-center text-4xl font-bold mb-12">Employee Attendance</h1>
 
-    <div class="flex justify-between mb-6">
-        <div class="bg-white rounded-md p-2">
-            <input 
-                type="search" 
-                v-model="searchQuery"
-                placeholder="Search By SNO, Employee ID or Name" 
-                class="outline-none px-2"
-            />
+        <div class="flex justify-between mb-6">
+            <input type="search" v-model="searchQuery" placeholder="Search By Serial No or Name"
+                class="border border-gray-300 rounded-lg px-4 py-2 w-80 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+
+            <!-- View by Employee button -->
+            <Link href="/hr/attendance/employees"
+                class="bg-blue-500 hover:bg-blue-400 text-white rounded-md px-4 py-3 text-sm font-semibold">
+                View by Employee
+            </Link>
         </div>
 
-        <!-- View by Employee button -->
-        <Link
-            href="/hr/attendance/employees"
-            class="bg-blue-500 hover:bg-blue-400 text-white rounded-md px-4 py-2 text-sm font-medium"
-        >
-            View by Employee
-        </Link>
+        <div class="bg-white rounded-lg shadow-lg overflow-x-auto">
+            <table class="min-w-full text-left">
+                <thead class="bg-gray-400">
+                    <tr>
+                        <th v-for="column in Tablecolumns" :key="column.key"
+                            :class="[column.align === 'center' ? 'text-center' : '']">{{ column.label }}</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr v-for="(attendance, index) in filteredAttendances" :key="attendance.id"
+                        class="border-t-4 border-gray-200">
+                        <td>{{ index + 1 }}</td>
+                        <td>{{ attendance.employee_id }}</td>
+                        <td>{{ attendance.employee_name || 'N/A' }}</td>
+                        <td>{{ formatDate(attendance.date) }}</td>
+                        <td>{{ formatTime(attendance.check_in) }}</td>
+                        <td>{{ formatTime(attendance.check_out) }}</td>
+                        <td>{{ getHours(attendance.check_in, attendance.check_out) }}</td>
+                        <td class="text-center">
+                            <span :class="getStatusClass(attendance.status)"
+                                class="inline-block w-24 text-center py-2 rounded-full text-sm font-semibold transition">
+                                {{ getStatusText(attendance.status) }}
+                            </span>
+                        </td>
+                        <td class="flex justify-center gap-3">
+                            <Link v-for="action in actionButtons" :key="action.label" :href="action.href(attendance.id)"
+                                :method="action.method" :as="action.as"
+                                :class="[action.color, 'inline-flex items-center justify-center w-20 py-2 rounded-md text-sm font-semibold transition']">
+                                {{ action.label }}
+                            </Link>
+                        </td>
+                    </tr>
+
+                    <tr v-if="filteredAttendances.length === 0" class="border-t-4 border-gray-200">
+                        <td colspan="9" class="px-6 py-8 text-center text-gray-500">
+                            No attendance records found
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-6">
+            <PaginationLinks :paginator="attendanceHistory" />
+        </div>
     </div>
-
-    <table class="w-full shadow-lg overflow-hidden table-fixed bg-white rounded-lg">
-        <thead>
-            <tr class="bg-gray-400 text-black font-medium">
-                <th class="p-4">SNO</th>
-                <th class="p-6">Employee ID</th>
-                <th class="p-6">Employee Name</th>
-                <th class="p-4">Date</th>
-                <th class="p-4">Check In</th>
-                <th class="p-4">Check Out</th>
-                <th class="p-4">Hours</th>
-                <th class="p-4">Status</th>
-                <th class="p-4">Action</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            <tr 
-                v-for="(attendance, index) in filteredAttendances" 
-                :key="attendance.id"
-                class="bg-white-100 text-center border-slate-200 border-t-4"
-            >
-                <td class="p-4">{{ index + 1 }}</td>
-                <td class="p-4">{{ attendance.employee_id }}</td>
-                <td class="p-4">{{ attendance.employee_name || 'N/A' }}</td>
-                <td class="p-4">{{ formatDate(attendance.date) }}</td>
-                <td class="p-4">{{ formatTime(attendance.check_in) }}</td>
-                <td class="p-4">{{ formatTime(attendance.check_out) }}</td>
-                <td class="p-4">{{ getHours(attendance.check_in, attendance.check_out) }}</td>
-                <td class="p-4">
-                    <button :class="getStatusClass(attendance.status)" class="rounded-sm px-2 py-1 text-white">
-                        {{ getStatusText(attendance.status) }}
-                    </button>
-                </td>
-                <td class="p-4 space-x-4 inline-flex">
-                    <Link 
-                        :href="`/hr/attendance/${attendance.id}/edit`" 
-                        class="bg-yellow-400 hover:bg-yellow-300 rounded-sm px-4 py-1"
-                    >
-                        Edit
-                    </Link>
-                    <Link
-                        :href="`/hr/attendance/${attendance.id}`"
-                        method="delete"
-                        as="button"
-                        class="bg-red-500 hover:bg-red-400 text-white rounded-sm px-2 py-1"
-                    >
-                        Delete
-                    </Link>
-                </td>
-            </tr>
-            
-            <tr v-if="filteredAttendances.length === 0">
-                <td colspan="9" class="p-8 text-center text-gray-500">
-                    No attendance records found
-                </td>
-            </tr>
-        </tbody>
-    </table>
 </template>

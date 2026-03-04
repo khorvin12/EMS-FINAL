@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Leave;
 use Inertia\Inertia;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class ManageLeavesController extends Controller
 {
@@ -16,11 +18,11 @@ class ManageLeavesController extends Controller
     {
         $leaves = $this->getFormattedLeaves();
         $stats = $this->getLeaveStats();
-        
+
         // Determine which view to render based on user role
-        $user = auth()->user();
-        $view = $user->role === 'hr' 
-            ? 'HR/Leaves/Index' 
+        $user = Auth::user();
+        $view = $user->role === 'hr'
+            ? 'HR/Leaves/Index'
             : 'Admin/ManageLeaves/Index';
 
         return Inertia::render($view, [
@@ -35,12 +37,12 @@ class ManageLeavesController extends Controller
      */
     public function review(Leave $leave)
     {
-        $user = auth()->user();
-        
+        $user = Auth::user();
+
         // Use different views for HR and Admin
         // HR uses 'View.vue', Admin uses 'LeavesReview'
-        $view = $user->role === 'hr' 
-            ? 'HR/Leaves/View' 
+        $view = $user->role === 'hr'
+            ? 'HR/Leaves/View'
             : 'Admin/ManageLeaves/LeavesReview';
 
         return Inertia::render($view, [
@@ -56,15 +58,15 @@ class ManageLeavesController extends Controller
     {
         $leave->update([
             'status' => 'approved',
-            'approved_by' => auth()->id(),
+            'approved_by' => Auth::user()->id,
             'approved_at' => now()
         ]);
-        
-        $user = auth()->user();
-        $route = $user->role === 'hr' 
-            ? 'hr.leaves.index' 
+
+        $user = Auth::user();
+        $route = $user->role === 'hr'
+            ? 'hr.leaves.index'
             : 'admin.manageleaves.index';
-        
+
         return redirect()
             ->route($route)
             ->with('success', 'Leave approved successfully');
@@ -78,15 +80,15 @@ class ManageLeavesController extends Controller
     {
         $leave->update([
             'status' => 'rejected',
-            'rejected_by' => auth()->id(),
+            'rejected_by' => Auth::user()->id,
             'rejected_at' => now()
         ]);
-        
-        $user = auth()->user();
-        $route = $user->role === 'hr' 
-            ? 'hr.leaves.index' 
+
+        $user = Auth::user();
+        $route = $user->role === 'hr'
+            ? 'hr.leaves.index'
             : 'admin.manageleaves.index';
-        
+
         return redirect()
             ->route($route)
             ->with('success', 'Leave rejected successfully');
@@ -106,10 +108,16 @@ class ManageLeavesController extends Controller
      */
     private function getFormattedLeaves()
     {
-        return Leave::with('user')
+        $paginator = Leave::with('user')
             ->orderBy('created_at', 'desc')
-            ->get()
-            ->map(fn($leave) => $this->formatLeaveData($leave));
+            ->paginate(6)
+            ->withQueryString();
+
+        $paginator->getCollection()->transform(function ($leave) {
+            return $this->formatLeaveData($leave);
+        });
+
+        return $paginator;
     }
 
     /**
@@ -120,16 +128,16 @@ class ManageLeavesController extends Controller
         return [
             'id' => $leave->id,
             'user' => [
-                'name' => $leave->user->name ?? 'Unknown User',
-                'email' => $leave->user->email ?? 'N/A',
-                'id' => $leave->user->id ?? null
+                'name' => $leave->user?->name ?? 'Unknown User',
+                'email' => $leave->user?->email ?? 'N/A',
+                'id' => $leave->user?->id,
             ],
             'reason' => $leave->reason,
             'description' => $leave->description,
-            'start_date' => $leave->start_date->format('Y-m-d'),
-            'end_date' => $leave->end_date->format('Y-m-d'),
+            'start_date' => optional($leave->start_date)?->format('Y-m-d'),
+            'end_date' => optional($leave->end_date)?->format('Y-m-d'),
             'status' => $leave->status,
-            'created_at' => $leave->created_at->format('Y-m-d H:i:s'),
+            'created_at' => optional($leave->created_at)?->format('Y-m-d H:i:s'),
             'approved_by' => $leave->approved_by ?? null,
             'rejected_by' => $leave->rejected_by ?? null,
         ];
@@ -142,7 +150,7 @@ class ManageLeavesController extends Controller
     private function getLeaveStats()
     {
         $allLeaves = Leave::all();
-        
+
         return [
             'all' => $allLeaves->count(),
             'pending' => $allLeaves->where('status', 'pending')->count(),

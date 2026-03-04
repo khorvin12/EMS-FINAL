@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class Leave extends Model
 {
@@ -14,16 +15,16 @@ class Leave extends Model
         'start_date',
         'end_date',
         'type',
-        'reason',
         'description',
         'status',
         'admin_comment',
     ];
 
-    protected $casts = [
-        'start_date' => 'date',
-        'end_date'   => 'date',
-    ];
+protected $casts = [
+    'start_date' => 'datetime',
+    'end_date'   => 'datetime',
+    'created_at' => 'datetime',
+];
 
     // Kept as user() so ManageLeavesController still works ($leave->user->name)
     public function user()

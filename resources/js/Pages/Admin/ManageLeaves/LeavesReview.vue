@@ -50,115 +50,85 @@ const handleReject = () => {
 </script>
 
 <template>
-    <main class="p-6">
-        <!-- Outer Container -->
-        <div class="flex justify-center items-center">
-            <!-- Blue Review Card -->
-            <div class="relative bg-sky-400 rounded-lg p-6 w-full max-w-4xl shadow-lg">
-                <!-- Header -->
-                <div class="flex justify-between mb-4">
-                    <Link href="/manageleaves/leaves">
-                        <button class="text-2xl font-bold hover:text-red-600 transition">
-                            ×
-                        </button>
-                    </Link>
+
+    <!-- Outer Container -->
+    <div class="flex justify-center items-center h-176">
+
+        <!-- Blue Review Card -->
+        <div class="relative bg-sky-400 rounded-lg p-6 w-full max-w-4xl shadow-lg">
+
+            <!-- Header -->
+            <div class="flex justify-end mb-4">
+                <Link href="/manageleaves/leaves">
+                    <button class="text-2xl font-bold hover:text-red-600 transition">
+                        ×
+                    </button>
+                </Link>
+            </div>
+
+            <!-- Inner White Card -->
+            <div class="bg-white border rounded-lg p-6">
+                <!-- Employee Info -->
+                <div class="mb-4 p-3 bg-blue-50 rounded">
+                    <p class="text-sm font-semibold">Employee: <span class="font-normal">{{ leave.user.name
+                    }}</span></p>
+                    <p class="text-sm font-semibold">Status:
+                        <span :class="{
+                            'text-yellow-600': leave.status === 'pending',
+                            'text-green-600': leave.status === 'approved',
+                            'text-red-600': leave.status === 'rejected'
+                        }">
+                            {{ leave.status.toUpperCase() }}
+                        </span>
+                    </p>
                 </div>
 
-                <!-- Inner White Card -->
-                <div class="bg-white border rounded-lg p-6">
-                    <!-- Employee Info -->
-                    <div class="mb-4 p-3 bg-blue-50 rounded">
-                        <p class="text-sm font-semibold">Employee: <span class="font-normal">{{ leave.user.name }}</span></p>
-                        <p class="text-sm font-semibold">Status: 
-                            <span :class="{
-                                'text-yellow-600': leave.status === 'pending',
-                                'text-green-600': leave.status === 'approved',
-                                'text-red-600': leave.status === 'rejected'
-                            }">
-                                {{ leave.status.toUpperCase() }}
-                            </span>
-                        </p>
+                <!-- From / To -->
+                <div class="flex flex-col md:flex-row gap-6 mb-6">
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium mb-1">From</label>
+                        <input type="text" :value="leave.start_date" readonly
+                            class="w-full border border-gray-300 rounded-md px-3 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400" />
                     </div>
 
-                    <!-- From / To -->
-                    <div class="flex flex-col md:flex-row gap-6 mb-6">
-                        <div class="flex-1">
-                            <label class="block text-sm font-medium mb-1">From</label>
-                            <input
-                                type="text"
-                                :value="leave.start_date"
-                                readonly
-                                class="w-full border rounded-md px-3 py-2 text-lg bg-gray-50"
-                            />
-                        </div>
-
-                        <div class="flex-1">
-                            <label class="block text-sm font-medium mb-1">To</label>
-                            <input
-                                type="text"
-                                :value="leave.end_date"
-                                readonly
-                                class="w-full border rounded-md px-3 py-2 text-lg bg-gray-50"
-                            />
-                        </div>
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium mb-1">To</label>
+                        <input type="text" :value="leave.end_date" readonly
+                            class="w-full border border-gray-300 rounded-md px-3 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400" />
                     </div>
+                </div>
 
+                <div>
                     <!-- Reason -->
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Reason</label>
-                        <input
-                            type="text"
-                            :value="leave.reason"
-                            readonly
-                            class="w-full border rounded-md px-3 py-2 text-lg font-semibold mb-3 bg-gray-50"
-                        />
-
-                        <!-- Reason Description -->
-                        <textarea
-                            rows="4"
-                            :value="leave.description || 'No description provided'"
-                            readonly
-                            class="w-full border rounded-md px-3 py-2 text-lg resize-none bg-gray-50"
-                        ></textarea>
-                    </div>
+                    <textarea rows="4" :value="leave.description || 'No description provided'" readonly
+                        class="w-full border rounded-md px-3 py-2 text-lg resize-none border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"></textarea>
                 </div>
+            </div>
 
-                <!-- Action Buttons -->
-                <div class="flex justify-between mt-6 px-6">
-                    <button
-                        @click="handleApprove"
-                        :disabled="leave.status === 'approved'"
-                        class="bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-2 rounded shadow disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        Approve
-                    </button>
+            <!-- Action Buttons -->
+            <div class="flex justify-between mt-6 px-6">
+                <button @click="handleApprove" :disabled="leave.status === 'approved'"
+                    class="bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-2 rounded shadow disabled:opacity-50 disabled:cursor-not-allowed">
+                    Approve
+                </button>
 
-                    <button
-                        @click="handleReject"
-                        :disabled="leave.status === 'rejected'"
-                        class="bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-2 rounded shadow disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        Reject
-                    </button>
-                </div>
+                <button @click="handleReject" :disabled="leave.status === 'rejected'"
+                    class="bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-2 rounded shadow disabled:opacity-50 disabled:cursor-not-allowed">
+                    Reject
+                </button>
             </div>
         </div>
+    </div>
 
-        <!-- Success Overlay -->
-        <transition
-            enter-active-class="transition duration-300 ease-out"
-            enter-from-class="opacity-0 scale-90"
-            enter-to-class="opacity-100 scale-100"
-            leave-active-class="transition duration-200 ease-in"
-            leave-from-class="opacity-100 scale-100"
-            leave-to-class="opacity-0 scale-90"
-        >
-            <div v-if="showSuccess" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-                <div :class="showSuccess === 'approved' ? 'bg-green-500' : 'bg-red-500'" 
-                     class="px-8 py-4 rounded-lg shadow-xl text-white text-xl font-bold">
-                    {{ showSuccess === 'approved' ? 'Approved' : 'Rejected' }} successfully ✓
-                </div>
+    <!-- Success Overlay -->
+    <transition enter-active-class="transition duration-300 ease-out" enter-from-class="opacity-0 scale-90"
+        enter-to-class="opacity-100 scale-100" leave-active-class="transition duration-200 ease-in"
+        leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-90">
+        <div v-if="showSuccess" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+            <div :class="showSuccess === 'approved' ? 'bg-green-500' : 'bg-red-500'"
+                class="px-8 py-4 rounded-lg shadow-xl text-white text-xl font-bold">
+                {{ showSuccess === 'approved' ? 'Approved' : 'Rejected' }} successfully ✓
             </div>
-        </transition>
-    </main>
+        </div>
+    </transition>
 </template>

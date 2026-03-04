@@ -10,13 +10,13 @@ const form = useForm({
 
 const submit = () => {
     // Change this line
-    form.post('/employee/reset-password');
+    form.post('/reset-password');
 };
 </script>
 
 <template>
     <div class="flex items-center justify-center h-176">
-        <div class="bg-white w-full max-w-sm p-6 rounded-md shadow-md border-4 border-green-500">
+        <div class="bg-white w-full max-w-sm p-6 rounded-md shadow-md border-4 border-red-600">
             
             <h1 class="text-xl font-bold mb-6 text-center">Change Password</h1>
 

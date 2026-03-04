@@ -1,25 +1,45 @@
+<script setup>
+import { useForm } from '@inertiajs/vue3'
+import TextInput from '../../Components/TextInput.vue';
+
+const form = useForm({
+    current_password: '',
+    password: '',
+    password_confirmation: ''
+})
+
+const submit = () => {
+    // Change this line
+    form.post('/hr/reset-password');
+};
+</script>
+
 <template>
-    <div class="flex items-center justify-center h-full">
-        <div class="bg-white w-full max-w-sm px-6 py-4 rounded-md shadow-md border-5 border-green-600">
+    <div class="flex items-center justify-center h-176">
+        <div class="bg-white w-full max-w-sm p-6 rounded-md shadow-md border-4 border-blue-500">
+            
             <h1 class="text-xl font-bold mb-6 text-center">Change Password</h1>
 
-            <div class="grid grid-cols-1 mb-6 gap-6 p-6">
-                <div class="grid grid-cols-1">
-                    <label for="password" class="mb-1">New Password</label>
-                    <input type="password" name="password"
-                        class="p-2 rounded-lg border border-slate-300" />
-                </div>
+            <form @submit.prevent="submit" class="space-y-4">
 
-                <div class="grid grid-cols-1">
-                    <label for="password_confirmation" class="mb-1">Confirm Password</label>
-                    <input type="password" name="password_confirmation"
-                        class="p-2 rounded-lg border border-slate-300" />
-                </div>
-            </div>
+                <!-- Current Password -->
+                <TextInput name="Old Password" type="password" v-model="form.current_password"
+                    :message="form.errors.current_password" />
 
-            <div class="mt-6 text-white font-bold text-center">
-                <button class="bg-green-600 hover:bg-green-500 px-8 py-2 rounded-md">Change Password</button>
-            </div>
+                <!-- New Password -->
+                <TextInput name="New Password" type="password" v-model="form.password" :message="form.errors.password" />
+
+                <!-- Confirm Password -->
+                <TextInput name="Confirm Password" type="password" v-model="form.password_confirmation" />
+
+                <!-- Button -->
+                <button type="submit"
+                    class="w-full bg-green-500 hover:bg-green-600 font-bold py-2 rounded-md mt-4"
+                    :disabled="form.processing">
+                    Change Password
+                </button>
+
+            </form>
         </div>
     </div>
 </template>
