@@ -17,7 +17,8 @@ const filteredAttendances = computed(() => {
     }
     return props.attendanceHistory.filter(attendance => 
         attendance.id?.toString().includes(searchQuery.value) ||
-        attendance.employee_name?.toLowerCase().includes(searchQuery.value.toLowerCase())
+        attendance.employee_name?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        attendance.date?.toString().includes(searchQuery.value) 
     );
 });
 

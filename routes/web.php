@@ -89,12 +89,20 @@ Route::middleware(['auth', EmployeeMiddleware::class])
                 ->where('employee_id', $user->id)
                 ->orderBy('date', 'desc')
                 ->limit(5)
-                ->get();
+                ->get()
+                ->map(fn($record) => [
+                    'id'        => $record->id,
+                    'date'      => $record->date,
+                    'check_in'  => $record->check_in,
+                    'check_out' => $record->check_out,
+                    'hours'     => floatval($record->hours_worked ?? 0),
+                    'status'    => $record->status,
+                ]);
 
             $presentDays = DB::table('attendances')
                 ->where('employee_id', $user->id)
                 ->whereMonth('date', now()->month)
-                ->where('status', 'present')
+                ->whereIn('status', ['present', 'late'])
                 ->count();
 
             $pendingLeaves = DB::table('leaves')
@@ -149,7 +157,6 @@ Route::middleware(['auth', HRMiddleware::class])
     ->name('hr.')
     ->group(function () {
 
-        // ✅ HR Dashboard — passes stats as Inertia props
         Route::get('/dashboard', function () {
             $today = Carbon::today('Asia/Manila');
 

@@ -162,43 +162,5 @@ const getStatusColor = (status) => {
                 </div>
             </div>
         </div>
-
-        <!-- Attendance History -->
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div class="p-6 bg-gray-50 border-b border-gray-200">
-                <h3 class="text-xl font-bold text-gray-900">Attendance History</h3>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="bg-gray-100 border-b border-gray-200">
-                        <tr>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Date</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Check In</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Check Out</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Hours</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        <tr v-for="record in attendanceHistory" :key="record.id" class="hover:bg-gray-50 transition">
-                            <td class="px-6 py-4 text-sm text-gray-900 font-medium">{{ formatDate(record.date) }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">{{ formatTime(record.check_in) }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">{{ formatTime(record.check_out) }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-700 font-semibold">{{ record.hours ?? 0 }} hrs</td>
-                            <td class="px-6 py-4">
-                                <span :class="getStatusColor(record.status)" class="px-3 py-1 rounded-full text-xs font-semibold uppercase">
-                                    {{ record.status }}
-                                </span>
-                            </td>
-                        </tr>
-                        <tr v-if="attendanceHistory.length === 0">
-                            <td colspan="5" class="px-6 py-12 text-center text-gray-500">
-                                No attendance records found
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
     </div>
 </template>
