@@ -44,7 +44,7 @@ const handleLogout = () => {
                         { name: 'Dashboard', href: '/hr/dashboard', icon: 'fa-tachometer' },
                         { name: 'Attendance', href: '/hr/attendance', icon: 'fa-calendar-check' },
                         { name: 'Leaves', href: '/hr/leaves', icon: 'fa-calendar-xmark' },
-                        { name: 'Salary', href: '/hr/salary', icon: 'fa-dollar' },
+                        { name: 'Salaries', href: '/hr/salaries', icon: 'fa-dollar' },
                         { name: 'Settings', href: '/hr/settings', icon: 'fa-cog' },
                     ]" :key="item.href" :href="item.href"
                         class="flex items-center space-x-4 py-3 px-6 rounded-md transition-all"

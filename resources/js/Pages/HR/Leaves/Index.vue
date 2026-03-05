@@ -1,173 +1,192 @@
-<script setup>
-import { Link } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
+<script setup lang="ts">
+import { Link } from '@inertiajs/vue3'
+import { ref, computed } from 'vue'
+import PaginationLinks from '../../Components/PaginationLinks.vue';
 
-// Receive data from controller
-const props = defineProps({
-    leaves: Object,
-    stats: Object
-});
+interface Leave {
+    id: number
+    user: { name: string }
+    reason: string
+    description?: string
+    start_date: string
+    end_date: string
+    status: 'pending' | 'approved' | 'rejected'
+}
 
-// Search and filter state
-const searchQuery = ref('');
-const dateFilter = ref('');
+interface PaginatedData<T> {
+    data: T[]
+    current_page: number
+    last_page: number
+    prev_page_url: string | null
+    next_page_url: string | null
+    total: number
+}
 
-// Filtered leaves based on search and date
+interface Stats {
+    pending: number
+    approved: number
+    rejected: number
+}
+
+const props = defineProps<{
+    leaves: PaginatedData<Leave>
+    stats: Stats
+}>()
+
+const searchQuery = ref('')
+
+const selectedFilter = ref<'all' | 'pending' | 'approved' | 'rejected'>('all')
+
 const filteredLeaves = computed(() => {
-    let result = props.leaves?.data || [];
+    let data = props.leaves.data
 
-    // Search by employee name or ID
-    if (searchQuery.value) {
-        result = result.filter(leave =>
-            leave.user.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-            leave.id.toString().includes(searchQuery.value)
-        );
+    if (selectedFilter.value !== 'all') {
+        data = data.filter(leave => leave.status === selectedFilter.value)
     }
 
-    // Filter by date
-    if (dateFilter.value) {
-        result = result.filter(leave =>
-            leave.start_date <= dateFilter.value && leave.end_date >= dateFilter.value
-        );
+    if (searchQuery.value.trim() !== '') {
+        const query = searchQuery.value.toLowerCase()
+        data = data.filter((leave, index) => {
+            const serial = String(index + 1).padStart(3, '0')
+            const name = leave.user.name.toLowerCase()
+            return serial.includes(query) || name.includes(query)
+        })
     }
 
-    return result;
-});
+    return data
+})
 
-// Format date helper
-const formatDate = (dateString) => {
-    const date = new Date(dateString);
+const filterButtons = computed(() => [
+    { label: 'All',      value: 'all'      as const, count: props.leaves.total,   color: 'bg-blue-600'   },
+    { label: 'Pending',  value: 'pending'  as const, count: props.stats.pending,  color: 'bg-yellow-500' },
+    { label: 'Approved', value: 'approved' as const, count: props.stats.approved, color: 'bg-green-500'  },
+    { label: 'Rejected', value: 'rejected' as const, count: props.stats.rejected, color: 'bg-red-500'    }
+])
+
+const statusConfig: Record<string, { color: string; label: string }> = {
+    pending:  { color: 'bg-yellow-400', label: 'Pending'  },
+    approved: { color: 'bg-green-500',  label: 'Approved' },
+    rejected: { color: 'bg-red-500',    label: 'Rejected' }
+}
+
+const getStatusConfig = (status: string) => {
+    return statusConfig[status] || { color: 'bg-gray-400', label: 'Unknown' }
+}
+
+const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
     return date.toLocaleDateString('en-US', {
         year: 'numeric',
-        month: 'long',
+        month: 'short',
         day: 'numeric'
-    });
-};
+    })
+}
 
-// Status badge color
-const getStatusColor = (status) => {
-    // Convert to lowercase to ensure it matches regardless of database formatting
-    const s = status?.toLowerCase();
+const tableColumns = [
+    { label: 'Serial No',  key: 'number',     align: 'left'   },
+    { label: 'Name',       key: 'employee',   align: 'left'   },
+    { label: 'Reason',     key: 'reason',     align: 'left'   },
+    { label: 'Start Date', key: 'start_date', align: 'left'   },
+    { label: 'End Date',   key: 'end_date',   align: 'left'   },
+    { label: 'Status',     key: 'status',     align: 'center' },
+    { label: 'Actions',    key: 'actions',    align: 'center' }
+]
 
-    switch (s) {
-        case 'approved': return 'bg-green-500 text-black';
-        case 'rejected': return 'bg-red-500 text-black';
-        case 'pending': return 'bg-yellow-500 text-black';
-        default: return 'bg-gray-500 text-black';
-    }
-};
-
-const TableColumns = [
-    { name: 'Serial No.', key: 'serial' },
-    { name: 'Employee ID', key: 'employee_id' },
-    { name: 'Name', key: 'name' },
-    { name: 'Start Date', key: 'start_date' },
-    { name: 'End Date', key: 'end_date' },
-    { name: 'Reason', key: 'reason' },
-    { name: 'Status', key: 'status', align: 'center' },
-    { name: 'Action', key: 'action', align: 'center' }
-];
-
-const LeaveDataTable = computed(() => {
-    return filteredLeaves.value.map((leave, index) => ({
-        serial: index + 1,
-        employee_id: leave.user?.id || 'N/A',
-        name: leave.user?.name || 'Unknown',
+const leaveTableData = computed(() =>
+    filteredLeaves.value.map((leave, index) => ({
+        number:     String(index + 1).padStart(3, '0'),
+        employee:   leave.user.name,
+        reason:     leave.reason,
         start_date: formatDate(leave.start_date),
-        end_date: formatDate(leave.end_date),
-        reason: leave.reason,
-        status: leave.status,
-        id: leave.id
-    }));
-});
+        end_date:   formatDate(leave.end_date),
+        status:     getStatusConfig(leave.status),
+        id:         leave.id
+    }))
+)
+
+const emptyStateMessage = computed(() => {
+    return selectedFilter.value === 'all'
+        ? 'No leave requests submitted yet'
+        : `No ${selectedFilter.value} leave requests`
+})
 </script>
 
 <template>
-    <div class="flex flex-col">
-        <div class="max-w-8xl mx-auto">
-            <!-- Content Title -->
-            <h1 class="text-center text-3xl font-bold mb-12">Manage Leave Request</h1>
+    <div class="flex flex-col px-6">
 
-            <div class="flex items-center justify-between mb-6">
-                <!-- Search -->
-                <input v-model="searchQuery" type="search" placeholder="Search By Name or ID"
-                    class="bg-white rounded-md p-2 border border-gray-300 focus:outline-none focus:border-blue-400" />
+        <!-- Header -->
+        <h1 class="text-4xl font-bold mb-12 text-center text-gray-800">
+            Manage Leaves
+        </h1>
 
-                <!-- Date Filter -->
-                <div class="flex items-center gap-2">
-                    <label class="text-sm font-medium">Filter by Date</label>
-                    <input v-model="dateFilter" type="date" name="date"
-                        class="bg-white rounded-md p-2 border border-gray-300 focus:outline-none focus:border-blue-400">
-                </div>
+        <div class="flex justify-between mb-6">
+            <div>
+                <input v-model="searchQuery" type="text" placeholder="Search by Serial No or Name..."
+                    class="border border-gray-300 rounded-lg px-4 py-2 w-80 focus:outline-none focus:ring-2 focus:ring-blue-400" />
             </div>
 
-            <!-- Stats Summary (Optional) -->
-            <div v-if="stats" class="grid grid-cols-4 gap-4 mb-6">
-                <div class="bg-white rounded-lg p-4 shadow">
-                    <p class="text-sm text-gray-600">Total</p>
-                    <p class="text-2xl font-bold">{{ stats.all }}</p>
-                </div>
-
-                <div class="bg-yellow-100 rounded-lg p-4 shadow">
-                    <p class="text-sm text-gray-600">Pending</p>
-                    <p class="text-2xl font-bold">{{ stats.pending }}</p>
-                </div>
-
-                <div class="bg-green-100 rounded-lg p-4 shadow">
-                    <p class="text-sm text-gray-600">Approved</p>
-                    <p class="text-2xl font-bold">{{ stats.approved }}</p>
-                </div>
-
-                <div class="bg-red-100 rounded-lg p-4 shadow">
-                    <p class="text-sm text-gray-600">Rejected</p>
-                    <p class="text-2xl font-bold">{{ stats.rejected }}</p>
-                </div>
+            <div class="space-x-4">
+                <button v-for="filter in filterButtons" :key="filter.value" @click="selectedFilter = filter.value"
+                    :class="[
+                        selectedFilter === filter.value
+                            ? `${filter.color} text-white`
+                            : 'bg-white text-gray-700 hover:bg-gray-100',
+                        'px-6 py-2 rounded-lg font-semibold shadow-md transition-colors'
+                    ]">
+                    {{ filter.label }} ({{ filter.count }})
+                </button>
             </div>
+        </div>
 
-            <table class="w-full shadow-lg overflow-hidden table-fixed bg-white rounded-lg text-left">
-                <thead>
-                    <tr class="bg-gray-400 text-black">
-                        <th v-for="column in TableColumns" :key="column.key" :class="[
-                            'p-6',
-                            column.align === 'center' ? 'text-center' : ''
-                        ]">
-                            {{ column.name }}
+        <!-- Empty State -->
+        <div v-if="leaveTableData.length === 0" class="bg-white rounded-lg shadow-md p-12 text-center">
+            <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <p class="text-gray-500 text-lg">{{ emptyStateMessage }}</p>
+        </div>
+
+        <!-- Leave Table -->
+        <div v-else class="bg-white rounded-lg shadow-lg overflow-x-auto">
+            <table class="min-w-full text-left">
+                <thead class="bg-gray-400 text-black font-medium">
+                    <tr>
+                        <th v-for="column in tableColumns" :key="column.key"
+                            :class="[column.align === 'center' ? 'text-center' : '']">
+                            {{ column.label }}
                         </th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    <!-- Show message if no leaves found -->
-                    <tr v-if="!filteredLeaves || filteredLeaves.length === 0">
-                        <td colspan="8" class="text-center p-8 text-gray-500">
-                            No leave requests found
-                        </td>
-                    </tr>
-
-                    <!-- Display each leave request -->
-                    <tr v-for="(row, index) in LeaveDataTable" :key="row.id"
-                        class="bg-white text-left border-slate-200 border-t-4">
-                        <td class="px-6 py-4">{{ index + 1 }}</td>
-                        <td class="px-6 py-4">{{ row.user?.id || 'N/A' }}</td>
-                        <td class="px-6 py-4">{{ row.user?.name || 'Unknown' }}</td>
-                        <td class="px-6 py-4">{{ formatDate(row.start_date) }}</td>
-                        <td class="px-6 py-4">{{ formatDate(row.end_date) }}</td>
-                        <td class="px-6 py-4">{{ row.reason }}</td>
-                        <td class="px-6 py-4 text-center">
-                            <span :class="getStatusColor(row.status)"
-                                class="px-4 py-2 rounded-full text-sm font-semibold inline-block text-black">
-                                {{ row.status }}
+                    <tr v-for="row in leaveTableData" :key="row.id" class="border-t-4 border-slate-200">
+                        <td>{{ row.number }}</td>
+                        <td>{{ row.employee }}</td>
+                        <td>{{ row.reason }}</td>
+                        <td>{{ row.start_date }}</td>
+                        <td>{{ row.end_date }}</td>
+                        <td class="text-center">
+                            <span :class="[
+                                row.status.color,
+                                'py-2 px-4 rounded-full shadow-sm text-sm font-semibold text-black inline-block'
+                            ]">
+                                {{ row.status.label }}
                             </span>
                         </td>
-                        <td class="px-6 py-4 text-center">
+                        <td class="text-center">
                             <Link :href="`/hr/leaves/review/${row.id}`"
-                                class="bg-blue-500 hover:bg-blue-600 rounded-lg px-4 py-2 text-sm font-semibold inline-block">
-                                View
+                                class="bg-blue-500 hover:bg-blue-600 text-black text-sm font-semibold py-2 px-4 rounded-lg shadow-md transition-colors inline-block">
+                                Review
                             </Link>
                         </td>
                     </tr>
                 </tbody>
             </table>
+        </div>
+
+        <div class="mt-6">
+            <PaginationLinks :paginator="leaves" />
         </div>
     </div>
 </template>

@@ -5,8 +5,7 @@ const form = useForm({
     start_date: '',
     end_date: '',
     type: '',
-    reason: '',
-    description: ''
+    reason: ''
 });
 
 const submit = () => {

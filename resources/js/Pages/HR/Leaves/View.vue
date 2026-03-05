@@ -112,20 +112,12 @@ const getStatusColor = (status) => {
                             class="p-2 border border-gray-500 rounded-md bg-gray-100 focus:outline-none focus:border-blue-400" />
                     </div>
                 </div>
-
-                <!-- REASON -->
-                <div class="mb-4">
-                    <label class="mb-1 block text-sm font-medium">Reason</label>
-                    <input type="text" :value="leave.reason" readonly
-                        class="w-full p-2 border border-gray-500 rounded-md font-semibold bg-gray-100 focus:outline-none focus:border-blue-400" />
-                </div>
-
-                <!-- DESCRIPTION -->
-                <div>
-                    <label class="mb-1 block text-sm font-medium">Description</label>
-                    <textarea rows="4" :value="leave.description || 'No description provided'" readonly
-                        class="w-full p-2 border border-gray-500 rounded-md resize-none bg-gray-100 focus:outline-none focus:border-blue-400 font-semibold"></textarea>
-                </div>
+                <!-- Reason -->
+<div>
+    <label class="mb-1 block text-sm font-medium">Reason</label>
+    <textarea rows="4" :value="leave.reason || 'No Reason provided'" readonly
+        class="w-full p-2 border border-gray-500 rounded-md resize-none bg-gray-100 focus:outline-none focus:border-blue-400 font-semibold"></textarea>
+</div>
             </div>
 
             <!-- FOOTER BUTTONS -->

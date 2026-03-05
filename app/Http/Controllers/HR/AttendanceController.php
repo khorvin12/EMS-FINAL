@@ -13,37 +13,29 @@ class AttendanceController extends Controller
     public function index()
     {
         $attendanceHistory = DB::table('attendances')
-            // attendances.employee_id is users.id (integer FK)
             ->join('users', 'attendances.employee_id', '=', 'users.id')
             ->select(
                 'attendances.id',
-                'attendances.employee_id',           // users.id (integer)
-                'users.employee_id as employee_code', // EMP001 display code
+                'attendances.employee_id',
                 'attendances.date',
-                'attendances.time_in',
-                'attendances.time_out',
+                'attendances.check_in',
+                'attendances.check_out',
                 'attendances.status',
+                'attendances.hours_worked',
                 DB::raw("CONCAT(users.first_name, ' ', users.last_name) as employee_name")
             )
             ->orderBy('attendances.date', 'desc')
             ->get()
             ->map(function ($attendance) {
-                $hours = 0;
-                if ($attendance->time_in && $attendance->time_out) {
-                    $start = Carbon::parse($attendance->time_in);
-                    $end = Carbon::parse($attendance->time_out);
-                    $hours = round($start->diffInHours($end, true), 2);
-                }
                 return [
-                    'id' => $attendance->id,
-                    'employee_id' => $attendance->employee_id,    // users.id integer
-                    'employee_code' => $attendance->employee_code,  // EMP001 for display
+                    'id'            => $attendance->id,
+                    'employee_id'   => $attendance->employee_id,
                     'employee_name' => $attendance->employee_name,
-                    'date' => $attendance->date,
-                    'time_in' => $attendance->time_in,
-                    'time_out' => $attendance->time_out,
-                    'hours' => $hours,
-                    'status' => $attendance->status,
+                    'date'          => $attendance->date,
+                    'time_in'       => $attendance->check_in,
+                    'time_out'      => $attendance->check_out,
+                    'hours'         => $attendance->hours_worked ?? 0,
+                    'status'        => $attendance->status,
                 ];
             });
 
@@ -57,8 +49,7 @@ class AttendanceController extends Controller
         $employees = DB::table('attendances')
             ->join('users', 'attendances.employee_id', '=', 'users.id')
             ->select(
-                'attendances.employee_id',            // users.id integer
-                'users.employee_id as employee_code', // EMP001 for display
+                'attendances.employee_id',
                 DB::raw("CONCAT(users.first_name, ' ', users.last_name) as employee_name"),
                 'users.first_name'
             )
@@ -67,17 +58,16 @@ class AttendanceController extends Controller
             ->get()
             ->map(function ($emp) {
                 $attendance = DB::table('attendances')
-                    ->where('employee_id', $emp->employee_id) // users.id
+                    ->where('employee_id', $emp->employee_id)
                     ->orderBy('date', 'desc')
                     ->get()
                     ->map(fn($a) => (array) $a)
                     ->toArray();
 
                 return [
-                    'employee_id' => $emp->employee_id,   // users.id integer
-                    'employee_code' => $emp->employee_code, // EMP001 for display
+                    'employee_id'   => $emp->employee_id,
                     'employee_name' => $emp->employee_name,
-                    'attendance' => $attendance,
+                    'attendance'    => $attendance,
                 ];
             });
 
@@ -93,10 +83,9 @@ class AttendanceController extends Controller
             ->select(
                 'attendances.id',
                 'attendances.employee_id',
-                'users.employee_id as employee_code',
                 'attendances.date',
-                'attendances.time_in',
-                'attendances.time_out',
+                'attendances.check_in',
+                'attendances.check_out',
                 'attendances.status',
                 DB::raw("CONCAT(users.first_name, ' ', users.last_name) as employee_name")
             )
@@ -116,17 +105,17 @@ class AttendanceController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'date' => 'required|date',
-            'time_in' => 'nullable|date_format:H:i',
-            'time_out' => 'nullable|date_format:H:i|after_or_equal:time_in',
-            'status' => 'required|in:present,absent,late,on_leave',
+            'date'      => 'required|date',
+            'check_in'  => 'nullable|date_format:H:i',
+            'check_out' => 'nullable|date_format:H:i|after_or_equal:check_in',
+            'status'    => 'required|in:present,absent,late,on_leave',
         ]);
 
         DB::table('attendances')->where('id', $id)->update([
-            'date' => $request->date,
-            'time_in' => $request->time_in ?: null,
-            'time_out' => $request->time_out ?: null,
-            'status' => $request->status,
+            'date'       => $request->date,
+            'check_in'   => $request->check_in ?: null,
+            'check_out'  => $request->check_out ?: null,
+            'status'     => $request->status,
             'updated_at' => now(),
         ]);
 

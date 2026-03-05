@@ -85,9 +85,9 @@ const formatTime = (timeString) => {
                             <th class="p-6 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 Date</th>
                             <th class="p-6 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Time In</th>
+                                Check In</th>
                             <th class="p-6 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Time Out</th>
+                                Check Out</th>
                             <th class="p-6 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 Hours</th>
                             <th class="p-6 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -101,10 +101,10 @@ const formatTime = (timeString) => {
                                 {{ formatDate(record.date) }}
                             </td>
                             <td class="p-6 whitespace-nowrap text-sm text-gray-700">
-                                {{ formatTime(record.time_in) }}
+                             {{ formatTime(record.check_in) }}
                             </td>
                             <td class="p-6 whitespace-nowrap text-sm text-gray-700">
-                                {{ formatTime(record.time_out) }}
+                         {{ formatTime(record.check_out) }}
                             </td>
                             <td class="p-6 whitespace-nowrap text-sm text-gray-700 font-semibold">
                                 {{ record.hours || 0 }} hrs

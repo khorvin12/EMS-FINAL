@@ -48,28 +48,29 @@ const getStatusText = (status) => {
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">From Date</label>
-                        <p class="text-lg">{{ leave.start_date }}</p>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">To Date</label>
-                        <p class="text-lg">{{ leave.end_date }}</p>
-                    </div>
-                </div>
+<div class="grid grid-cols-2 gap-4">
+    <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">From Date</label>
+        <p class="text-lg">{{ leave.start_date }}</p>
+    </div>
+    
+    <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">To Date</label>
+        <p class="text-lg">{{ leave.end_date }}</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-2 gap-4">
+    <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Leave Type</label>
+        <p class="text-lg capitalize">{{ leave.type }}</p>
+    </div>
+</div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Reason</label>
                     <p class="text-lg font-semibold">{{ leave.reason }}</p>
                 </div>
-
-                <div v-if="leave.description">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                    <p class="text-base bg-gray-50 p-3 rounded border">{{ leave.description }}</p>
-                </div>
-
                 <div v-if="leave.admin_comment">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Admin Comment</label>
                     <p class="text-base bg-yellow-50 p-3 rounded border border-yellow-200">{{ leave.admin_comment }}</p>

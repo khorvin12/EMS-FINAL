@@ -24,11 +24,9 @@ const submit = () => {
 </script>
 
 <template>
-    <HRLayout>
 
         <h1 class="text-center text-3xl font-bold mb-10">Edit Attendance</h1>
 
-        <!-- Centered box — like the Request for Leave card -->
         <div class="flex justify-center">
             <div class="bg-white border-2 border-blue-500 rounded-lg p-8 w-full max-w-2xl shadow-md">
 
@@ -92,7 +90,7 @@ const submit = () => {
                         <p v-if="form.errors.check_out" class="text-red-500 text-xs mt-1">{{ form.errors.check_out }}</p>
                     </div>
 
-                    <!-- Status row at the bottom -->
+                    <!-- Status -->
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-600 mb-2">Status</label>
                         <div class="grid grid-cols-4 gap-2">
@@ -138,5 +136,4 @@ const submit = () => {
             </div>
         </div>
 
-    </HRLayout>
 </template>
