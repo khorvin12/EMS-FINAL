@@ -55,12 +55,13 @@ const actionButtons = [
 
     <h1 class="text-4xl font-bold text-center mb-12">Manage Employees</h1>
 
-    <div class="flex justify-between items-center mb-6">
-      <input v-model="search" type="text" placeholder="Search by Employee ID or Department..."
-        class="border border-gray-300 rounded-lg px-4 py-2 w-80 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+    <div class="flex justify-between mb-6 gap-4">
+      <input v-model="search" type="text" placeholder="Search"
+        class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
-      <Link href="/addnewemployee" class="font-semibold bg-green-500 hover:bg-green-600 rounded-md px-4 py-2">
-        Add New Employee
+      <Link href="/addnewemployee"
+        class="bg-green-500 hover:bg-green-600 font-semibold rounded-md px-4 py-2 transition whitespace-nowrap">
+        Add Employee
       </Link>
     </div>
 
@@ -84,7 +85,7 @@ const actionButtons = [
               <div class="flex justify-center gap-3">
                 <Link v-for="action in actionButtons" :key="action.label" :href="action.href(employee.id)"
                   :method="action.method" :as="action.as"
-                  :class="[action.color, 'inline-flex items-center justify-center w-20 py-2 rounded-md text-sm font-semibold transition']">
+                  :class="[action.color, 'inline-flex items-center justify-center w-24 py-2 rounded-md text-sm font-semibold transition']">
                   {{ action.label }}
                 </Link>
               </div>
@@ -92,7 +93,7 @@ const actionButtons = [
           </tr>
 
           <tr v-if="filteredEmployees.length === 0">
-            <td colspan="4" class="px-6 py-8 text-center text-gray-500">
+            <td colspan="4" class="p-8 text-center text-gray-500 border-t-4 border-slate-200">
               No employees found
             </td>
           </tr>

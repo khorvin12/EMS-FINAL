@@ -8,7 +8,6 @@ interface Leave {
         name: string
     }
     reason: string
-    description: string
     start_date: string
     end_date: string
     status: string
@@ -67,7 +66,7 @@ const handleReject = () => {
             </div>
 
             <!-- Inner White Card -->
-            <div class="bg-white border rounded-lg p-6">
+            <div class="bg-white rounded-lg p-6">
                 <!-- Employee Info -->
                 <div class="mb-4 p-3 bg-blue-50 rounded">
                     <p class="text-sm font-semibold">Employee: <span class="font-normal">{{ leave.user.name
@@ -100,7 +99,7 @@ const handleReject = () => {
 
                 <div>
                     <!-- Reason -->
-                    <textarea rows="4" :value="leave.description || 'No description provided'" readonly
+                    <textarea rows="4" :value="leave.reason || 'No reason provided'" readonly
                         class="w-full border rounded-md px-3 py-2 text-lg resize-none border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"></textarea>
                 </div>
             </div>

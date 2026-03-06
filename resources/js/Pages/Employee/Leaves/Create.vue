@@ -5,8 +5,7 @@ const form = useForm({
     start_date: '',
     end_date: '',
     type: '',
-    reason: '',
-    description: ''
+    reason: ''
 });
 
 const submit = () => {
@@ -69,7 +68,7 @@ const cancel = () => {
                 <div class="grid grid-cols-1 gap-1">
                     <span v-if="form.errors.reason" class="text-red-500 text-sm">{{ form.errors.reason }}</span>
 
-                    <textarea rows="6" v-model="form.description" placeholder="Reason"
+                    <textarea rows="6" v-model="form.reason" placeholder="Reason"
                         class="p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400" />
                 </div>
 

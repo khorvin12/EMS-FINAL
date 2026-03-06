@@ -166,11 +166,11 @@ const getHours = (checkIn, checkOut) => {
                             </td>
                             <td class="flex justify-center gap-3">
                                 <Link :href="`/hr/attendance/${att.id}/edit`"
-                                    class="bg-yellow-400 hover:bg-yellow-300 inline-flex items-center justify-center w-20 py-2 rounded-md text-sm font-semibold transition">
+                                    class="bg-yellow-400 hover:bg-yellow-500 inline-flex items-center justify-center w-20 py-2 rounded-md text-sm font-semibold transition">
                                     Edit
                                 </Link>
                                 <Link :href="`/hr/attendance/${att.id}`" method="delete" as="button"
-                                    class="bg-red-500 hover:bg-red-400 inline-flex items-center justify-center w-20 py-2 rounded-md text-sm font-semibold transition">
+                                    class="bg-red-500 hover:bg-red-600 inline-flex items-center justify-center w-20 py-2 rounded-md text-sm font-semibold transition">
                                     Delete
                                 </Link>
                             </td>

@@ -167,7 +167,7 @@ const getTabStyle = (key) => {
                             </td>
                             <td class="text-center">
                                 <Link :href="`/hr/leaves/review/${leave.id}`"
-                                    class="bg-blue-500 hover:bg-blue-400 inline-flex items-center justify-center w-20 py-2 rounded-md text-sm font-semibold transition">
+                                    class="bg-blue-500 hover:bg-blue-600 inline-flex items-center justify-center w-24 py-2 rounded-md text-sm font-semibold transition">
                                     Review
                                 </Link>
                             </td>

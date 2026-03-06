@@ -1,9 +1,8 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { Head, router, usePage } from '@inertiajs/vue3';
-import { onUnmounted } from 'vue';
+import { Head, router } from '@inertiajs/vue3';
+import { onMounted, onUnmounted } from 'vue'
 
-const page = usePage();
 
 const props = defineProps({
     employee: {
@@ -24,11 +23,6 @@ const processing = ref(false);
 
 const currentTime = ref(new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }));
 const currentDate = ref(new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }));
-
-// Update time every second
-setInterval(() => {
-    currentTime.value = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-}, 1000);
 
 // FIXED: Changed time_in/time_out to check_in/check_out
 const canTimeIn = computed(() => !props.todayAttendance || !props.todayAttendance.check_in);
@@ -55,9 +49,17 @@ const timeIn = () => {
     });
 };
 
-const interval = setInterval(() => {
-    currentTime.value = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-}, 1000);
+let interval;
+
+onMounted(() => {
+    interval = setInterval(() => {
+        currentTime.value = new Date().toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    }, 1000);
+});
 
 onUnmounted(() => clearInterval(interval));
 

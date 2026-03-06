@@ -57,13 +57,12 @@ const actionButtons = [
 
         <h1 class="text-center text-4xl font-bold mb-12">Manage Departments</h1>
 
-        <div class="flex justify-between mb-6">
-            <input v-model="searchQuery" type="text" placeholder="Search by Serial No or Department..."
-                class="border border-gray-300 rounded-lg px-4 py-2 w-80 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        <div class="flex justify-between mb-6 gap-4">
+            <input v-model="searchQuery" type="text" placeholder="Search"
+                class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
-            <Link href="/adddepartment"
-                class="font-semibold bg-green-500 hover:bg-green-600 rounded-md px-4 py-2">
-                Add New Department
+            <Link href="/adddepartment" class="font-semibold bg-green-500 hover:bg-green-600 rounded-md px-4 py-2 transition whitespace-nowrap">
+                Add Department
             </Link>
         </div>
 
@@ -92,17 +91,17 @@ const actionButtons = [
                         <td class="flex justify-center gap-3">
                             <Link v-for="action in actionButtons" :key="action.label" :href="action.href(row.id)"
                                 :method="action.method" :as="action.as"
-                                :class="[action.color, 'inline-flex items-center justify-center w-20 py-2 rounded-md text-sm font-semibold transition']">
+                                :class="[action.color, 'inline-flex items-center justify-center w-24 py-2 rounded-md text-sm font-semibold transition']">
                                 {{ action.label }}
                             </Link>
                         </td>
                     </tr>
-                    <tr v-if="!departments || departments.length === 0">
-                        <td colspan="4" class="px-6 py-8 text-center text-gray-500">
+                    <tr v-if="filteredDepartments.length === 0">
+                        <td colspan="4" class="p-8 text-center text-gray-500 border-t-4 border-slate-200">
                             No departments found
                         </td>
                     </tr>
-                    
+
                 </tbody>
             </table>
         </div>

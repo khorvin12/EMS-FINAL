@@ -1,19 +1,22 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Employee\SalaryController;
-use App\Http\Controllers\Employee\AttendanceController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Admin\EmployeeController;
-use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\ManageLeavesController;
-use App\Http\Controllers\Employee\DashboardController;
-use App\Http\Controllers\Employee\LeaveController;
+use App\Http\Controllers\Admin\DepartmentController;
+
 use App\Http\Controllers\HR\AttendanceController as HRAttendanceController;
-use App\Http\Controllers\HR\SalaryController as HRSalaryController; // Add this line
+use App\Http\Controllers\HR\SalaryController as HRSalaryController;
+use App\Http\Controllers\HR\DashboardController as HRDashboardController;
+
+use App\Http\Controllers\Employee\DashboardController;
+use App\Http\Controllers\Employee\AttendanceController;
+use App\Http\Controllers\Employee\LeaveController;
+use App\Http\Controllers\Employee\SalaryController;
 
 // Middleware
 use App\Http\Middleware\AdminMiddleware;
@@ -163,8 +166,9 @@ Route::middleware(['auth', HRMiddleware::class])
     ->name('hr.')
     ->group(function () {
 
-        Route::get('/dashboard', fn() => Inertia::render('HR/Index'))
-            ->name('dashboard');
+        Route::get('/dashboard', [HRDashboardController::class, 'index'])->name('dashboard');
+
+
 
         // HR Salary Routes - ADD THESE LINES
         Route::get('/salary', [HRSalaryController::class, 'index'])->name('salary.index');

@@ -39,7 +39,8 @@ const getStatusText = (status) => {
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                        <span :class="getStatusColor(leave.status)" class="inline-block w-24 text-center py-2 rounded-full text-sm font-semibold transition">
+                        <span :class="getStatusColor(leave.status)"
+                            class="inline-block w-24 text-center py-2 rounded-full text-sm font-semibold transition">
                             {{ getStatusText(leave.status) }}
                         </span>
                     </div>
@@ -60,11 +61,6 @@ const getStatusText = (status) => {
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Reason</label>
                     <p class="text-lg font-semibold">{{ leave.reason }}</p>
-                </div>
-
-                <div v-if="leave.description">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                    <p class="text-base bg-gray-50 p-3 rounded border">{{ leave.description }}</p>
                 </div>
 
                 <div v-if="leave.admin_comment">

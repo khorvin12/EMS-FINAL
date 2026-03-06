@@ -15,7 +15,7 @@ class Leave extends Model
         'start_date',
         'end_date',
         'type',
-        'description',
+        'reason',
         'status',
         'admin_comment',
     ];

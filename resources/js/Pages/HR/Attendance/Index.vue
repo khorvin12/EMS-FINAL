@@ -16,7 +16,9 @@ const filteredAttendances = computed(() => {
     return props.attendanceHistory.data.filter(attendance =>
         attendance.id?.toString().includes(searchQuery.value) ||
         attendance.employee_id?.toString().includes(searchQuery.value) ||
-        attendance.employee_name?.toLowerCase().includes(searchQuery.value.toLowerCase())
+        attendance.employee_name?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        attendance.date?.toString().includes(searchQuery.value) ||
+        attendance.status?.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
 });
 
@@ -106,7 +108,7 @@ const Tablecolumns = [
 
             <!-- View by Employee button -->
             <Link href="/hr/attendance/employees"
-                class="bg-blue-500 hover:bg-blue-400 text-white rounded-md px-4 py-3 text-sm font-semibold">
+                class="bg-blue-500 hover:bg-blue-600 rounded-md px-4 py-3 text-sm font-semibold">
                 View by Employee
             </Link>
         </div>
@@ -139,7 +141,7 @@ const Tablecolumns = [
                         <td class="flex justify-center gap-3">
                             <Link v-for="action in actionButtons" :key="action.label" :href="action.href(attendance.id)"
                                 :method="action.method" :as="action.as"
-                                :class="[action.color, 'inline-flex items-center justify-center w-20 py-2 rounded-md text-sm font-semibold transition']">
+                                :class="[action.color, 'inline-flex items-center justify-center w-24 py-2 rounded-md text-sm font-semibold transition']">
                                 {{ action.label }}
                             </Link>
                         </td>

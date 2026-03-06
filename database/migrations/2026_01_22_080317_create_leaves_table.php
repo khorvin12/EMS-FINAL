@@ -14,8 +14,7 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date');
             $table->string('type')->default('sick'); // sick, vacation, emergency, personal
-            $table->string('reason')->nullable();
-            $table->text('description')->nullable();
+            $table->text('reason')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->text('admin_comment')->nullable();
             $table->timestamps();

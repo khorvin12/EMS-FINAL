@@ -133,7 +133,6 @@ class ManageLeavesController extends Controller
                 'id' => $leave->user?->id,
             ],
             'reason' => $leave->reason,
-            'description' => $leave->description,
             'start_date' => optional($leave->start_date)?->format('Y-m-d'),
             'end_date' => optional($leave->end_date)?->format('Y-m-d'),
             'status' => $leave->status,

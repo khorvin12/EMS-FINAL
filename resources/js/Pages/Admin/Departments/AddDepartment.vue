@@ -45,9 +45,9 @@ const submitDepartment = () => {
                     <span v-if="form.errors.manager_id" class="text-red-500 text-sm">{{ form.errors.manager_id }}</span>
                 </div>
 
-                <div class="mt-6 text-white font-bold text-center">
+                <div class="mt-6 font-bold text-center">
                     <button type="submit"
-                        class="bg-green-500 hover:bg-green-600 px-8 py-2 rounded-md disabled:opacity-50"
+                        class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-md text-sm font-semibold transition disabled:opacity-50"
                         :disabled="form.processing">
                         {{ form.processing ? 'Adding...' : 'Add Department' }}
                     </button>

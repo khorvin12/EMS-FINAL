@@ -97,8 +97,8 @@ const getStatusColor = (status) => {
                 </div>
 
                 <div>
-                    <label class="mb-1 block text-sm font-medium">Description</label>
-                    <textarea rows="6" :value="leave.description || 'No description provided'" readonly
+                    <label class="mb-1 block text-sm font-medium">Reason</label>
+                    <textarea rows="6" :value="leave.reason || 'No reason provided'" readonly
                         class="w-full p-2 border border-gray-500 rounded-md resize-none bg-gray-100"></textarea>
                 </div>
             </div>

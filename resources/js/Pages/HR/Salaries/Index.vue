@@ -1,39 +1,32 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { Link } from '@inertiajs/vue3';
+import PaginationLinks from '../../Components/PaginationLinks.vue';
 
 const props = defineProps({
     salaries: {
-        type: Array,
-        default: () => []
+        type: Object,
+        required: true
     }
 });
 
 const searchQuery = ref('');
-const showEmployee = ref(true);
-const showHR = ref(false);
-const showAdmin = ref(false);
 
 const filteredSalaries = computed(() => {
-    let result = props.salaries;
-
-    result = result.filter(s => {
-        if (s.role === 'employee' && !showEmployee.value) return false;
-        if (s.role === 'hr' && !showHR.value) return false;
-        if (s.role === 'admin' && !showAdmin.value) return false;
-        return true;
-    });
+    let result = props.salaries.data;
 
     if (searchQuery.value) {
         result = result.filter(s =>
+            s.id.toString().includes(searchQuery.value) ||
             s.employee_id.toString().includes(searchQuery.value) ||
-            s.employee_name.toLowerCase().includes(searchQuery.value.toLowerCase())
+            s.employee_name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            s.role.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            s.department.toLowerCase().includes(searchQuery.value.toLowerCase())
         );
     }
 
     return result;
 });
-
 const formatCurrency = (value) => {
     return '₱' + Number(value).toLocaleString('en-PH', {
         minimumFractionDigits: 2,
@@ -44,26 +37,12 @@ const formatCurrency = (value) => {
 
 <template>
     <div class="flex flex-col px-6">
+
         <h1 class="text-center text-4xl font-bold mb-12">Salary Details</h1>
 
         <div class="flex items-center justify-between mb-6 gap-4 flex-wrap">
             <input type="search" v-model="searchQuery" placeholder="Search By Employee ID or Name"
                 class="border border-gray-300 rounded-lg px-4 py-2 w-80 focus:outline-none focus:ring-2 focus:ring-blue-400" />
-
-            <div class="flex items-center gap-4">
-                <label class="flex items-center gap-2 cursor-pointer select-none">
-                    <input type="checkbox" v-model="showEmployee" class="w-4 h-4 accent-green-500" />
-                    <span class="text-sm font-medium text-gray-700">Show Employee</span>
-                </label>
-                <label class="flex items-center gap-2 cursor-pointer select-none">
-                    <input type="checkbox" v-model="showHR" class="w-4 h-4 accent-blue-500" />
-                    <span class="text-sm font-medium text-gray-700">Show HR</span>
-                </label>
-                <label class="flex items-center gap-2 cursor-pointer select-none">
-                    <input type="checkbox" v-model="showAdmin" class="w-4 h-4 accent-red-500" />
-                    <span class="text-sm font-medium text-gray-700">Show Admin</span>
-                </label>
-            </div>
 
             <Link href="/hr/salary-report" class="bg-green-500 hover:bg-green-600 font-semibold px-4 py-2 rounded-md">
                 Salary Report
@@ -85,7 +64,7 @@ const formatCurrency = (value) => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(salary, index) in filteredSalaries" :key="salary.id" class="border-t-4 border-gray-200">
+                    <tr v-for="(salary, index) in filteredSalaries" :key="salary.data" class="border-t-4 border-gray-200">
                         <td>{{ index + 1 }}</td>
                         <td>{{ salary.employee_id }}</td>
                         <td>{{ salary.employee_name }}</td>
@@ -94,7 +73,8 @@ const formatCurrency = (value) => {
                                 'bg-red-100 text-red-700': salary.role === 'admin',
                                 'bg-blue-100 text-blue-700': salary.role === 'hr',
                                 'bg-green-100 text-green-700': salary.role === 'employee'
-                            }" class="inline-block w-24 text-center py-2 rounded-full text-sm font-semibold transition capitalize">
+                            }"
+                                class="inline-block w-24 text-center py-2 rounded-full text-sm font-semibold transition capitalize">
                                 {{ salary.role }}
                             </span>
                         </td>
@@ -103,7 +83,7 @@ const formatCurrency = (value) => {
                         <td>{{ formatCurrency(salary.net_salary) }}</td>
                         <td class="text-center">
                             <Link :href="`/hr/salaries/${salary.id}`"
-                                class="bg-blue-500 hover:bg-blue-600 w-20 py-2 rounded-md text-sm font-semibold inline-block">
+                                class="bg-blue-500 hover:bg-blue-600 inline-flex items-center justify-center w-24 py-2 rounded-md text-sm font-semibold transition">
                                 View
                             </Link>
                         </td>
@@ -115,6 +95,10 @@ const formatCurrency = (value) => {
                     </tr>
                 </tbody>
             </table>
+        </div>
+
+        <div class="mt-6">
+            <PaginationLinks :paginator="salaries"/>
         </div>
     </div>
 </template>

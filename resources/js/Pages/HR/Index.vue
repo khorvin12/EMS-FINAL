@@ -27,11 +27,15 @@ onMounted(() => {
 <template>
 
   <!-- Title Contents -->
-  <h1 class="text-3xl font-bold mb-12">Dashboard Overview</h1>
+  <div class="mb-12">
+    <h1 class="text-4xl font-bold">Dashboard Overview</h1>
+    <p class="text-sm text-gray-500 mt-1">Today's attendance and leave summary</p>
+  </div>
+
+  <h2 class="text-2xl text-center font-semibold uppercase tracking-widest mb-6">Attendance Today</h2>
 
   <!-- Dashboard Cards -->
   <div class="grid grid-cols-3 justify-items-center mb-48">
-
     <!-- Total Employees Card -->
     <div class="bg-white rounded-md flex items-center gap-4 shadow w-64">
       <div class="bg-green-500 rounded-md px-4 py-3">
@@ -66,7 +70,7 @@ onMounted(() => {
   </div>
 
   <!-- Leave Details -->
-  <h2 class="text-2xl font-bold mb-12 text-center">Leave Details</h2>
+  <h2 class="text-2xl text-center font-semibold uppercase tracking-widest mb-6">Leave Requests</h2>
 
   <div class="grid grid-cols-3 justify-items-center">
 

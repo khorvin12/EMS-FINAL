@@ -60,7 +60,7 @@ onMounted(() => {
         </div>
 
         <!-- Leave Details -->
-        <h2 class="text-2xl font-bold mb-12 text-center">Leave Details</h2>
+        <h2 class="text-3xl font-bold mb-12 text-center">Leave Details</h2>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
 
