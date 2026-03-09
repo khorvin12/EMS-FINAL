@@ -128,7 +128,9 @@ class ManageLeavesController extends Controller
         return [
             'id' => $leave->id,
             'user' => [
-                'name' => $leave->user?->name ?? 'Unknown User',
+                'name' => $leave->user
+                    ? $leave->user->first_name . ' ' . $leave->user->last_name
+                    : 'Unknown User',
                 'email' => $leave->user?->email ?? 'N/A',
                 'id' => $leave->user?->id,
             ],

@@ -24,10 +24,8 @@ const submit = () => {
 </script>
 
 <template>
-    <h1 class="text-center text-3xl font-bold mb-10">Edit Attendance</h1>
-
     <!-- Centered box — like the Request for Leave card -->
-    <div class="flex justify-center">
+    <div class="flex justify-center py-24">
         <div class="bg-white border-4 border-blue-500 rounded-lg p-8 w-full max-w-2xl shadow-md">
 
             <h2 class="text-center text-xl font-bold mb-6">Attendance Record</h2>
@@ -35,7 +33,7 @@ const submit = () => {
             <form @submit.prevent="submit">
 
                 <!-- Row 1: Employee ID + Employee Name -->
-                <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-600 mb-1">Employee ID</label>
                         <input :value="attendance.employee_id" disabled
@@ -49,7 +47,7 @@ const submit = () => {
                 </div>
 
                 <!-- Row 2: Date + Check In -->
-                <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-600 mb-1">Date</label>
                         <input type="date" v-model="form.date"
@@ -80,7 +78,7 @@ const submit = () => {
                 <!-- Status row at the bottom -->
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-gray-600 mb-2">Status</label>
-                    <div class="grid grid-cols-4 gap-2">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                         <label v-for="opt in [
                             { value: 'present', label: 'Present', cls: 'bg-green-500 hover:bg-green-600' },
                             { value: 'absent', label: 'Absent', cls: 'bg-red-500   hover:bg-red-600' },
@@ -99,13 +97,13 @@ const submit = () => {
                 </div>
 
                 <!-- Action buttons -->
-                <div class="flex justify-center gap-4">
+                <div class="flex justify-center items-center gap-4">
                     <Link href="/hr/attendance"
                         class="bg-gray-600 hover:bg-gray-700 text-white font-semibold px-8 py-2 rounded transition-colors">
                         Cancel
                     </Link>
                     <button type="submit" :disabled="form.processing"
-                        class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-8 py-2 rounded transition-colors disabled:opacity-50">
+                        class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-8 py-2 rounded transition-colors disabled:opacity-50 transition whitespace-nowrap">
                         {{ form.processing ? 'Saving…' : 'Save Changes' }}
                     </button>
                 </div>

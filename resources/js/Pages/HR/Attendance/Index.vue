@@ -5,8 +5,8 @@ import PaginationLinks from '../../Components/PaginationLinks.vue';
 
 const props = defineProps({
     attendanceHistory: {
-        type: Array,
-        default: () => []
+        type: Object,
+        default: () => ({ data: [], current_page: 1, last_page: 1, total: 0 })
     }
 });
 
@@ -99,22 +99,22 @@ const Tablecolumns = [
 
 <template>
     <div class="flex flex-col px-6">
-        
+
         <h1 class="text-center text-4xl font-bold mb-12">Employee Attendance</h1>
 
-        <div class="flex justify-between mb-6">
-            <input type="search" v-model="searchQuery" placeholder="Search By Serial No or Name"
-                class="border border-gray-300 rounded-lg px-4 py-2 w-80 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        <div class="flex justify-between items-center mb-6 gap-4">
+            <input type="search" v-model="searchQuery" placeholder="Search By Serial No"
+                class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
             <!-- View by Employee button -->
             <Link href="/hr/attendance/employees"
-                class="bg-blue-500 hover:bg-blue-600 rounded-md px-4 py-3 text-sm font-semibold">
+                class="bg-blue-500 hover:bg-blue-600 rounded-md px-4 py-3 text-sm font-semibold transition whitespace-nowrap">
                 View by Employee
             </Link>
         </div>
 
         <div class="bg-white rounded-lg shadow-lg overflow-x-auto">
-            <table class="min-w-full text-left">
+            <table class="min-w-full text-left transition whitespace-nowrap">
                 <thead class="bg-gray-400">
                     <tr>
                         <th v-for="column in Tablecolumns" :key="column.key"

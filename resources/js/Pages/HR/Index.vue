@@ -1,32 +1,21 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-
 const props = defineProps({
-  stats: Object
-});
-
-// Reactive data
-const stats = ref({
-  presentToday: 0,
-  absentToday: 0,
-  totalEmployees: 0,
-  leavePending: 0,
-  leaveApproved: 0,
-  leaveRejected: 0
-});
-
-// Update stats with props data
-onMounted(() => {
-  if (props.stats) {
-    Object.assign(stats.value, props.stats);
+  stats: {
+    type: Object,
+    default: () => ({
+      presentToday: 0,
+      absentToday: 0,
+      totalEmployees: 0,
+      leavePending: 0,
+      leaveApproved: 0,
+      leaveRejected: 0
+    })
   }
 });
-
 </script>
 
 <template>
 
-  <!-- Title Contents -->
   <div class="mb-12">
     <h1 class="text-4xl font-bold">Dashboard Overview</h1>
     <p class="text-sm text-gray-500 mt-1">Today's attendance and leave summary</p>
@@ -34,16 +23,15 @@ onMounted(() => {
 
   <h2 class="text-2xl text-center font-semibold uppercase tracking-widest mb-6">Attendance Today</h2>
 
-  <!-- Dashboard Cards -->
-  <div class="grid grid-cols-3 justify-items-center mb-48">
-    <!-- Total Employees Card -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 justify-items-center mb-48 gap-4">
+
     <div class="bg-white rounded-md flex items-center gap-4 shadow w-64">
       <div class="bg-green-500 rounded-md px-4 py-3">
         <i class="fa fa-user fa-2x" aria-hidden="true" />
       </div>
       <div>
         <p class="text-lg font-medium">Present Today</p>
-        <p class="text-center">{{ stats.presentToday }}</p>
+        <p class="text-center">{{ props.stats.presentToday }}</p>
       </div>
     </div>
 
@@ -53,7 +41,7 @@ onMounted(() => {
       </div>
       <div>
         <p class="text-lg font-medium">Absent Today</p>
-        <p class="text-center">{{ stats.absentToday }}</p>
+        <p class="text-center">{{ props.stats.absentToday }}</p>
       </div>
     </div>
 
@@ -63,16 +51,15 @@ onMounted(() => {
       </div>
       <div>
         <p class="text-lg font-medium">Total Employees</p>
-        <p class="text-center">{{ stats.totalEmployees }}</p>
+        <p class="text-center">{{ props.stats.totalEmployees }}</p>
       </div>
     </div>
 
   </div>
 
-  <!-- Leave Details -->
   <h2 class="text-2xl text-center font-semibold uppercase tracking-widest mb-6">Leave Requests</h2>
 
-  <div class="grid grid-cols-3 justify-items-center">
+  <div class="grid grid-cols-1 sm:grid-cols-3 justify-items-center gap-4">
 
     <div class="bg-white rounded-md flex items-center gap-4 shadow w-64">
       <div class="bg-yellow-400 rounded-md px-5 py-3">
@@ -80,7 +67,7 @@ onMounted(() => {
       </div>
       <div>
         <p class="text-lg font-medium">Leave Pending</p>
-        <p class="text-center">{{ stats.leavePending }}</p>
+        <p class="text-center">{{ props.stats.leavePending }}</p>
       </div>
     </div>
 
@@ -90,7 +77,7 @@ onMounted(() => {
       </div>
       <div>
         <p class="text-lg font-medium">Leave Approved</p>
-        <p class="text-center">{{ stats.leaveApproved }}</p>
+        <p class="text-center">{{ props.stats.leaveApproved }}</p>
       </div>
     </div>
 
@@ -100,7 +87,7 @@ onMounted(() => {
       </div>
       <div>
         <p class="text-lg font-medium">Leave Rejected</p>
-        <p class="text-center">{{ stats.leaveRejected }}</p>
+        <p class="text-center">{{ props.stats.leaveRejected }}</p>
       </div>
     </div>
 

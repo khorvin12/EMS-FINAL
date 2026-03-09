@@ -67,7 +67,7 @@ const actionButtons = [
         </div>
 
         <div class="bg-white rounded-lg shadow-lg overflow-x-auto">
-            <table class="min-w-full text-left">
+            <table class="min-w-full text-left transition whitespace-nowrap">
                 <thead class="bg-gray-400 text-black font-medium">
                     <tr>
                         <th v-for="column in tableColumns" :key="column.key"

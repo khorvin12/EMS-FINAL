@@ -130,7 +130,7 @@ const emptyStateMessage = computed(() =>
         <!-- Leave Table -->
         <div v-else class="bg-white rounded-lg shadow-md overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="min-w-full text-left">
+                <table class="min-w-full text-left transition whitespace-nowrap">
                     <thead class="bg-gray-400">
                         <tr>
                             <th>Serial No</th>

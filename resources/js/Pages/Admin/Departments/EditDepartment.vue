@@ -21,7 +21,7 @@ const updateDepartment = () => {
 </script>
 
 <template>
-    <div class="flex items-center justify-center h-176">
+    <div class="flex items-center justify-center py-24">
         <div class="bg-white w-full max-w-sm px-6 py-4 rounded-md shadow-md border-4 border-yellow-300">
 
             <h1 class="text-xl font-bold mb-8 text-center">Edit Department</h1>

@@ -170,15 +170,11 @@ Route::middleware(['auth', HRMiddleware::class])
 
 
 
-        // HR Salary Routes - ADD THESE LINES
+        // HR Salary Routes
         Route::get('/salary', [HRSalaryController::class, 'index'])->name('salary.index');
         Route::get('/salaries/{employeeId}', [HRSalaryController::class, 'view'])->name('salaries.view');
         Route::post('/salaries/{employeeId}/generate-payroll', [HRSalaryController::class, 'generatePayroll'])->name('salaries.generatePayroll');
-
-        // Remove or comment out this old route if it exists
-        // Route::inertia('/salary', 'HR/Salaries/Salary')->name('salary');
     
-        // HR Leaves Management - NOW USING THE SAME CONTROLLER AS ADMIN
         Route::get('/leaves', [ManageLeavesController::class, 'index'])
             ->name('leaves.index');
 

@@ -17,7 +17,7 @@ const submitDepartment = () => {
 </script>
 
 <template>
-    <div class="flex items-center justify-center h-176">
+    <div class="flex items-center justify-center py-24">
         <div class="bg-white w-full max-w-sm px-6 py-4 rounded-md shadow-md border-5 border-green-600">
 
             <h1 class="text-xl font-bold mb-6 text-center">Add New Department</h1>

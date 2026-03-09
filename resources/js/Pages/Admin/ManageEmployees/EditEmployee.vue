@@ -9,16 +9,21 @@ const props = defineProps({
 
 const showSuccess = ref(false);
 
+const formatDate = (dateString) => {
+    if (!dateString) return ''
+    return new Date(dateString).toISOString().split('T')[0]
+}
+
 const form = useForm({
     first_name: props.employee?.first_name || "",
     last_name: props.employee?.last_name || "",
     email: props.employee?.email || "",
     phone: props.employee?.phone || "",
-    dob: props.employee?.dob || "",
+    dob: formatDate(props.employee?.dob),
     gender: props.employee?.gender || "",
     civil_status: props.employee?.civil_status || "",
     department_id: props.employee?.department_id || "",
-    hire_date: props.employee?.hire_date || "",
+    hire_date: formatDate(props.employee?.hire_date),
     salary: props.employee?.salary || "",
     role: props.employee?.role || "",
 });
@@ -65,7 +70,7 @@ function submit() {
         </div>
     </Transition>
 
-    <div class="bg-white border-4 border-yellow-400 rounded-lg p-8 max-w-5xl mx-auto overflow-x-auto">
+    <div class="bg-white border-4 border-yellow-400 rounded-lg p-8 max-w-3xl mx-auto overflow-x-auto">
 
         <h1 class="text-2xl font-bold mb-6">Edit Employee</h1>
 
@@ -82,12 +87,12 @@ function submit() {
             </ul>
         </div>
 
-        <form @submit.prevent="submit" class="grid grid-cols-2 gap-6">
+        <form @submit.prevent="submit" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <!-- Dynamic Form Fields -->
             <div v-for="field in formFields" :key="field.name">
                 <label class="text-sm font-semibold">{{
                     field.label
-                }}</label>
+                    }}</label>
 
                 <!-- Text/Email/Number/Date Inputs -->
                 <input v-if="
@@ -130,7 +135,7 @@ function submit() {
             </div>
 
             <!-- Submit Button -->
-            <div class="col-span-2 mt-6">
+            <div class="col-span-1 sm:col-span-2 mt-6">
                 <button type="submit"
                     class="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                     :disabled="form.processing">

@@ -21,12 +21,6 @@ class Department extends Model
         return $this->hasMany(User::class, 'department_id');
     }
 
-    // Kept so existing code using users() still works
-    public function users()
-    {
-        return $this->hasMany(User::class, 'department_id');
-    }
-
     // Returns the manager (a User) of this department
     public function manager()
     {
@@ -35,6 +29,6 @@ class Department extends Model
 
     public function employeesCount()
     {
-        return $this->users()->count();
+        return $this->employees()->count();
     }
 }

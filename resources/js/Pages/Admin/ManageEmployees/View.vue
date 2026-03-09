@@ -35,26 +35,27 @@ const employeeFields = [
 </script>
 
 <template>
-  <div class="flex justify-center items-center h-190">
-    <div class="bg-white border-4 border-blue-400 rounded-lg p-8 max-w-5xl w-full shadow-lg">
+  <div class="flex justify-center items-center">
+    <div class="bg-white border-4 border-blue-400 rounded-lg p-6 max-w-3xl w-full shadow-lg">
 
-      <h1 class="text-2xl font-bold mb-6">View Employee</h1>
+      <div class="flex justify-end items-center gap-4">
+        <Link href="/manageemployees" class="text-blue-500 hover:text-blue-600  transition-colors">
+          ← Back
+        </Link>
+      </div>
 
-      <div class="grid grid-cols-2 gap-6 text-gray-800">
+      <h1 class="text-3xl font-bold mb-6">Employee Details</h1>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-gray-800">
         <div v-for="field in employeeFields" :key="field.label">
           <p class="text-sm font-bold text-gray-600">{{ field.label }}</p>
-          <p class="mt-1 text-gray-900" :class="field.class">
+          <p class="text-gray-900" :class="field.class">
             {{ field.value(employee) }}
           </p>
         </div>
       </div>
 
-      <div class="mt-8">
-        <Link href="/manageemployees"
-          class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-md transition-colors">
-          Back to Employees
-        </Link>
-      </div>
+
 
     </div>
   </div>

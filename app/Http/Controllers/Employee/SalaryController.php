@@ -28,14 +28,16 @@ class SalaryController extends Controller
             ->where('month', $currentMonth)
             ->first();
 
+        $employee = [
+            'id'          => $user->id,
+            'employee_id' => $user->id,
+            'name'        => $user->first_name . ' ' . $user->last_name,
+            'department'  => $department,
+        ];
+
         if ($payroll) {
             return Inertia::render('Employee/Salary/Index', [
-                'employee' => [
-                    'id'          => $user->id,
-                    'employee_id' => $user->id,
-                    'name'        => $user->name,
-                    'department'  => $department,
-                ],
+                'employee' => $employee,
                 'salary' => [
                     'full_salary' => floatval($payroll->basic_salary),
                     'deductions'  => floatval($payroll->deductions),
@@ -64,32 +66,17 @@ class SalaryController extends Controller
         }
 
         return Inertia::render('Employee/Salary/Index', [
-            'employee' => [
-                'id'          => $user->id,
-                'employee_id' => $user->id,
-                'name'        => $user->name,
-                'department'  => $department,
+            'employee'         => $employee,
+            'salary'           => ['full_salary' => $grossSalary, 'deductions' => 0],
+            'attendance'       => [
+                'absences' => 0, 'late_count' => 0, 'total_late_minutes' => 0,
+                'total_hours_worked' => 0, 'expected_hours' => 176,
+                'undertime_hours' => 0, 'overtime_hours' => 0,
+                'present_days' => 0, 'total_working_days' => 22,
             ],
-            'salary' => [
-                'full_salary' => $grossSalary,
-                'deductions'  => 0,
-            ],
-            'attendance' => [
-                'absences'           => 0,
-                'late_count'         => 0,
-                'total_late_minutes' => 0,
-                'total_hours_worked' => 0,
-                'expected_hours'     => 176,
-                'undertime_hours'    => 0,
-                'overtime_hours'     => 0,
-                'present_days'       => 0,
-                'total_working_days' => 22,
-            ],
-            'deductions' => [
-                'absence_deduction'   => 0,
-                'late_deduction'      => 0,
-                'undertime_deduction' => 0,
-                'total_deductions'    => 0,
+            'deductions'       => [
+                'absence_deduction' => 0, 'late_deduction' => 0,
+                'undertime_deduction' => 0, 'total_deductions' => 0,
             ],
             'overtime_pay'     => 0,
             'netSalary'        => $grossSalary,

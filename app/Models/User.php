@@ -22,7 +22,6 @@ class User extends Authenticatable
         'hire_date',
         'salary',
         'role',
-        'role_id',
         'password',
     ];
 
@@ -40,11 +39,6 @@ class User extends Authenticatable
             'hire_date' => 'date',
             'salary' => 'decimal:2',
         ];
-    }
-
-    public function getNameAttribute()
-    {
-        return $this->first_name . ' ' . $this->last_name;
     }
 
     public function getFullNameAttribute()
@@ -65,10 +59,5 @@ class User extends Authenticatable
     public function payrolls()
     {
         return $this->hasMany(Payroll::class, 'employee_id', 'id');
-    }
-
-    public function roleModel()
-    {
-        return $this->belongsTo(Role::class, 'role_id');
     }
 }

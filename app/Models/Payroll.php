@@ -27,6 +27,8 @@ class Payroll extends Model
         'absence_deduction',
         'late_deduction',
         'undertime_deduction',
+        'overtime_hours',
+        'overtime_pay',
         'generated_by',
         'generated_at',
     ];
@@ -34,7 +36,7 @@ class Payroll extends Model
     // Returns the employee (User) this payroll belongs to
     public function employee()
     {
-        return $this->belongsTo(User::class, 'employee_id', 'employee_id');
+        return $this->belongsTo(User::class, 'employee_id', 'id');
     }
 
     // Returns the HR user who generated this payroll

@@ -23,41 +23,42 @@ class AttendanceController extends Controller
             ->first();
 
         $todayAttendanceFormatted = $todayAttendance ? [
-            'id'        => $todayAttendance->id,
+            'id' => $todayAttendance->id,
             'employee_id' => $todayAttendance->employee_id,
-            'date'      => $todayAttendance->date,
-            'check_in'  => $todayAttendance->check_in,
+            'date' => $todayAttendance->date,
+            'check_in' => $todayAttendance->check_in,
             'check_out' => $todayAttendance->check_out,
-            'status'    => $todayAttendance->status,
-            'hours'     => $this->calculateHours($todayAttendance->check_in, $todayAttendance->check_out),
+            'status' => $todayAttendance->status,
+            'hours' => $this->calculateHours($todayAttendance->check_in, $todayAttendance->check_out),
         ] : null;
 
         // Fetch last 5 attendance records
         $attendanceHistory = DB::table('attendances')
             ->where('employee_id', $user->id)
-            ->select('id', 'employee_id', 'date', 'check_in', 'check_out', 'status')
+            ->select('id', 'employee_id', 'date', 'check_in', 'check_out', 'status', 'hours_worked', 'late_minutes')
             ->orderBy('date', 'desc')
             ->limit(5)
             ->get()
             ->map(function ($attendance) {
                 return [
-                    'id'         => $attendance->id,
-                    'employee_id'=> $attendance->employee_id,
-                    'date'       => $attendance->date,
-                    'check_in'   => $attendance->check_in,
-                    'check_out'  => $attendance->check_out,
-                    'status'     => $attendance->status,
-                    'hours'      => $this->calculateHours($attendance->check_in, $attendance->check_out),
+                    'id' => $attendance->id,
+                    'employee_id' => $attendance->employee_id,
+                    'date' => $attendance->date,
+                    'check_in' => $attendance->check_in,
+                    'check_out' => $attendance->check_out,
+                    'status' => $attendance->status,
+                    'hours' => $this->calculateHours($attendance->check_in, $attendance->check_out),
+                    'late_minutes' => $attendance->late_minutes,
                 ];
             });
 
         return Inertia::render('Employee/Attendance/Index', [
             'employee' => [
-                'id'          => $user->id,
+                'id' => $user->id,
                 'employee_id' => $user->id,
-                'name'        => $user->name,
+                'name' => $user->first_name . ' ' . $user->last_name,
             ],
-            'todayAttendance'   => $todayAttendanceFormatted,
+            'todayAttendance' => $todayAttendanceFormatted,
             'attendanceHistory' => $attendanceHistory,
         ]);
     }
@@ -78,15 +79,24 @@ class AttendanceController extends Controller
                 return back()->with('error', 'You have already clocked in today.');
             }
 
-            $status = $currentTime->format('H:i') > '09:00' ? 'late' : 'present';
+            // Check if late (after 9:00 AM)
+            $cutoff = Carbon::parse('09:00', 'Asia/Manila');
+            $isLate = $currentTime->greaterThan($cutoff);
+            $status = $isLate ? 'late' : 'present';
+
+            // Calculate late minutes
+            $lateMinutes = $isLate
+                ? (int) $cutoff->diffInMinutes($currentTime)
+                : 0;
 
             DB::table('attendances')->insert([
                 'employee_id' => $user->id,
-                'date'        => $today->format('Y-m-d'),
-                'check_in'    => $currentTime->format('H:i:s'),
-                'status'      => $status,
-                'created_at'  => $currentTime,
-                'updated_at'  => $currentTime,
+                'date' => $today->format('Y-m-d'),
+                'check_in' => $currentTime->format('H:i:s'),
+                'status' => $status,
+                'late_minutes' => $lateMinutes,
+                'created_at' => $currentTime,
+                'updated_at' => $currentTime,
             ]);
 
             return back()->with('success', 'Clocked in successfully!');
@@ -97,8 +107,11 @@ class AttendanceController extends Controller
                 return back()->with('error', 'Invalid clock out attempt.');
             }
 
+            $hoursWorked = $this->calculateHours($attendance->check_in, $currentTime->format('H:i:s'));
+
             DB::table('attendances')->where('id', $attendance->id)->update([
-                'check_out'  => $currentTime->format('H:i:s'),
+                'check_out' => $currentTime->format('H:i:s'),
+                'hours_worked' => $hoursWorked,
                 'updated_at' => $currentTime,
             ]);
 
@@ -108,7 +121,7 @@ class AttendanceController extends Controller
         return back()->with('error', 'Invalid request.');
     }
 
-    // Calculate hours worked
+    // Calculate hours worked (minus 1 hour break)
     private function calculateHours($checkIn, $checkOut)
     {
         if (!$checkIn || !$checkOut) {
@@ -116,9 +129,8 @@ class AttendanceController extends Controller
         }
 
         $start = Carbon::parse($checkIn);
-        $end   = Carbon::parse($checkOut);
+        $end = Carbon::parse($checkOut);
 
-        // Returns hours worked, minus 1 hour break (optional)
         return round(max(0, $start->diffInHours($end, true) - 1), 2);
     }
 }

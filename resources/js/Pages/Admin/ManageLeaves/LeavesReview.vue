@@ -51,7 +51,7 @@ const handleReject = () => {
 <template>
 
     <!-- Outer Container -->
-    <div class="flex justify-center items-center h-176">
+    <div class="flex justify-center items-center py-24">
 
         <!-- Blue Review Card -->
         <div class="relative bg-sky-400 rounded-lg p-6 w-full max-w-4xl shadow-lg">

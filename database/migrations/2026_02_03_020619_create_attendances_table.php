@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            $table->string('employee_id'); // stores the employee_id string e.g. "EMP001"
+            $table->unsignedBigInteger('employee_id');
             $table->date('date');
             $table->time('check_in')->nullable();
             $table->time('check_out')->nullable();
@@ -19,7 +19,8 @@ return new class extends Migration
             $table->decimal('hours_worked', 5, 2)->default(0);
             $table->timestamps();
 
-            $table->unique(['employee_id', 'date']); // one record per employee per day
+            $table->unique(['employee_id', 'date']);
+            $table->foreign('employee_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

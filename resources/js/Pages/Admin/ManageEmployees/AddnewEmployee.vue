@@ -67,12 +67,14 @@ const formFields = [
 
         <!-- Text/Email/Number/Date Inputs -->
         <input v-if="['text', 'email', 'number', 'date'].includes(field.type)" :type="field.type"
-          v-model="form[field.name]" :placeholder="field.placeholder" class="w-full mt-1 border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+          v-model="form[field.name]" :placeholder="field.placeholder"
+          class="w-full mt-1 border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
           :class="{ 'border-red-500': form.errors[field.name] }" required />
 
         <!-- Select Inputs -->
         <select v-else-if="field.type === 'select'" v-model="form[field.name]"
-          class="w-full mt-1 border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400" :class="{ 'border-red-500': form.errors[field.name] }" required>
+          class="w-full mt-1 border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+          :class="{ 'border-red-500': form.errors[field.name] }" required>
           <option v-if="field.placeholder" value="">{{ field.placeholder }}</option>
 
           <!-- For department options (array of objects) -->

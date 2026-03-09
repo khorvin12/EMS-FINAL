@@ -41,8 +41,8 @@ const formatCurrency = (value) => {
         <h1 class="text-center text-4xl font-bold mb-12">Salary Details</h1>
 
         <div class="flex items-center justify-between mb-6 gap-4 flex-wrap">
-            <input type="search" v-model="searchQuery" placeholder="Search By Employee ID or Name"
-                class="border border-gray-300 rounded-lg px-4 py-2 w-80 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+            <input type="search" v-model="searchQuery" placeholder="Search"
+                class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
             <Link href="/hr/salary-report" class="bg-green-500 hover:bg-green-600 font-semibold px-4 py-2 rounded-md">
                 Salary Report
@@ -50,7 +50,7 @@ const formatCurrency = (value) => {
         </div>
 
         <div class="bg-white rounded-lg shadow-lg overflow-x-auto">
-            <table class="min-w-full text-left">
+            <table class="min-w-full text-left whitespace-nowrap">
                 <thead class="bg-gray-400 text-black font-medium">
                     <tr>
                         <th>Serial No</th>
