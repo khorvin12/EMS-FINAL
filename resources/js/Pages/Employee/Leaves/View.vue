@@ -21,11 +21,11 @@ const getStatusText = (status) => {
 </script>
 
 <template>
-    <div class="flex items-center justify-center h-176">
+    <div class="flex items-center justify-center px-4 py-36">
         <div class="w-full mx-auto max-w-lg bg-white rounded-lg shadow-md p-6">
 
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold">Leave Details</h2>
+                <h2 class="text-xl md:text-2xl font-bold">Leave Details</h2>
                 <Link href="/employee/leaves" class="text-2xl font-bold hover:text-red-600 transition">
                     ×
                 </Link>
@@ -35,7 +35,7 @@ const getStatusText = (status) => {
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Leave ID</label>
-                        <p class="text-lg">#{{ leave.id }}</p>
+                        <p class="text-base md:text-lg">#{{ leave.id }}</p>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
@@ -49,23 +49,22 @@ const getStatusText = (status) => {
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">From Date</label>
-                        <p class="text-lg">{{ leave.start_date }}</p>
+                        <p class="text-base md:text-lg">{{ leave.start_date }}</p>
                     </div>
-
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">To Date</label>
-                        <p class="text-lg">{{ leave.end_date }}</p>
+                        <p class="text-base md:text-lg">{{ leave.end_date }}</p>
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Reason</label>
-                    <p class="text-lg font-semibold">{{ leave.reason }}</p>
+                    <p class="text-base md:text-lg font-semibold">{{ leave.reason }}</p>
                 </div>
 
                 <div v-if="leave.admin_comment">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Admin Comment</label>
-                    <p class="text-base bg-yellow-50 p-3 rounded border border-yellow-200">{{ leave.admin_comment }}</p>
+                    <p class="text-sm md:text-base bg-yellow-50 p-3 rounded border border-yellow-200">{{ leave.admin_comment }}</p>
                 </div>
             </div>
 

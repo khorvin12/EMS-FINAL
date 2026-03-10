@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\HR\AttendanceController as HRAttendanceController;
 use App\Http\Controllers\HR\SalaryController as HRSalaryController;
 use App\Http\Controllers\HR\DashboardController as HRDashboardController;
+use App\Http\Controllers\HR\ReportController as HRReportController;
 
 use App\Http\Controllers\Employee\DashboardController;
 use App\Http\Controllers\Employee\AttendanceController;
@@ -193,6 +194,11 @@ Route::middleware(['auth', HRMiddleware::class])
         Route::get('/attendance/{id}/edit', [HRAttendanceController::class, 'edit'])->name('attendance.edit');
         Route::put('/attendance/{id}', [HRAttendanceController::class, 'update'])->name('attendance.update');
         Route::delete('/attendance/{id}', [HRAttendanceController::class, 'destroy'])->name('attendance.destroy');
+        
+         // HR Reports
+        Route::get('/reports/attendance', [HRReportController::class, 'attendancePdf'])->name('reports.attendance');
+        Route::get('/reports/payroll', [HRReportController::class, 'payrollPdf'])->name('reports.payroll');
+
 
         // HR Settings Routes
         Route::inertia('/settings', 'HR/Settings/Index')->name('settings');

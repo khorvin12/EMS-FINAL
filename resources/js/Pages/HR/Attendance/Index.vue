@@ -11,15 +11,32 @@ const props = defineProps({
 });
 
 const searchQuery = ref('');
+const dateFrom = ref('');
+const dateTo = ref('');
 
 const filteredAttendances = computed(() => {
-    return props.attendanceHistory.data.filter(attendance =>
-        attendance.id?.toString().includes(searchQuery.value) ||
-        attendance.employee_id?.toString().includes(searchQuery.value) ||
-        attendance.employee_name?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        attendance.date?.toString().includes(searchQuery.value) ||
-        attendance.status?.toLowerCase().includes(searchQuery.value.toLowerCase())
-    );
+    return props.attendanceHistory.data
+        .map((attendance, index) => ({ ...attendance, serialNo: index + 1 }))
+        .filter(attendance => {
+            const matchesSearch =
+                attendance.employee_id?.toString().includes(searchQuery.value) ||
+                attendance.employee_name?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+                attendance.status?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+                attendance.serialNo.toString() === searchQuery.value;
+
+            const attendanceDate = attendance.date?.substring(0, 10);
+            const matchesFrom = !dateFrom.value || attendanceDate >= dateFrom.value;
+            const matchesTo = !dateTo.value || attendanceDate <= dateTo.value;
+
+            return matchesSearch && matchesFrom && matchesTo;
+        });
+});
+
+const pdfUrl = computed(() => {
+    const params = new URLSearchParams();
+    if (dateFrom.value) params.append('date_from', dateFrom.value);
+    if (dateTo.value) params.append('date_to', dateTo.value);
+    return `/hr/reports/attendance?${params.toString()}`;
 });
 
 const formatTime = (time) => {
@@ -102,15 +119,36 @@ const Tablecolumns = [
 
         <h1 class="text-center text-4xl font-bold mb-12">Employee Attendance</h1>
 
-        <div class="flex justify-between items-center mb-6 gap-4">
-            <input type="search" v-model="searchQuery" placeholder="Search By Serial No"
-                class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
-            <!-- View by Employee button -->
-            <Link href="/hr/attendance/employees"
-                class="bg-blue-500 hover:bg-blue-600 rounded-md px-4 py-3 text-sm font-semibold transition whitespace-nowrap">
-                View by Employee
-            </Link>
+
+        <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+
+            <input type="search" v-model="searchQuery" placeholder="Search by Name or ID"
+                class="border border-gray-300 rounded-lg px-4 py-2 w-56 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+
+            <div class="flex flex-nowrap gap-2">
+                <!-- From Date -->
+                <label class="text-sm text-gray-600 mb-1">From</label>
+                <input type="date" v-model="dateFrom"
+                    class="border border-gray-300 rounded-lg w-35 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+
+                <!-- To Date -->
+                <label class="text-sm text-gray-600 mb-1">To</label>
+                <input type="date" v-model="dateTo"
+                    class="border border-gray-300 rounded-lg w-35 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+
+                <!-- Clear Button -->
+                <button @click="searchQuery = ''; dateFrom = ''; dateTo = '';"
+                    class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition">
+                    Clear
+                </button>
+            </div>
+
+            <!-- Generate Report -->
+            <a :href="pdfUrl" target="_blank"
+                class="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg">
+                Attendance Report
+            </a>
         </div>
 
         <div class="bg-white rounded-lg shadow-lg overflow-x-auto">
@@ -125,7 +163,7 @@ const Tablecolumns = [
                 <tbody>
                     <tr v-for="(attendance, index) in filteredAttendances" :key="attendance.id"
                         class="border-t-4 border-gray-200">
-                        <td>{{ index + 1 }}</td>
+                        <td>{{ attendance.serialNo }}</td>
                         <td>{{ attendance.employee_id }}</td>
                         <td>{{ attendance.employee_name || 'N/A' }}</td>
                         <td>{{ formatDate(attendance.date) }}</td>

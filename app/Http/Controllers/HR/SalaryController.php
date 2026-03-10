@@ -34,7 +34,7 @@ class SalaryController extends Controller
             )
             ->whereNotNull('users.salary')
             ->where('users.salary', '>', 0)
-            ->where('users.role', '!=', 'admin')
+            ->where('users.role', 'employee')
             ->orderBy('users.id')
             ->paginate(6)
             ->withQueryString();

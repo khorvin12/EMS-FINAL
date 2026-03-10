@@ -35,7 +35,7 @@ const employeeFields = [
 </script>
 
 <template>
-  <div class="flex justify-center items-center">
+  <div class="flex justify-center items-center py-24">
     <div class="bg-white border-4 border-blue-400 rounded-lg p-6 max-w-3xl w-full shadow-lg">
 
       <div class="flex justify-end items-center gap-4">

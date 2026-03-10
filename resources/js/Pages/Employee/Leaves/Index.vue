@@ -35,7 +35,7 @@ const getStatusText = (status) => {
     <div class="flex flex-col px-6">
         <h1 class="text-center text-4xl font-bold mb-12">Your Leave Schedules</h1>
 
-        <div class="flex justify-between mb-6">
+        <div class="flex justify-between mb-6 gap-4 whitespace-nowrap">
             <input type="search" placeholder="Search By Serial No" v-model="searchTerm"
                 class="border border-gray-300 rounded-lg px-4 py-2 w-80 focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
@@ -45,7 +45,7 @@ const getStatusText = (status) => {
             </Link>
         </div>
 
-        <div v-if="!leaves || leaves.length === 0" class="bg-white rounded-lg shadow-lg p-12 text-center">
+        <div v-if="!leaves || leaves.length === 0" class="bg-white rounded-lg shadow-lg p-12 text-center whitespace-nowrap">
             <p class="text-gray-500 text-lg mb-4">No leave requests yet</p>
             <Link href="/employee/leaves/create"
                 class="bg-green-500 hover:bg-green-600 text-white rounded-md px-6 py-2 inline-block">
@@ -54,7 +54,7 @@ const getStatusText = (status) => {
         </div>
 
         <div v-else class="bg-white rounded-lg shadow-lg overflow-x-auto">
-            <table class="min-w-full text-left">
+            <table class="min-w-full text-left whitespace-nowrap">
                 <thead class="bg-gray-400 text-black font-medium">
                     <tr>
                         <th>Serial No</th>

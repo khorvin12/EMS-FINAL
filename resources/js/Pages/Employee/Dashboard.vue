@@ -39,40 +39,38 @@ const formatTime = (timeString) => {
 </script>
 
 <template>
-
-
   <div class="flex flex-col px-6">
     <h1 class="text-4xl font-bold mb-12">Dashboard Overview</h1>
 
     <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-16 mb-16">
       <div
-        class="bg-white text-center rounded-xl shadow-sm p-8 border-l-4 border-green-500 hover:shadow-md transition-all hover:-translate-y-1 duration-300">
-        <p class="text-md text-gray-500 uppercase font-bold tracking-tight">Present Days This Month
+        class="bg-white text-center rounded-xl shadow-sm p-8 border-l-4 border-green-500 hover:shadow-md transition-all hover:-translate-y-1 duration-300 overflow-hidden">
+        <p class="text-xs md:text-sm text-gray-500 uppercase font-bold tracking-tight">Present Days This Month
         </p>
-        <p class="text-3xl font-extrabold text-gray-900 mb-2 leading-none mt-2">
+        <p class="text-lg md:text-3xl font-extrabold text-gray-900 mb-2 leading-none mt-2">
           {{ presentDays ?? 0 }}
         </p>
       </div>
 
       <div
-        class="bg-white text-center rounded-xl shadow-sm p-8 border-l-4 border-yellow-500 hover:shadow-md transition-all hover:-translate-y-1 duration-300">
-        <p class="text-md text-gray-500 uppercase font-bold tracking-tight">Pending Requests</p>
-        <p class="text-3xl font-extrabold text-gray-900 mb-2 leading-none mt-2">
+        class="bg-white text-center rounded-xl shadow-sm p-8 border-l-4 border-yellow-500 hover:shadow-md transition-all hover:-translate-y-1 duration-300 overflow-hidden">
+        <p class="text-xs md:text-sm text-gray-500 uppercase font-bold tracking-tight">Pending Requests</p>
+        <p class="text-lg md:text-3xl font-extrabold text-gray-900 mb-2 leading-none mt-2">
           {{ pendingLeaves ?? 0 }}
         </p>
       </div>
 
       <div
-        class="bg-white text-center rounded-xl shadow-sm p-8 border-l-4 border-blue-500 hover:shadow-md transition-all hover:-translate-y-1 duration-300">
-        <p class="text-md text-gray-500 uppercase font-bold tracking-tight">Estimated Salary</p>
-        <p class="text-3xl font-extrabold text-gray-900 mb-2 leading-none mt-2">
+        class="bg-white text-center rounded-xl shadow-sm p-8 border-l-4 border-blue-500 hover:shadow-md transition-all hover:-translate-y-1 duration-300 overflow-hidden">
+        <p class="text-xs md:text-sm text-gray-500 uppercase font-bold tracking-tight">Estimated Salary</p>
+        <p class="text-lg md:text-3xl font-extrabold text-gray-900 mb-2 leading-none mt-2">
           ₱{{ estimatedSalary?.toLocaleString() ?? '0.00' }}
         </p>
       </div>
     </div>
 
     <!-- Attendance History -->
-    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden whitespace-nowrap">
 
       <div class="p-6 bg-gray-50 border border-gray-200 rounded-tl-xl rounded-tr-xl">
         <h3 class="text-xl font-bold text-gray-900">Attendance History</h3>

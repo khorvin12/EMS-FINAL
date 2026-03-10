@@ -39,7 +39,7 @@ onMounted(() => {
 
             <!-- Total Employees Card -->
             <div class="bg-white rounded-md flex items-center gap-4 shadow w-64">
-                <div class="bg-green-500 rounded-md px-3 py-3">
+                <div class="bg-green-500 rounded-l-md px-4 py-5 shrink-0 self-stretch flex items-center">
                     <i class="fa fa-users fa-2x" />
                 </div>
                 <div>
@@ -49,7 +49,7 @@ onMounted(() => {
             </div>
 
             <div class="bg-white rounded-md flex items-center gap-4 shadow w-64">
-                <div class="bg-green-500 rounded-md px-5 py-3">
+                <div class="bg-green-500 rounded-l-md px-6 py-5 shrink-0 self-stretch flex items-center">
                     <i class="fa fa-building fa-2x" />
                 </div>
                 <div>
@@ -65,7 +65,7 @@ onMounted(() => {
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
 
             <div class="bg-white rounded-md flex items-center gap-4 shadow w-64">
-                <div class="bg-yellow-400 rounded-md px-5 py-3">
+                <div class="bg-yellow-400 rounded-l-md px-6 py-5 shrink-0 self-stretch flex items-center">
                     <i class="fa fa-hourglass-half fa-2x" />
                 </div>
                 <div>
@@ -75,7 +75,7 @@ onMounted(() => {
             </div>
 
             <div class="bg-white rounded-md flex items-center gap-4 shadow w-64">
-                <div class="bg-green-500 rounded-md px-4 py-3">
+                <div class="bg-green-500 rounded-l-md px-5 py-5 shrink-0 self-stretch flex items-center">
                     <i class="fa fa-check-circle fa-2x" />
                 </div>
                 <div>
@@ -85,7 +85,7 @@ onMounted(() => {
             </div>
 
             <div class="bg-white rounded-md flex items-center gap-4 shadow w-64">
-                <div class="bg-red-500 rounded-md px-4 py-3">
+                <div class="bg-red-500 rounded-l-md px-5 py-5 shrink-0 self-stretch flex items-center">
                     <i class="fa fa-times-circle fa-2x" />
                 </div>
                 <div>

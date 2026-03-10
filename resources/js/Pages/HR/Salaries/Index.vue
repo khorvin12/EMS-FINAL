@@ -40,13 +40,14 @@ const formatCurrency = (value) => {
 
         <h1 class="text-center text-4xl font-bold mb-12">Salary Details</h1>
 
-        <div class="flex items-center justify-between mb-6 gap-4 flex-wrap">
+        <div class="flex items-center justify-between mb-6 gap-4 whitespace-nowrap">
             <input type="search" v-model="searchQuery" placeholder="Search"
                 class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
-            <Link href="/hr/salary-report" class="bg-green-500 hover:bg-green-600 font-semibold px-4 py-2 rounded-md">
+            <a href="/hr/reports/payroll" target="_blank"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-md">
                 Salary Report
-            </Link>
+            </a>
         </div>
 
         <div class="bg-white rounded-lg shadow-lg overflow-x-auto">
@@ -64,7 +65,8 @@ const formatCurrency = (value) => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(salary, index) in filteredSalaries" :key="salary.data" class="border-t-4 border-gray-200">
+                    <tr v-for="(salary, index) in filteredSalaries" :key="salary.data"
+                        class="border-t-4 border-gray-200">
                         <td>{{ index + 1 }}</td>
                         <td>{{ salary.employee_id }}</td>
                         <td>{{ salary.employee_name }}</td>
@@ -98,7 +100,7 @@ const formatCurrency = (value) => {
         </div>
 
         <div class="mt-6">
-            <PaginationLinks :paginator="salaries"/>
+            <PaginationLinks :paginator="salaries" />
         </div>
     </div>
 </template>

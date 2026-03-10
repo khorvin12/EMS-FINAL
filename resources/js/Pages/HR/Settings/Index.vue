@@ -15,7 +15,7 @@ const submit = () => {
 </script>
 
 <template>
-    <div class="flex items-center justify-center h-176">
+    <div class="flex items-center justify-center py-36">
         <div class="bg-white w-full max-w-sm p-6 rounded-md shadow-md border-4 border-blue-500">
             
             <h1 class="text-xl font-bold mb-6 text-center">Change Password</h1>

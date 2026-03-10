@@ -84,7 +84,7 @@ const getTabStyle = (key) => {
         <h1 class="text-center text-4xl font-bold mb-12">Manage Leave Request</h1>
 
         <!-- Tab bar + actions row -->
-        <div class="flex flex-wrap items-center justify-between mb-6 gap-4 whitespace-nowrap">
+        <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
 
             <!-- Search input -->
             <input v-model="searchQuery" type="text" placeholder="Search"
