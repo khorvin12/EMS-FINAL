@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3'
+import { Head, Link } from '@inertiajs/vue3'
 import { ref, computed } from 'vue'
 import PaginationLinks from '../../Components/PaginationLinks.vue'
 
@@ -75,9 +75,11 @@ const formatDate = (dateString: string) => {
     })
 }
 
-const leaveTableData = computed(() =>
-    filteredLeaves.value.map((leave, index) => ({
-        number: String(index + 1).padStart(3, '0'),
+const leaveTableData = computed(() => {
+    const offset = (props.leaves.current_page - 1) * props.leaves.per_page;
+    
+    return filteredLeaves.value.map((leave, index) => ({
+        number: offset + index + 1,
         employee: leave.user.name,
         reason: leave.reason,
         start_date: formatDate(leave.start_date),
@@ -85,7 +87,7 @@ const leaveTableData = computed(() =>
         status: getStatusConfig(leave.status),
         id: leave.id
     }))
-)
+})
 
 const emptyStateMessage = computed(() =>
     selectedFilter.value === 'all'
@@ -96,13 +98,15 @@ const emptyStateMessage = computed(() =>
 
 <template>
     <div class="flex flex-col px-6">
+        
+        <Head title=" | Manage Leaves" />
 
         <h1 class="text-4xl font-bold text-center mb-12">Manage Leaves</h1>
 
         <!-- Filter tabs + View by Employee button -->
         <div class="flex justify-between mb-8 flex-wrap gap-6">
 
-            <input v-model="searchQuery" type="text" placeholder="Search"
+            <input v-model="searchQuery" type="text" placeholder="Search by Serial No"
                 class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
             <div class="flex gap-3 flex-wrap justify-end">

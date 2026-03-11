@@ -1,5 +1,5 @@
 <script setup>
-import { Link } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 import PaginationLinks from '../../Components/PaginationLinks.vue';
 
@@ -13,20 +13,19 @@ const dateFilter = ref('');
 const activeTab = ref('all'); // 'all' | 'pending' | 'approved' | 'rejected'
 
 // Tab counts derived from raw leaves (always reflect full data)
-const tabCounts = computed(() => {
-    const all = props.leaves.data || [];
-    return {
-        all: all.length,
-        pending: all.filter(l => l.status === 'pending').length,
-        approved: all.filter(l => l.status === 'approved').length,
-        rejected: all.filter(l => l.status === 'rejected').length,
-    };
-});
+const tabCounts = computed(() => ({
+    all:      props.stats?.all      ?? 0,
+    pending:  props.stats?.pending  ?? 0,
+    approved: props.stats?.approved ?? 0,
+    rejected: props.stats?.rejected ?? 0,
+}));
 
 const filteredLeaves = computed(() => {
+    const offset = (props.leaves.current_page - 1) * props.leaves.per_page;
+    
     let result = (props.leaves.data || []).map((l, index) => ({
         ...l,
-        serialNo: index + 1
+        serialNo: offset + index + 1  // fix here
     }));
 
     if (activeTab.value !== 'all') {
@@ -81,17 +80,20 @@ const getTabStyle = (key) => {
 
 <template>
     <div class="flex flex-col px-6">
+
+        <Head title=" | Leaves" />
+
         <h1 class="text-center text-4xl font-bold mb-12">Manage Leave Request</h1>
 
         <!-- Tab bar + actions row -->
-        <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
+        <div class="flex flex-wrap justify-between mb-8 gap-4">
 
             <!-- Search input -->
-            <input v-model="searchQuery" type="text" placeholder="Search"
+            <input v-model="searchQuery" type="text" placeholder="Search by Serial No"
                 class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
             <!-- Status tabs -->
-            <div class="flex flex-wrap justify-end gap-3">
+            <div class="flex flex-wrap-reverse justify-end gap-3">
                 <button v-for="tab in tabs" :key="tab.key" @click="activeTab = tab.key" class="py-2.5 "
                     :class="getTabStyle(tab.key)">
                     {{ tab.label }} ({{ tab.count }})

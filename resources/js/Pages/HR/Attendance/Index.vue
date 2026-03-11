@@ -1,5 +1,5 @@
 <script setup>
-import { Link } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 import PaginationLinks from '../../Components/PaginationLinks.vue';
 
@@ -15,8 +15,10 @@ const dateFrom = ref('');
 const dateTo = ref('');
 
 const filteredAttendances = computed(() => {
+    const offset = (props.attendanceHistory.current_page - 1) * props.attendanceHistory.per_page;
+    
     return props.attendanceHistory.data
-        .map((attendance, index) => ({ ...attendance, serialNo: index + 1 }))
+        .map((attendance, index) => ({ ...attendance, serialNo: offset + index + 1 }))
         .filter(attendance => {
             const matchesSearch =
                 attendance.employee_id?.toString().includes(searchQuery.value) ||
@@ -115,28 +117,31 @@ const Tablecolumns = [
 </script>
 
 <template>
-    <div class="flex flex-col px-6">
+    <div class="flex flex-col px-4 md:px-6">
+        
+        <Head title=" | Attendance" />
 
-        <h1 class="text-center text-4xl font-bold mb-12">Employee Attendance</h1>
+        <h1 class="text-center text-2xl md:text-4xl font-bold mb-6 md:mb-12">Employee Attendance</h1>
 
+        <!-- Filters Section -->
+        <div class="flex flex-col md:flex-row md:flex-wrap justify-between md:items-center gap-3 md:gap-4 mb-8">
 
-
-        <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
-
-            <input type="search" v-model="searchQuery" placeholder="Search by Name or ID"
+            <!-- Search Input -->
+            <input type="search" v-model="searchQuery" placeholder="Search by Serial No"
                 class="border border-gray-300 rounded-lg px-4 py-2 w-56 focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
-            <div class="flex flex-nowrap gap-2">
-                <!-- From Date -->
-                <label class="text-sm text-gray-600 mb-1">From</label>
-                <input type="date" v-model="dateFrom"
-                    class="border border-gray-300 rounded-lg w-35 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
-
-                <!-- To Date -->
-                <label class="text-sm text-gray-600 mb-1">To</label>
-                <input type="date" v-model="dateTo"
-                    class="border border-gray-300 rounded-lg w-35 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
-
+            <!-- Date Filters -->
+            <div class="flex flex-col sm:flex-row items-end sm:items-center gap-2">
+                <div class="flex items-center gap-2">
+                    <label class="text-sm text-gray-600 whitespace-nowrap">From</label>
+                    <input type="date" v-model="dateFrom"
+                        class="border border-gray-300 rounded-lg w-36 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                </div>
+                <div class="flex items-center gap-2">
+                    <label class="text-sm text-gray-600 whitespace-nowrap">To</label>
+                    <input type="date" v-model="dateTo"
+                        class="border border-gray-300 rounded-lg w-36 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                </div>
                 <!-- Clear Button -->
                 <button @click="searchQuery = ''; dateFrom = ''; dateTo = '';"
                     class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition">
@@ -144,13 +149,16 @@ const Tablecolumns = [
                 </button>
             </div>
 
-            <!-- Generate Report -->
-            <a :href="pdfUrl" target="_blank"
-                class="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg">
-                Attendance Report
-            </a>
+            <!-- Generate Report Button -->
+            <div class="flex justify-end">
+                <a :href="pdfUrl" target="_blank"
+                    class="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 w-48 rounded-lg text-center">
+                    Attendance Report
+                </a>
+            </div>
         </div>
 
+        <!-- Table -->
         <div class="bg-white rounded-lg shadow-lg overflow-x-auto">
             <table class="min-w-full text-left transition whitespace-nowrap">
                 <thead class="bg-gray-400">
@@ -194,6 +202,7 @@ const Tablecolumns = [
             </table>
         </div>
 
+        <!-- Pagination -->
         <div class="mt-6">
             <PaginationLinks :paginator="attendanceHistory" />
         </div>

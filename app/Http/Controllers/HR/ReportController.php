@@ -110,4 +110,37 @@ class ReportController extends Controller
 
         return $pdf->download('payroll-report-' . Carbon::now()->format('Y-m') . '.pdf');
     }
+
+     public function employeesPdf(Request $request)
+    {
+        $employees = DB::table('users')
+            ->leftJoin('departments', 'users.department_id', '=', 'departments.id')
+            ->where('users.role', '!=', 'admin')
+            ->select(
+                'users.id',
+                DB::raw("CONCAT(users.first_name, ' ', users.last_name) as name"),
+                'users.email',
+                'users.role',
+                'users.hire_date',
+                'users.salary',
+                'departments.name as department'
+            )
+            ->orderBy('users.role')
+            ->orderBy('users.first_name')
+            ->get();
+
+        $data = [
+            'employees'     => $employees,
+            'totalEmployees'=> $employees->count(),
+            'totalRegular'  => $employees->where('role', 'employee')->count(),
+            'totalHR'       => $employees->where('role', 'hr')->count(),
+            'generatedBy'   => Auth::user()->first_name . ' ' . Auth::user()->last_name,
+            'generatedAt'   => Carbon::now('Asia/Manila')->format('M d, Y h:i A'),
+        ];
+
+        $pdf = Pdf::loadView('reports.employees', $data)
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->download('employee-list-' . Carbon::now()->format('Y-m-d') . '.pdf');
+    }
 }

@@ -1,5 +1,5 @@
 <script setup>
-import { useForm, Link } from '@inertiajs/vue3';
+import { useForm, Link, Head } from '@inertiajs/vue3';
 
 
 const props = defineProps({
@@ -25,6 +25,9 @@ const submit = () => {
 
 <template>
     <div class="flex justify-center py-36 px-4 pb-8">
+
+        <Head title=" | Edit Attendance" />
+
         <div class="bg-white border-4 border-blue-500 rounded-lg p-4 md:p-8 w-full max-w-2xl shadow-md">
 
             <h2 class="text-center text-xl font-bold mb-6">Attendance Record</h2>

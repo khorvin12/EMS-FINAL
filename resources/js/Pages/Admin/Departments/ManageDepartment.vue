@@ -1,5 +1,5 @@
 <script setup>
-import { Link } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 import PaginationLinks from '../../Components/PaginationLinks.vue';
 
@@ -52,16 +52,17 @@ const actionButtons = [
 </script>
 
 <template>
-
     <div class="flex flex-col px-6">
+        
+        <Head title=" | Manage Departments" />
 
         <h1 class="text-center text-4xl font-bold mb-12">Manage Departments</h1>
 
-        <div class="flex justify-between mb-6 gap-4">
-            <input v-model="searchQuery" type="text" placeholder="Search"
+        <div class="flex justify-between mb-8 gap-4">
+            <input v-model="searchQuery" type="text" placeholder="Search by Serial No"
                 class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
-            <Link href="/adddepartment" class="font-semibold bg-green-500 hover:bg-green-600 rounded-md px-4 py-2 transition whitespace-nowrap">
+            <Link href="/adddepartment" class="font-semibold bg-green-500 hover:bg-green-600 text-white rounded-md px-4 py-2 transition whitespace-nowrap">
                 Add Department
             </Link>
         </div>

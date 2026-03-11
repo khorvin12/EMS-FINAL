@@ -1,5 +1,5 @@
 <script setup>
-import { useForm } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 
 const form = useForm({
     start_date: '',
@@ -9,14 +9,7 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post('/employee/leaves', {
-        onSuccess: () => {
-            // Redirect will be handled by controller
-        },
-        onError: () => {
-            alert('Please check the form for errors');
-        }
-    });
+    form.post('/employee/leaves');
 };
 
 const cancel = () => {
@@ -26,7 +19,10 @@ const cancel = () => {
 </script>
 
 <template>
-    <div class="flex items-center justify-center px-4 py-36">
+    <div class="flex items-center justify-center px-4 py-24">
+        
+        <Head title=" | Create Leave" />
+
         <div class="bg-white w-full max-w-lg px-4 py-3 rounded-lg shadow-md border-4 border-green-600">
 
             <h1 class="text-xl font-bold mb-4 text-center">Request for Leave</h1>

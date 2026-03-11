@@ -1,5 +1,5 @@
 <script setup>
-import { router } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 
 const props = defineProps({
     leave: Object
@@ -12,17 +12,17 @@ const formatDate = (dateString) => {
 
 const formatDisplayDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
     });
 };
 
 const approve = () => {
     if (confirm('Are you sure you want to approve this leave request?')) {
         router.post(`/hr/leaves/${props.leave.id}/approve`, {}, {
-            onSuccess: () => {}
+            onSuccess: () => { }
         });
     }
 };
@@ -30,7 +30,7 @@ const approve = () => {
 const reject = () => {
     if (confirm('Are you sure you want to reject this leave request?')) {
         router.post(`/hr/leaves/${props.leave.id}/reject`, {}, {
-            onSuccess: () => {}
+            onSuccess: () => { }
         });
     }
 };
@@ -40,7 +40,7 @@ const goBack = () => {
 };
 
 const getStatusColor = (status) => {
-    switch(status) {
+    switch (status) {
         case 'approved': return 'bg-green-500';
         case 'rejected': return 'bg-red-500';
         case 'pending': return 'bg-yellow-500';
@@ -51,6 +51,9 @@ const getStatusColor = (status) => {
 
 <template>
     <div class="flex items-center justify-center px-4 py-6">
+
+        <Head title=" | Leaves Details" />
+
         <div class="w-full max-w-2xl bg-sky-400 rounded-lg shadow-lg border-4 border-blue-500">
 
             <div class="flex items-center justify-between px-4 py-3 bg-sky-400 rounded-t-md">
@@ -114,5 +117,4 @@ const getStatusColor = (status) => {
     </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

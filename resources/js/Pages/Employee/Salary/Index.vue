@@ -101,10 +101,10 @@ const formatCurrency = (value) => {
 </script>
 
 <template>
-
-    <Head title="Your Monthly Salary" />
-
     <div class="flex flex-col px-4 md:px-6">
+
+        <Head title=" | Salary Details" />
+
         <h2 class="text-2xl md:text-4xl font-bold text-center text-gray-900 mb-4">Your Monthly Salary</h2>
 
         <div class="flex justify-end items-center mb-6">

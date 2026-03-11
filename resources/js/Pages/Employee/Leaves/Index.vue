@@ -1,21 +1,28 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { Link, router } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
+import PaginationLinks from '../../Components/PaginationLinks.vue';
 
 const props = defineProps({
-    leaves: Array
+    leaves: Object 
 });
 
 const searchTerm = ref('');
 
 const filteredLeaves = computed(() => {
-    if (!searchTerm.value) return props.leaves;
-    return props.leaves.filter(leave =>
-        leave.id.toString().includes(searchTerm.value)
+    const offset = (props.leaves.current_page - 1) * props.leaves.per_page;
+    const data = (props.leaves?.data || []).map((leave, index) => ({
+        ...leave,
+        serialNo: offset + index + 1
+    }));
+    if (!searchTerm.value) return data;
+    return data.filter(leave =>
+        leave.serialNo.toString().includes(searchTerm.value)
     );
 });
 
 const getStatusColor = (status) => {
+    if (!status) return 'bg-gray-400'
     const colors = {
         pending: 'bg-yellow-400',
         rejected: 'bg-red-500',
@@ -26,26 +33,30 @@ const getStatusColor = (status) => {
 };
 
 const getStatusText = (status) => {
+    if (!status) return 'Unknown'
     return status.charAt(0).toUpperCase() + status.slice(1);
 };
 </script>
 
 <template>
-
     <div class="flex flex-col px-6">
+
+        <Head title=" | Manage Leave Request" />
+
         <h1 class="text-center text-4xl font-bold mb-12">Your Leave Schedules</h1>
 
-        <div class="flex justify-between mb-6 gap-4 whitespace-nowrap">
+        <div class="flex justify-between mb-8 gap-4 whitespace-nowrap">
             <input type="search" placeholder="Search By Serial No" v-model="searchTerm"
-                class="border border-gray-300 rounded-lg px-4 py-2 w-80 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
             <Link href="/employee/leaves/create"
-                class="font-semibold bg-green-500 hover:bg-green-600 rounded-md px-4 py-2.5">
+                class="font-semibold bg-green-500 hover:bg-green-600 rounded-md px-4 py-2">
                 Add Leave
             </Link>
         </div>
 
-        <div v-if="!leaves || leaves.length === 0" class="bg-white rounded-lg shadow-lg p-12 text-center whitespace-nowrap">
+        <div v-if="!filteredLeaves || filteredLeaves.length === 0"
+            class="bg-white rounded-lg shadow-lg p-12 text-center whitespace-nowrap">
             <p class="text-gray-500 text-lg mb-4">No leave requests yet</p>
             <Link href="/employee/leaves/create"
                 class="bg-green-500 hover:bg-green-600 text-white rounded-md px-6 py-2 inline-block">
@@ -73,7 +84,7 @@ const getStatusText = (status) => {
                     </tr>
                     <tr v-else v-for="(leave, index) in filteredLeaves" :key="leave.id"
                         class="border-slate-200 border-t-4">
-                        <td>{{ index + 1 }}</td>
+                        <td>{{ leave.serialNo }}</td>
                         <td>{{ leave.reason }}</td>
                         <td>{{ leave.start_date }} to {{ leave.end_date }}</td>
                         <td class="text-center">
@@ -91,6 +102,10 @@ const getStatusText = (status) => {
                     </tr>
                 </tbody>
             </table>
+        </div>
+
+        <div>
+            <PaginationLinks :paginator="leaves" />
         </div>
     </div>
 </template>

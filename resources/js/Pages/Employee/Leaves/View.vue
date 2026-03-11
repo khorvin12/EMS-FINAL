@@ -1,5 +1,5 @@
 <script setup>
-import { Link } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 
 const props = defineProps({
     leave: Object
@@ -22,6 +22,9 @@ const getStatusText = (status) => {
 
 <template>
     <div class="flex items-center justify-center px-4 py-36">
+
+        <Head title=" | Leave Details" />
+
         <div class="w-full mx-auto max-w-lg bg-white rounded-lg shadow-md p-6">
 
             <div class="flex justify-between items-center mb-6">
@@ -64,7 +67,8 @@ const getStatusText = (status) => {
 
                 <div v-if="leave.admin_comment">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Admin Comment</label>
-                    <p class="text-sm md:text-base bg-yellow-50 p-3 rounded border border-yellow-200">{{ leave.admin_comment }}</p>
+                    <p class="text-sm md:text-base bg-yellow-50 p-3 rounded border border-yellow-200">{{
+                        leave.admin_comment }}</p>
                 </div>
             </div>
 

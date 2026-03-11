@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import { Head } from '@inertiajs/vue3';
 
 // Reactive data
 const stats = ref({
@@ -30,16 +31,19 @@ onMounted(() => {
 
 <template>
     <!-- Contents -->
-    <div>
+    <div class="flex flex-col px-6">
+
+        <Head title=" | Dashboard" />
+
         <!-- Title Contents -->
         <h1 class="text-4xl font-bold mb-12">Dashboard Overview</h1>
 
         <!-- Dashboard Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-48 justify-items-center">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-36 justify-items-center">
 
             <!-- Total Employees Card -->
             <div class="bg-white rounded-md flex items-center gap-4 shadow w-64">
-                <div class="bg-green-500 rounded-l-md px-4 py-5 shrink-0 self-stretch flex items-center">
+                <div class="bg-green-500 rounded-l-md px-5 py-5 shrink-0 self-stretch flex items-center">
                     <i class="fa fa-users fa-2x" />
                 </div>
                 <div>
@@ -49,7 +53,7 @@ onMounted(() => {
             </div>
 
             <div class="bg-white rounded-md flex items-center gap-4 shadow w-64">
-                <div class="bg-green-500 rounded-l-md px-6 py-5 shrink-0 self-stretch flex items-center">
+                <div class="bg-green-500 rounded-l-md px-5 py-5 shrink-0 self-stretch flex items-center">
                     <i class="fa fa-building fa-2x" />
                 </div>
                 <div>
@@ -60,12 +64,12 @@ onMounted(() => {
         </div>
 
         <!-- Leave Details -->
-        <h2 class="text-3xl font-bold mb-12 text-center">Leave Details</h2>
+        <h2 class="text-3xl font-bold mb-8 text-center">Leave Details</h2>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
 
             <div class="bg-white rounded-md flex items-center gap-4 shadow w-64">
-                <div class="bg-yellow-400 rounded-l-md px-6 py-5 shrink-0 self-stretch flex items-center">
+                <div class="bg-yellow-400 rounded-l-md px-5 py-5 shrink-0 self-stretch flex items-center">
                     <i class="fa fa-hourglass-half fa-2x" />
                 </div>
                 <div>
@@ -96,4 +100,3 @@ onMounted(() => {
         </div>
     </div>
 </template>
-

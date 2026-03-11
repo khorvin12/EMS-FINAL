@@ -1,5 +1,5 @@
 <script setup>
-import { useForm } from '@inertiajs/vue3'
+import { Head, useForm } from '@inertiajs/vue3'
 import { computed } from 'vue'
 
 const props = defineProps({
@@ -45,7 +45,9 @@ const formFields = [
 <template>
   <div class="bg-white border-4 border-green-500 rounded-lg p-8 max-w-4xl mx-auto">
 
-    <h2 class="text-xl font-bold mb-6">Add New Employee</h2>
+    <Head title=" | Add Employee" />
+
+    <h2 class="text-xl font-bold mb-6">Add Employee</h2>
 
     <!-- Success Message -->
     <div v-if="$page.props.flash?.success" class="text-green-500 mb-4 p-3 bg-green-50 rounded">

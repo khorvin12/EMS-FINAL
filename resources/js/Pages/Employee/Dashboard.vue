@@ -1,5 +1,5 @@
 <script setup>
-import { usePage } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 
 const page = usePage();
 
@@ -40,6 +40,9 @@ const formatTime = (timeString) => {
 
 <template>
   <div class="flex flex-col px-6">
+
+    <Head title=" | Dashboard" />
+
     <h1 class="text-4xl font-bold mb-12">Dashboard Overview</h1>
 
     <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-16 mb-16">

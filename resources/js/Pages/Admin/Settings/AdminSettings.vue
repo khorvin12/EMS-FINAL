@@ -1,5 +1,5 @@
 <script setup>
-import { useForm } from '@inertiajs/vue3'
+import { Head, useForm } from '@inertiajs/vue3'
 import TextInput from '../../Components/TextInput.vue';
 
 const form = useForm({
@@ -15,9 +15,12 @@ const submit = () => {
 </script>
 
 <template>
-    <div class="flex items-center justify-center h-176">
+    <div class="flex items-center justify-center py-36">
+
+        <Head title=" | Settings" />
+
         <div class="bg-white w-full max-w-sm p-6 rounded-md shadow-md border-4 border-red-600">
-            
+
             <h1 class="text-xl font-bold mb-6 text-center">Change Password</h1>
 
             <form @submit.prevent="submit" class="space-y-4">
@@ -27,7 +30,8 @@ const submit = () => {
                     :message="form.errors.current_password" />
 
                 <!-- New Password -->
-                <TextInput name="New Password" type="password" v-model="form.password" :message="form.errors.password" />
+                <TextInput name="New Password" type="password" v-model="form.password"
+                    :message="form.errors.password" />
 
                 <!-- Confirm Password -->
                 <TextInput name="Confirm Password" type="password" v-model="form.password_confirmation" />

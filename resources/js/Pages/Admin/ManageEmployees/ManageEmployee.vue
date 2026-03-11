@@ -1,5 +1,5 @@
 <script setup>
-import { Link } from '@inertiajs/vue3'
+import { Head, Link } from '@inertiajs/vue3'
 import { ref, computed } from 'vue'
 import PaginationLinks from '../../Components/PaginationLinks.vue'
 
@@ -53,20 +53,28 @@ const actionButtons = [
 <template>
   <div class="flex flex-col px-6">
 
+    <Head title=" | Manage Employees" />
+
     <h1 class="text-4xl font-bold text-center mb-12">Manage Employees</h1>
 
-    <div class="flex justify-between mb-6 gap-4">
-      <input v-model="search" type="text" placeholder="Search"
+    <div class="flex flex-wrap justify-between mb-8 gap-4">
+      <input v-model="search" type="text" placeholder="Search by Employee ID"
         class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
-      <Link href="/addnewemployee"
-        class="bg-green-500 hover:bg-green-600 font-semibold rounded-md px-4 py-2 transition whitespace-nowrap">
-        Add Employee
-      </Link>
+      <div class="flex flex-wrap justify-end gap-3">
+        <a href="/reports/employees" target="_blank"
+          class="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-md">
+          Employee List PDF
+        </a>
+        <Link href="/addnewemployee"
+          class="bg-green-500 hover:bg-green-600 text-white font-semibold rounded-md px-4 py-2">
+          Add Employee
+        </Link>
+      </div>
     </div>
 
     <div class="bg-white rounded-lg shadow-lg overflow-x-auto">
-      <table class="min-w-full text-left whitespace-nowrap transition">
+      <table class="min-w-full text-left whitespace-nowrap">
         <thead class="bg-gray-400">
           <tr>
             <th v-for="column in tableColumns" :key="column.key"

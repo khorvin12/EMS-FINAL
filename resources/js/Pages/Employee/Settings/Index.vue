@@ -1,5 +1,5 @@
 <script setup>
-import { useForm } from '@inertiajs/vue3'
+import { Head, useForm } from '@inertiajs/vue3'
 import TextInput from '../../Components/TextInput.vue';
 
 const form = useForm({
@@ -16,6 +16,9 @@ const submit = () => {
 
 <template>
     <div class="flex items-center justify-center py-36">
+        
+        <Head title=" | Settings" />
+        
         <div class="bg-white w-full max-w-sm p-6 rounded-md shadow-md border-4 border-green-500">
             
             <h1 class="text-xl font-bold mb-6 text-center">Change Password</h1>

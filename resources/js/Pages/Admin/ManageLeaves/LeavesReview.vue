@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Link, router } from '@inertiajs/vue3'
+import { Head, Link, router } from '@inertiajs/vue3'
 import { ref } from 'vue'
 
 interface Leave {
@@ -49,6 +49,8 @@ const handleReject = () => {
 </script>
 
 <template>
+
+    <Head title=" | Leave Details" />
 
     <!-- Outer Container -->
     <div class="flex justify-center items-center py-24">

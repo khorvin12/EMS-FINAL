@@ -16,7 +16,7 @@ class EmployeeController extends Controller
     {
         $employees = User::with('department')
             ->where('role', '!=', 'admin')
-            ->paginate(10);
+            ->paginate(6);
 
         return Inertia::render('Admin/ManageEmployees/ManageEmployee', [
             'employees' => $employees

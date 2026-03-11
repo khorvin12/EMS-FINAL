@@ -1,5 +1,5 @@
 <script setup>
-import { useForm } from "@inertiajs/vue3";
+import { Head, useForm } from "@inertiajs/vue3";
 import { ref, computed } from "vue";
 
 const props = defineProps({
@@ -57,7 +57,6 @@ function submit() {
 </script>
 
 <template>
-
     <!-- Success Notification -->
     <Transition name="fade">
         <div v-if="showSuccess" class="fixed top-4 right-4 bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg z-50">
@@ -71,6 +70,8 @@ function submit() {
     </Transition>
 
     <div class="bg-white border-4 border-yellow-400 rounded-lg p-8 max-w-3xl mx-auto overflow-x-auto">
+
+        <Head title=" | Edit Employee" />
 
         <h1 class="text-2xl font-bold mb-6">Edit Employee</h1>
 
@@ -92,7 +93,7 @@ function submit() {
             <div v-for="field in formFields" :key="field.name">
                 <label class="text-sm font-semibold">{{
                     field.label
-                    }}</label>
+                }}</label>
 
                 <!-- Text/Email/Number/Date Inputs -->
                 <input v-if="

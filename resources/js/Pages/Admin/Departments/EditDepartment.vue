@@ -1,5 +1,5 @@
 <script setup>
-import { useForm } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
     department: Object
@@ -22,6 +22,9 @@ const updateDepartment = () => {
 
 <template>
     <div class="flex items-center justify-center py-24">
+
+        <Head title=" | Edit Department" />
+        
         <div class="bg-white w-full max-w-sm px-6 py-4 rounded-md shadow-md border-4 border-yellow-300">
 
             <h1 class="text-xl font-bold mb-8 text-center">Edit Department</h1>

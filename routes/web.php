@@ -78,10 +78,10 @@ Route::middleware(['auth', AdminMiddleware::class])
         Route::get('/manageemployees', [EmployeeController::class, 'index'])
             ->name('manageemployees');
 
+        // Add New Employee form
         Route::get('/addnewemployee', [EmployeeController::class, 'create'])
             ->name('addnewemployee');
 
-        // Show Add New Employee form (alternative route)
         Route::get('/employees/create', [EmployeeController::class, 'create'])
             ->name('employees.create');
 
@@ -120,6 +120,8 @@ Route::middleware(['auth', AdminMiddleware::class])
 
         Route::post('/manageleaves/leaves/{leave}/reject', [ManageLeavesController::class, 'reject'])
             ->name('manageleaves.reject');
+
+        Route::get('/reports/employees', [HRReportController::class, 'employeesPdf'])->name('reports.employees');
     });
 
 /*
@@ -175,7 +177,7 @@ Route::middleware(['auth', HRMiddleware::class])
         Route::get('/salary', [HRSalaryController::class, 'index'])->name('salary.index');
         Route::get('/salaries/{employeeId}', [HRSalaryController::class, 'view'])->name('salaries.view');
         Route::post('/salaries/{employeeId}/generate-payroll', [HRSalaryController::class, 'generatePayroll'])->name('salaries.generatePayroll');
-    
+
         Route::get('/leaves', [ManageLeavesController::class, 'index'])
             ->name('leaves.index');
 
@@ -194,10 +196,11 @@ Route::middleware(['auth', HRMiddleware::class])
         Route::get('/attendance/{id}/edit', [HRAttendanceController::class, 'edit'])->name('attendance.edit');
         Route::put('/attendance/{id}', [HRAttendanceController::class, 'update'])->name('attendance.update');
         Route::delete('/attendance/{id}', [HRAttendanceController::class, 'destroy'])->name('attendance.destroy');
-        
-         // HR Reports
+
+        // HR Reports
         Route::get('/reports/attendance', [HRReportController::class, 'attendancePdf'])->name('reports.attendance');
         Route::get('/reports/payroll', [HRReportController::class, 'payrollPdf'])->name('reports.payroll');
+        Route::get('/reports/employees', [HRReportController::class, 'employeesPdf'])->name('reports.employees');
 
 
         // HR Settings Routes
@@ -205,4 +208,5 @@ Route::middleware(['auth', HRMiddleware::class])
 
         // Change Password
         Route::post('/reset-password', [AuthController::class, 'changePassword'])->name('password.reset');
+
     });

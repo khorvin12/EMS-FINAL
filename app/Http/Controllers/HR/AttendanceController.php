@@ -24,7 +24,7 @@ class AttendanceController extends Controller
                 DB::raw("CONCAT(users.first_name, ' ', users.last_name) as employee_name")
             )
             ->orderBy('attendances.date', 'desc')
-            ->paginate(10) // <-- use paginate() here
+            ->paginate(6)
             ->withQueryString();
         $attendanceHistory->getCollection()->transform(function ($attendance) {
             $hours = 0;
