@@ -78,6 +78,7 @@ class EmployeeController extends Controller
         return $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
+            'employee_id' => 'nullable|string|max:50',
             'email' => 'required|email|unique:users,email' . ($id ? ",$id" : ''),
             'phone' => 'nullable|string|max:15',
             'department_id' => $isHRorAdmin ? 'nullable|exists:departments,id' : 'required|exists:departments,id',
@@ -92,9 +93,11 @@ class EmployeeController extends Controller
 
     private function prepareEmployeeData(array $validated, $isNew = true)
     {
+
         $data = [
             'first_name' => $validated['first_name'],
             'last_name' => $validated['last_name'],
+            'employee_id' => $validated['employee_id'] ?? null,
             'email' => $validated['email'],
             'phone' => $validated['phone'],
             'department_id' => $validated['department_id'],

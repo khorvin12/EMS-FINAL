@@ -38,7 +38,7 @@ const DepartmentDataTable = computed(() => {
 const actionButtons = [
     {
         label: 'Edit',
-        href: (id) => `/departments/${id}/edit`,
+        href: (id) => `/editdepartment/${id}`,
         color: 'bg-yellow-400 hover:bg-yellow-500'
     },
     {

@@ -1,6 +1,6 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3'
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const props = defineProps({
   departments: Array
@@ -21,12 +21,18 @@ const form = useForm({
   salary: ''
 })
 
+const isHRorAdmin = computed(() => form.role === 'hr' || form.role === 'admin')
+
+function isRequired(fieldName) {
+  const optionalForHR = ['department_id', 'phone', 'dob', 'gender', 'civil_status', 'hire_date', 'salary', 'employee_id']
+  if (isHRorAdmin.value && optionalForHR.includes(fieldName)) return false
+  return true
+}
+
 function submit() {
   form.post('/employees', {
     preserveScroll: true,
-    onSuccess: () => {
-
-    }
+    onSuccess: () => {}
   })
 }
 
@@ -43,9 +49,7 @@ const formFields = [
     options: computed(() => props.departments),
     placeholder: 'Select Department'
   },
-
   { name: 'dob', label: 'Date of Birth', type: 'date' },
-
   {
     name: 'gender',
     label: 'Gender',
@@ -53,7 +57,6 @@ const formFields = [
     options: ['Male', 'Female'],
     placeholder: 'Select Gender'
   },
-
   {
     name: 'civil_status',
     label: 'Civil Status',
@@ -61,7 +64,6 @@ const formFields = [
     options: ['Single', 'Married'],
     placeholder: 'Select Status'
   },
-
   {
     name: 'role',
     label: 'Role',
@@ -72,9 +74,7 @@ const formFields = [
       { value: 'admin', label: 'Admin' }
     ]
   },
-
   { name: 'hire_date', label: 'Hire Date', type: 'date' },
-
   { name: 'salary', label: 'Salary', type: 'number', placeholder: 'Enter Salary' }
 ]
 </script>
@@ -85,12 +85,10 @@ const formFields = [
 
       <h2 class="text-xl font-bold mb-6">Add New Employee</h2>
 
-      <!-- Success Message -->
       <div v-if="$page.props.flash?.success" class="text-green-500 mb-4 p-3 bg-green-50 rounded">
         {{ $page.props.flash.success }}
       </div>
 
-      <!-- Error Message -->
       <div v-if="form.errors && Object.keys(form.errors).length" class="text-red-500 mb-4 p-3 bg-red-50 rounded">
         <ul class="list-disc list-inside">
           <li v-for="(error, field) in form.errors" :key="field">{{ error }}</li>
@@ -99,37 +97,45 @@ const formFields = [
 
       <form @submit.prevent="submit" class="grid grid-cols-2 gap-4">
 
-        <!-- Dynamic Form Fields -->
         <div v-for="field in formFields" :key="field.name">
-          <label class="text-sm font-semibold">{{ field.label }}</label>
+          <label class="text-sm font-semibold">
+            {{ field.label }}
+            <span v-if="!isRequired(field.name)" class="text-gray-400 font-normal text-xs">(optional)</span>
+          </label>
 
           <!-- Text/Email/Number/Date Inputs -->
-          <input v-if="['text', 'email', 'number', 'date'].includes(field.type)" :type="field.type"
-            v-model="form[field.name]" :placeholder="field.placeholder"
+          <input
+            v-if="['text', 'email', 'number', 'date'].includes(field.type)"
+            :type="field.type"
+            v-model="form[field.name]"
+            :placeholder="field.placeholder"
             class="w-full mt-1 border rounded px-3 py-2 focus:outline-none focus:border-blue-400"
-            :class="{ 'border-red-500': form.errors[field.name] }" required />
+            :class="{ 'border-red-500': form.errors[field.name] }"
+            :required="isRequired(field.name)"
+          />
 
           <!-- Select Inputs -->
-          <select v-else-if="field.type === 'select'" v-model="form[field.name]"
+          <select
+            v-else-if="field.type === 'select'"
+            v-model="form[field.name]"
             class="w-full mt-1 border rounded px-3 py-2 focus:outline-none focus:border-blue-400"
-            :class="{ 'border-red-500': form.errors[field.name] }" required>
+            :class="{ 'border-red-500': form.errors[field.name] }"
+            :required="isRequired(field.name)"
+          >
             <option v-if="field.placeholder" value="">{{ field.placeholder }}</option>
 
-            <!-- For department options (array of objects) -->
             <template v-if="field.name === 'department_id'">
               <option v-for="dept in field.options.value" :key="dept.id" :value="dept.id">
                 {{ dept.name }}
               </option>
             </template>
 
-            <!-- For role options (array of objects with value/label) -->
             <template v-else-if="field.name === 'role'">
               <option v-for="opt in field.options" :key="opt.value" :value="opt.value">
                 {{ opt.label }}
               </option>
             </template>
 
-            <!-- For simple string arrays (gender, civil_status) -->
             <template v-else>
               <option v-for="opt in field.options" :key="opt" :value="opt">
                 {{ opt }}
@@ -138,11 +144,12 @@ const formFields = [
           </select>
         </div>
 
-        <!-- Submit Button -->
         <div class="col-span-2 mt-6">
-          <button type="submit"
+          <button
+            type="submit"
             class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold disabled:opacity-50"
-            :disabled="form.processing">
+            :disabled="form.processing"
+          >
             {{ form.processing ? 'Submitting...' : 'Confirm' }}
           </button>
         </div>

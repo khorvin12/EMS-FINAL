@@ -15,15 +15,9 @@ const props = defineProps({
 
 const showSuccess = ref(false);
 
-// Split name into first and last
-const [firstName, ...lastNameParts] = props.employee?.name?.split(" ") || [
-    "",
-    "",
-];
-
 const form = useForm({
-    first_name: firstName || "",
-    last_name: lastNameParts.join(" ") || "",
+    first_name: props.employee?.first_name || "",
+    last_name: props.employee?.last_name || "",
     email: props.employee?.email || "",
     phone: props.employee?.phone || "",
     employee_id: props.employee?.employee_id || "",
@@ -36,47 +30,23 @@ const form = useForm({
     role: props.employee?.role || "",
 });
 
+const isHRorAdmin = computed(() => form.role === 'hr' || form.role === 'admin');
+
+function isRequired(fieldName) {
+  const optionalForHR = ['department_id', 'phone', 'dob', 'gender', 'civil_status', 'hire_date', 'salary', 'employee_id']
+  if (isHRorAdmin.value && optionalForHR.includes(fieldName)) return false
+  return true
+}
+
 const formFields = [
-    {
-        name: "first_name",
-        label: "First Name",
-        type: "text",
-        placeholder: "Enter First Name",
-    },
-    {
-        name: "last_name",
-        label: "Last Name",
-        type: "text",
-        placeholder: "Enter Last Name",
-    },
-    {
-        name: "email",
-        label: "Email",
-        type: "email",
-        placeholder: "Enter Email",
-    },
+    { name: "first_name", label: "First Name", type: "text", placeholder: "Enter First Name" },
+    { name: "last_name", label: "Last Name", type: "text", placeholder: "Enter Last Name" },
+    { name: "email", label: "Email", type: "email", placeholder: "Enter Email" },
     { name: "phone", label: "Phone", type: "text", placeholder: "Enter Phone" },
-    {
-        name: "employee_id",
-        label: "Employee ID",
-        type: "text",
-        placeholder: "Enter ID",
-    },
+    { name: "employee_id", label: "Employee ID", type: "text", placeholder: "Enter ID" },
     { name: "dob", label: "Date of Birth", type: "date" },
-    {
-        name: "gender",
-        label: "Gender",
-        type: "select",
-        options: ["Male", "Female"],
-        placeholder: "Select Gender",
-    },
-    {
-        name: "civil_status",
-        label: "Civil Status",
-        type: "select",
-        options: ["Single", "Married"],
-        placeholder: "Select Status",
-    },
+    { name: "gender", label: "Gender", type: "select", options: ["Male", "Female"], placeholder: "Select Gender" },
+    { name: "civil_status", label: "Civil Status", type: "select", options: ["Single", "Married"], placeholder: "Select Status" },
     {
         name: "department_id",
         label: "Department",
@@ -85,13 +55,7 @@ const formFields = [
         placeholder: "Select Department",
     },
     { name: "hire_date", label: "Hire Date", type: "date" },
-    {
-        name: "salary",
-        label: "Salary",
-        type: "number",
-        placeholder: "Salary",
-        step: "0.01",
-    },
+    { name: "salary", label: "Salary", type: "number", placeholder: "Salary", step: "0.01" },
     {
         name: "role",
         label: "Role",
@@ -121,7 +85,6 @@ function submit() {
 
 <template>
     <div class="flex-1">
-        <!-- Success Notification -->
         <Transition name="fade">
             <div v-if="showSuccess"
                 class="fixed top-4 right-4 bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg z-50">
@@ -134,69 +97,61 @@ function submit() {
             </div>
         </Transition>
 
-        
         <div class="bg-white border-4 border-yellow-400 rounded-lg p-8 max-w-5xl mx-auto">
-            
             <div class="flex justify-between">
                 <h1 class="text-2xl font-bold mb-6">Edit Employee Details</h1>
-                
                 <Link href="/manageemployees" class="text-sm text-blue-600 hover:text-blue-800 font-medium">
                     ← Back to Directory
                 </Link>
             </div>
 
-            <!-- Error Display -->
             <div v-if="form.errors && Object.keys(form.errors).length"
                 class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                <p class="text-red-600 font-semibold mb-2">
-                    Please fix the following errors:
-                </p>
+                <p class="text-red-600 font-semibold mb-2">Please fix the following errors:</p>
                 <ul class="list-disc list-inside text-red-600 text-sm space-y-1">
-                    <li v-for="(error, field) in form.errors" :key="field">
-                        {{ error }}
-                    </li>
+                    <li v-for="(error, field) in form.errors" :key="field">{{ error }}</li>
                 </ul>
             </div>
 
             <form @submit.prevent="submit" class="grid grid-cols-2 gap-6">
-                <!-- Dynamic Form Fields -->
                 <div v-for="field in formFields" :key="field.name">
-                    <label class="text-sm font-semibold">{{
-                        field.label
-                    }}</label>
+                    <label class="text-sm font-semibold">
+                        {{ field.label }}
+                        <span v-if="!isRequired(field.name)" class="text-gray-400 font-normal text-xs">(optional)</span>
+                    </label>
 
-                    <!-- Text/Email/Number/Date Inputs -->
-                    <input v-if="
-                        ['text', 'email', 'number', 'date'].includes(
-                            field.type,
-                        )
-                    " v-model="form[field.name]" :type="field.type" :placeholder="field.placeholder" :step="field.step"
+                    <input
+                        v-if="['text', 'email', 'number', 'date'].includes(field.type)"
+                        v-model="form[field.name]"
+                        :type="field.type"
+                        :placeholder="field.placeholder"
+                        :step="field.step"
                         class="w-full border rounded px-3 py-2 mt-1"
-                        :class="{ 'border-red-500': form.errors[field.name] }" required />
+                        :class="{ 'border-red-500': form.errors[field.name] }"
+                        :required="isRequired(field.name)"
+                    />
 
-                    <!-- Select Inputs -->
-                    <select v-else-if="field.type === 'select'" v-model="form[field.name]"
+                    <select
+                        v-else-if="field.type === 'select'"
+                        v-model="form[field.name]"
                         class="w-full border rounded px-3 py-2 mt-1"
-                        :class="{ 'border-red-500': form.errors[field.name] }" required>
-                        <option v-if="field.placeholder" value="">
-                            {{ field.placeholder }}
-                        </option>
+                        :class="{ 'border-red-500': form.errors[field.name] }"
+                        :required="isRequired(field.name)"
+                    >
+                        <option v-if="field.placeholder" value="">{{ field.placeholder }}</option>
 
-                        <!-- Department options -->
                         <template v-if="field.name === 'department_id'">
                             <option v-for="dept in field.options.value" :key="dept.id" :value="dept.id">
                                 {{ dept.name }}
                             </option>
                         </template>
 
-                        <!-- Role options -->
                         <template v-else-if="field.name === 'role'">
                             <option v-for="opt in field.options" :key="opt.value" :value="opt.value">
                                 {{ opt.label }}
                             </option>
                         </template>
 
-                        <!-- Simple string arrays -->
                         <template v-else>
                             <option v-for="opt in field.options" :key="opt" :value="opt">
                                 {{ opt }}
@@ -205,14 +160,11 @@ function submit() {
                     </select>
                 </div>
 
-                <!-- Submit Button -->
                 <div class="col-span-2 mt-6">
                     <button type="submit"
                         class="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                         :disabled="form.processing">
-                        {{
-                            form.processing ? "Updating..." : "Update Employee"
-                        }}
+                        {{ form.processing ? "Updating..." : "Update Employee" }}
                     </button>
                 </div>
             </form>
@@ -221,18 +173,7 @@ function submit() {
 </template>
 
 <style scoped>
-.fade-enter-active,
-.fade-leave-active {
-    transition: all 0.3s ease;
-}
-
-.fade-enter-from {
-    opacity: 0;
-    transform: translateY(-10px);
-}
-
-.fade-leave-to {
-    opacity: 0;
-    transform: translateY(-10px);
-}
+.fade-enter-active, .fade-leave-active { transition: all 0.3s ease; }
+.fade-enter-from { opacity: 0; transform: translateY(-10px); }
+.fade-leave-to { opacity: 0; transform: translateY(-10px); }
 </style>
