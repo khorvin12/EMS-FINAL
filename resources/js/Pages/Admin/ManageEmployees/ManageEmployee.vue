@@ -53,9 +53,9 @@ const actionButtons = [
 <template>
   <div class="flex flex-col px-6">
 
-    <Head title=" | Manage Employees" />
+    <Head title=" | Employee Management" />
 
-    <h1 class="text-4xl font-bold text-center mb-12">Manage Employees</h1>
+    <h1 class="text-4xl font-bold text-center mb-12">Employee Management</h1>
 
     <div class="flex flex-wrap justify-between mb-8 gap-4">
       <input v-model="search" type="text" placeholder="Search by Employee ID"

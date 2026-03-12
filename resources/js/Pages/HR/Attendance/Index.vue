@@ -119,9 +119,9 @@ const Tablecolumns = [
 <template>
     <div class="flex flex-col px-4 md:px-6">
         
-        <Head title=" | Attendance" />
+        <Head title=" | Attendance Management" />
 
-        <h1 class="text-center text-2xl md:text-4xl font-bold mb-6 md:mb-12">Employee Attendance</h1>
+        <h1 class="text-center text-2xl md:text-4xl font-bold mb-6 md:mb-12">Attendance Management</h1>
 
         <!-- Filters Section -->
         <div class="flex flex-col md:flex-row md:flex-wrap justify-between md:items-center gap-3 md:gap-4 mb-8">

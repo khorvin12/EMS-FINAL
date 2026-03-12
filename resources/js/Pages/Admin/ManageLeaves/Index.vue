@@ -99,9 +99,9 @@ const emptyStateMessage = computed(() =>
 <template>
     <div class="flex flex-col px-6">
         
-        <Head title=" | Manage Leaves" />
+        <Head title=" | Leave Management" />
 
-        <h1 class="text-4xl font-bold text-center mb-12">Manage Leaves</h1>
+        <h1 class="text-4xl font-bold text-center mb-12">Leave Management</h1>
 
         <!-- Filter tabs + View by Employee button -->
         <div class="flex justify-between mb-8 flex-wrap gap-6">

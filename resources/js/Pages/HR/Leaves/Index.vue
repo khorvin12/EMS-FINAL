@@ -81,9 +81,9 @@ const getTabStyle = (key) => {
 <template>
     <div class="flex flex-col px-6">
 
-        <Head title=" | Leaves" />
+        <Head title=" | Leave Management" />
 
-        <h1 class="text-center text-4xl font-bold mb-12">Manage Leave Request</h1>
+        <h1 class="text-center text-4xl font-bold mb-12">Leave Management</h1>
 
         <!-- Tab bar + actions row -->
         <div class="flex flex-wrap justify-between mb-8 gap-4">

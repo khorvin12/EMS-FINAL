@@ -44,9 +44,9 @@ const formatCurrency = (value) => {
 <template>
     <div class="flex flex-col px-6">
 
-        <Head title=" | Salary" />
+        <Head title=" | Payroll Management" />
 
-        <h1 class="text-center text-4xl font-bold mb-12">Salary Details</h1>
+        <h1 class="text-center text-4xl font-bold mb-12">Payroll Management</h1>
 
         <div class="flex flex-wrap items-center justify-between mb-8 gap-4">
             <input type="search" v-model="searchQuery" placeholder="Search by Serial No"

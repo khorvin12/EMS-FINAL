@@ -54,9 +54,9 @@ const actionButtons = [
 <template>
     <div class="flex flex-col px-6">
         
-        <Head title=" | Manage Departments" />
+        <Head title=" | Department Management" />
 
-        <h1 class="text-center text-4xl font-bold mb-12">Manage Departments</h1>
+        <h1 class="text-center text-4xl font-bold mb-12">Department Management</h1>
 
         <div class="flex justify-between mb-8 gap-4">
             <input v-model="searchQuery" type="text" placeholder="Search by Serial No"
