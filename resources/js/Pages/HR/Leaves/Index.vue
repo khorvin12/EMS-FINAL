@@ -14,15 +14,15 @@ const activeTab = ref('all'); // 'all' | 'pending' | 'approved' | 'rejected'
 
 // Tab counts derived from raw leaves (always reflect full data)
 const tabCounts = computed(() => ({
-    all:      props.stats?.all      ?? 0,
-    pending:  props.stats?.pending  ?? 0,
+    all: props.stats?.all ?? 0,
+    pending: props.stats?.pending ?? 0,
     approved: props.stats?.approved ?? 0,
     rejected: props.stats?.rejected ?? 0,
 }));
 
 const filteredLeaves = computed(() => {
     const offset = (props.leaves.current_page - 1) * props.leaves.per_page;
-    
+
     let result = (props.leaves.data || []).map((l, index) => ({
         ...l,
         serialNo: offset + index + 1  // fix here
@@ -123,7 +123,7 @@ const getTabStyle = (key) => {
                     <tr v-for="(leave) in filteredLeaves" :key="leave.id" class="border-slate-200 border-t-4">
                         <td>{{ leave.serialNo }}</td>
                         <td>{{ leave.user.name }}</td>
-                        <td>{{ leave.reason }}</td>
+                        <td>{{ leave.reason || 'N/A' }}</td>
                         <td>{{ formatDate(leave.start_date) }}</td>
                         <td>{{ formatDate(leave.end_date) }}</td>
                         <td class="text-center">

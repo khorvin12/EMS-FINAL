@@ -53,10 +53,6 @@ Route::middleware(['auth', AdminMiddleware::class])
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])
             ->name('dashboard');
 
-        // Dashboard Stats API
-        Route::get('/api/dashboard/stats', [AdminDashboardController::class, 'getStats'])
-            ->name('dashboard.stats');
-
         // Department Management
         Route::get('/departments', [DepartmentController::class, 'index'])
             ->name('departments');

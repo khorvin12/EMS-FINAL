@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('payrolls', function (Blueprint $table) {
             $table->id();
-            $table->string('employee_id');
+            $table->unsignedBigInteger('employee_id');
             $table->string('month'); // e.g. "February 2026"
             $table->integer('year')->nullable();
             $table->decimal('basic_salary', 10, 2)->default(0);
@@ -34,6 +34,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['employee_id', 'month']);
+            $table->foreign('employee_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('generated_by')->references('id')->on('users')->onDelete('set null');
         });
     }

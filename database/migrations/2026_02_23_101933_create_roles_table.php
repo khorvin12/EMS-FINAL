@@ -22,23 +22,10 @@ return new class extends Migration
             ['name' => 'hr',       'permissions' => 'manage_leaves,manage_attendance,manage_salary', 'created_at' => now(), 'updated_at' => now()],
             ['name' => 'employee', 'permissions' => 'view_attendance,view_salary,request_leave',     'created_at' => now(), 'updated_at' => now()],
         ]);
-
-        // Add role_id to users table
-        Schema::table('users', function (Blueprint $table) {
-            $table->foreignId('role_id')->nullable()->after('role')->constrained('roles');
-        });
-
-        // Copy existing role string to role_id
-        DB::statement('UPDATE users SET role_id = (SELECT id FROM roles WHERE roles.name = users.role)');
     }
 
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign(['role_id']);
-            $table->dropColumn('role_id');
-        });
-
         Schema::dropIfExists('roles');
     }
 };

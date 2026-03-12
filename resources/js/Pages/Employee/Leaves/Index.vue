@@ -4,7 +4,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import PaginationLinks from '../../Components/PaginationLinks.vue';
 
 const props = defineProps({
-    leaves: Object 
+    leaves: Object
 });
 
 const searchTerm = ref('');
@@ -84,8 +84,8 @@ const getStatusText = (status) => {
                     </tr>
                     <tr v-else v-for="(leave, index) in filteredLeaves" :key="leave.id"
                         class="border-slate-200 border-t-4">
-                        <td>{{ leave.serialNo }}</td>
-                        <td>{{ leave.reason }}</td>
+                        <td>{{ leave.serialNo ?? 'N/A' }}</td>
+                        <td>{{ leave.reason || 'N/A' }}</td>
                         <td>{{ leave.start_date }} to {{ leave.end_date }}</td>
                         <td class="text-center">
                             <span :class="getStatusColor(leave.status)"

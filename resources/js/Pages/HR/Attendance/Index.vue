@@ -172,7 +172,7 @@ const Tablecolumns = [
                     <tr v-for="(attendance, index) in filteredAttendances" :key="attendance.id"
                         class="border-t-4 border-gray-200">
                         <td>{{ attendance.serialNo }}</td>
-                        <td>{{ attendance.employee_id }}</td>
+                        <td>{{ 'EMP-' + String(attendance.employee_id).padStart(3, '0') }}</td>
                         <td>{{ attendance.employee_name || 'N/A' }}</td>
                         <td>{{ formatDate(attendance.date) }}</td>
                         <td>{{ formatTime(attendance.check_in) }}</td>

@@ -77,7 +77,7 @@ const formatDate = (dateString: string) => {
 
 const leaveTableData = computed(() => {
     const offset = (props.leaves.current_page - 1) * props.leaves.per_page;
-    
+
     return filteredLeaves.value.map((leave, index) => ({
         number: offset + index + 1,
         employee: leave.user.name,
@@ -98,7 +98,7 @@ const emptyStateMessage = computed(() =>
 
 <template>
     <div class="flex flex-col px-6">
-        
+
         <Head title=" | Leave Management" />
 
         <h1 class="text-4xl font-bold text-center mb-12">Leave Management</h1>
@@ -150,7 +150,7 @@ const emptyStateMessage = computed(() =>
                         <tr v-for="row in leaveTableData" :key="row.id" class="border-t-4 border-gray-200">
                             <td>{{ row.number }}</td>
                             <td>{{ row.employee }}</td>
-                            <td>{{ row.reason }}</td>
+                            <td>{{ row.reason || 'N/A' }}</td>
                             <td>{{ row.start_date }}</td>
                             <td>{{ row.end_date }}</td>
                             <td class="px-6 py-4 text-center border-b border-gray-200">

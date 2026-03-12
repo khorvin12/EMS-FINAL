@@ -86,7 +86,7 @@ const actionButtons = [
 
         <tbody>
           <tr v-for="employee in filteredEmployees" :key="employee.id" class="border-t-4 border-gray-200">
-            <td>{{ employee.id }}</td>
+            <td>{{ 'EMP-' + String(employee.id).padStart(3, '0') }}</td>
             <td>{{ employee.first_name }} {{ employee.last_name }}</td>
             <td>{{ employee.department?.name ?? 'N/A' }}</td>
             <td>

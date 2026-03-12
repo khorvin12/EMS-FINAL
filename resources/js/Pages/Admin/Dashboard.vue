@@ -1,32 +1,20 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
 import { Head } from '@inertiajs/vue3';
 
 // Reactive data
-const stats = ref({
-    totalEmployees: 0,
-    totalDepartments: 0,
-    monthlyPay: 0,
-    leavePending: 0,
-    leaveApproved: 0,
-    leaveRejected: 0
-});
-
-// Fetch dashboard stats
-const fetchDashboardStats = async () => {
-    try {
-        const response = await axios.get('/api/dashboard/stats');
-        stats.value = response.data;
-    } catch (error) {
-        console.error('Error fetching dashboard stats:', error);
+const props = defineProps({
+    stats: {
+        type: Object,
+        default: () => ({
+            totalEmployees: 0,
+            totalDepartments: 0,
+            monthlyPay: 0,
+            leavePending: 0,
+            leaveApproved: 0,
+            leaveRejected: 0
+        })
     }
-};
-
-// Load data on component mount
-onMounted(() => {
-    fetchDashboardStats();
-});
+})
 </script>
 
 <template>
@@ -48,7 +36,7 @@ onMounted(() => {
                 </div>
                 <div>
                     <p class="text-lg font-medium">Total Employees</p>
-                    <p class="text-center">{{ stats.totalEmployees }}</p>
+                    <p class="text-center">{{ props.stats.totalEmployees }}</p>
                 </div>
             </div>
 
@@ -58,7 +46,7 @@ onMounted(() => {
                 </div>
                 <div>
                     <p class="text-lg font-medium">Total Departments</p>
-                    <p class="text-center">{{ stats.totalDepartments }}</p>
+                    <p class="text-center">{{ props.stats.totalDepartments }}</p>
                 </div>
             </div>
         </div>
@@ -74,7 +62,7 @@ onMounted(() => {
                 </div>
                 <div>
                     <p class="text-lg font-medium">Leave Pending</p>
-                    <p class="text-center">{{ stats.leavePending }}</p>
+                    <p class="text-center">{{ props.stats.leavePending }}</p>
                 </div>
             </div>
 
@@ -84,7 +72,7 @@ onMounted(() => {
                 </div>
                 <div>
                     <p class="text-lg font-medium">Leave Approved</p>
-                    <p class="text-center">{{ stats.leaveApproved }}</p>
+                    <p class="text-center">{{ props.stats.leaveApproved }}</p>
                 </div>
             </div>
 
@@ -94,7 +82,7 @@ onMounted(() => {
                 </div>
                 <div>
                     <p class="text-lg font-medium">Leave Rejected</p>
-                    <p class="text-center">{{ stats.leaveRejected }}</p>
+                    <p class="text-center">{{ props.stats.leaveRejected }}</p>
                 </div>
             </div>
         </div>
