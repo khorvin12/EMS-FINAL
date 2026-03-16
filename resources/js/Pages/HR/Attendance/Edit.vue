@@ -1,21 +1,17 @@
 <script setup>
 import { useForm, Link, Head } from '@inertiajs/vue3';
 
-
 const props = defineProps({
-    attendance: {
-        type: Object,
-        required: true
-    }
+    attendance: { type: Object, required: true }
 });
 
 const toTimeInput = (t) => t ? t.toString().slice(0, 5) : '';
 
 const form = useForm({
-    date: props.attendance.date ?? '',
-    check_in: toTimeInput(props.attendance.check_in),
+    date:      props.attendance.date      ?? '',
+    check_in:  toTimeInput(props.attendance.check_in),
     check_out: toTimeInput(props.attendance.check_out),
-    status: props.attendance.status ?? 'present',
+    status:    props.attendance.status    ?? 'present',
 });
 
 const submit = () => {
@@ -34,7 +30,6 @@ const submit = () => {
 
             <form @submit.prevent="submit">
 
-                <!-- Row 1: Employee ID + Employee Name -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-600 mb-1">Employee ID</label>
@@ -48,7 +43,6 @@ const submit = () => {
                     </div>
                 </div>
 
-                <!-- Row 2: Date + Check In -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-600 mb-1">Date</label>
@@ -66,7 +60,6 @@ const submit = () => {
                     </div>
                 </div>
 
-                <!-- Row 3: Check Out -->
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-600 mb-1">Check Out</label>
                     <input type="time" v-model="form.check_out"
@@ -75,15 +68,14 @@ const submit = () => {
                     <p v-if="form.errors.check_out" class="text-red-500 text-xs mt-1">{{ form.errors.check_out }}</p>
                 </div>
 
-                <!-- Status -->
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-gray-600 mb-2">Status</label>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                         <label v-for="opt in [
-                            { value: 'present', label: 'Present', cls: 'bg-green-500 hover:bg-green-600' },
-                            { value: 'absent', label: 'Absent', cls: 'bg-red-500 hover:bg-red-600' },
-                            { value: 'late', label: 'Late', cls: 'bg-yellow-400 hover:bg-yellow-500' },
-                            { value: 'on_leave', label: 'On Leave', cls: 'bg-blue-400 hover:bg-blue-500' },
+                            { value: 'present',  label: 'Present',  cls: 'bg-green-500 hover:bg-green-600'   },
+                            { value: 'absent',   label: 'Absent',   cls: 'bg-red-500 hover:bg-red-600'       },
+                            { value: 'late',     label: 'Late',     cls: 'bg-yellow-400 hover:bg-yellow-500' },
+                            { value: 'on_leave', label: 'On Leave', cls: 'bg-blue-400 hover:bg-blue-500'     },
                         ]" :key="opt.value" :class="[
                             opt.cls,
                             'text-white text-sm font-semibold text-center py-2 rounded cursor-pointer transition-opacity',
@@ -96,7 +88,6 @@ const submit = () => {
                     <p v-if="form.errors.status" class="text-red-500 text-xs mt-1">{{ form.errors.status }}</p>
                 </div>
 
-                <!-- Action buttons -->
                 <div class="flex justify-center items-center gap-4 mt-2 mb-2">
                     <Link href="/hr/attendance"
                         class="flex-1 text-center bg-gray-600 hover:bg-gray-700 text-white font-semibold px-6 md:px-8 py-2 rounded transition-colors">

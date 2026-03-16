@@ -6,17 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Department;
 use App\Models\Role;
+use App\Mail\EmployeeWelcomeMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 
 class EmployeeController extends Controller
 {
     public function index()
     {
-        $employees = User::with('department')
-            ->where('role', '!=', 'admin')
-            ->paginate(6);
+        $employees = User::with('department')->paginate(6);
 
         return Inertia::render('Admin/ManageEmployees/ManageEmployee', [
             'employees' => $employees
@@ -33,8 +33,23 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {
         $validated = $this->validateEmployee($request);
-        User::create($this->prepareEmployeeData($validated));
-        return $this->redirectWithSuccess('Employee added successfully!');
+        $employee = User::create($this->prepareEmployeeData($validated));
+
+        if ($employee->role === 'employee') {
+            Mail::to($employee->email)->send(new EmployeeWelcomeMail(
+                $employee->first_name,
+                $employee->email,
+                $employee->role,
+            ));
+        } else {
+            Mail::to($employee->email)->send(new \App\Mail\StaffWelcomeMail(
+                $employee->first_name,
+                $employee->email,
+                $employee->role,
+            ));
+        }
+
+        return $this->redirectWithSuccess('Account created successfully! Welcome email sent.');
     }
 
     public function show($id)
@@ -75,18 +90,21 @@ class EmployeeController extends Controller
 
     private function validateEmployee(Request $request, $id = null)
     {
+        $isHRorAdmin = in_array($request->role, ['hr', 'admin']);
+
         return $request->validate([
             'first_name'    => 'required|string|max:255',
             'last_name'     => 'required|string|max:255',
+            'employee_id'   => 'nullable|string|max:50',
             'email'         => 'required|email|unique:users,email' . ($id ? ",$id" : ''),
-            'phone'         => 'required|string|max:15',
-            'department_id' => 'required|exists:departments,id',
-            'dob'           => 'required|date',
-            'gender'        => 'required|string',
-            'civil_status'  => 'required|string',
+            'phone'         => 'nullable|string|max:15',
+            'department_id' => $isHRorAdmin ? 'nullable|exists:departments,id' : 'required|exists:departments,id',
+            'dob'           => 'nullable|date',
+            'gender'        => 'nullable|string',
+            'civil_status'  => 'nullable|string',
             'role'          => 'required|in:employee,hr,admin',
-            'hire_date'     => 'required|date',
-            'salary'        => 'required|numeric|min:0',
+            'hire_date'     => 'nullable|date',
+            'salary'        => $isHRorAdmin ? 'nullable|numeric|min:0' : 'required|numeric|min:0',
         ]);
     }
 
@@ -95,16 +113,17 @@ class EmployeeController extends Controller
         $data = [
             'first_name'    => $validated['first_name'],
             'last_name'     => $validated['last_name'],
+            'employee_id'   => $validated['employee_id'] ?: null,
             'email'         => $validated['email'],
-            'phone'         => $validated['phone'],
-            'department_id' => $validated['department_id'],
-            'dob'           => $validated['dob'],
-            'gender'        => $validated['gender'],
-            'civil_status'  => $validated['civil_status'],
+            'phone'         => $validated['phone'] ?: null,
+            'department_id' => $validated['department_id'] ?: null,
+            'dob'           => $validated['dob'] ?: null,
+            'gender'        => $validated['gender'] ?: null,
+            'civil_status'  => $validated['civil_status'] ?: null,
             'role'          => $validated['role'],
             'role_id'       => Role::where('name', $validated['role'])->value('id'),
-            'hire_date'     => $validated['hire_date'],
-            'salary'        => $validated['salary'],
+            'hire_date'     => $validated['hire_date'] ?: null,
+            'salary'        => $validated['salary'] ?: null,
         ];
 
         if ($isNew) {

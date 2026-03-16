@@ -71,7 +71,7 @@ const goBack = () => router.visit('/hr/salary');
 
             <div class="bg-gradient-to-r from-blue-600 to-indigo-700 px-8 py-6 flex justify-between items-center gap-4">
                 <h2 class="text-2xl font-bold text-white">Employee Salary Details</h2>
-                <button @click="goBack" class="text-white hover:text-blue-400 text-sm font-medium transition-all">
+                <button @click="goBack" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all">
                     ← Back to List
                 </button>
             </div>

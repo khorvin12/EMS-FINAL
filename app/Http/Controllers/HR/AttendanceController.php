@@ -21,27 +21,29 @@ class AttendanceController extends Controller
                 'attendances.check_in',
                 'attendances.check_out',
                 'attendances.status',
+                'attendances.hours_worked',
                 DB::raw("CONCAT(users.first_name, ' ', users.last_name) as employee_name")
             )
             ->orderBy('attendances.date', 'desc')
             ->paginate(6)
             ->withQueryString();
+
         $attendanceHistory->getCollection()->transform(function ($attendance) {
             $hours = 0;
             if ($attendance->check_in && $attendance->check_out) {
                 $start = Carbon::parse($attendance->check_in);
-                $end = Carbon::parse($attendance->check_out);
+                $end   = Carbon::parse($attendance->check_out);
                 $hours = min(8, round($start->diffInHours($end, true) - 1, 2));
             }
             return [
-                'id' => $attendance->id,
-                'employee_id' => $attendance->employee_id,
+                'id'            => $attendance->id,
+                'employee_id'   => $attendance->employee_id,
                 'employee_name' => $attendance->employee_name,
-                'date' => $attendance->date,
-                'check_in' => $attendance->check_in,
-                'check_out' => $attendance->check_out,
-                'hours' => $hours,
-                'status' => $attendance->status,
+                'date'          => $attendance->date,
+                'check_in'      => $attendance->check_in,
+                'check_out'     => $attendance->check_out,
+                'hours'         => $hours,
+                'status'        => $attendance->status,
             ];
         });
 
@@ -71,9 +73,9 @@ class AttendanceController extends Controller
                     ->toArray();
 
                 return [
-                    'employee_id' => $emp->employee_id,
+                    'employee_id'   => $emp->employee_id,
                     'employee_name' => $emp->employee_name,
-                    'attendance' => $attendance,
+                    'attendance'    => $attendance,
                 ];
             });
 
@@ -111,17 +113,17 @@ class AttendanceController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'date' => 'required|date',
-            'check_in' => 'nullable|date_format:H:i',
+            'date'      => 'required|date',
+            'check_in'  => 'nullable|date_format:H:i',
             'check_out' => 'nullable|date_format:H:i|after_or_equal:check_in',
-            'status' => 'required|in:present,absent,late,on_leave',
+            'status'    => 'required|in:present,absent,late,on_leave',
         ]);
 
         DB::table('attendances')->where('id', $id)->update([
-            'date' => $request->date,
-            'check_in' => $request->check_in ?: null,
-            'check_out' => $request->check_out ?: null,
-            'status' => $request->status,
+            'date'       => $request->date,
+            'check_in'   => $request->check_in ?: null,
+            'check_out'  => $request->check_out ?: null,
+            'status'     => $request->status,
             'updated_at' => now(),
         ]);
 
@@ -132,7 +134,6 @@ class AttendanceController extends Controller
     public function destroy($id)
     {
         DB::table('attendances')->where('id', $id)->delete();
-
         return redirect()->back()->with('success', 'Attendance deleted successfully!');
     }
 }

@@ -111,6 +111,7 @@ const navItems = [
                     </div>
                 </Transition>
             </main>
+
         </div>
     </div>
 </template>

@@ -3,24 +3,18 @@ import { Head, useForm } from '@inertiajs/vue3';
 
 const form = useForm({
     start_date: '',
-    end_date: '',
-    type: '',
-    reason: ''
+    end_date:   '',
+    type:       '',
+    reason:     ''
 });
 
-const submit = () => {
-    form.post('/employee/leaves');
-};
-
-const cancel = () => {
-    form.reset();
-    window.history.back();
-};
+const submit = () => { form.post('/employee/leaves'); };
+const cancel = () => { form.reset(); window.history.back(); };
 </script>
 
 <template>
     <div class="flex items-center justify-center px-4 py-24">
-        
+
         <Head title=" | Create Leave" />
 
         <div class="bg-white w-full max-w-lg px-4 py-3 rounded-lg shadow-md border-4 border-green-600">
@@ -34,8 +28,7 @@ const cancel = () => {
                         <input type="date" v-model="form.start_date"
                             class="w-full p-2 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
                             required />
-                        <span v-if="form.errors.start_date" class="text-red-500 text-xs">{{ form.errors.start_date
-                            }}</span>
+                        <span v-if="form.errors.start_date" class="text-red-500 text-xs">{{ form.errors.start_date }}</span>
                     </div>
                     <div>
                         <label class="block mb-1 text-sm">To</label>

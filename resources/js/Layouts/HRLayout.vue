@@ -20,11 +20,11 @@ router.on('start', () => { isLoading.value = true })
 router.on('finish', () => { isLoading.value = false })
 
 const navItems = [
-    { name: 'Dashboard',  href: '/hr/dashboard',   icon: 'fa-gauge' },
-    { name: 'Attendance', href: '/hr/attendance',   icon: 'fa-calendar-check' },
-    { name: 'Leaves',     href: '/hr/leaves',       icon: 'fa-calendar-xmark' },
-    { name: 'Salary',     href: '/hr/salary',       icon: 'fa-peso-sign' },
-    { name: 'Settings',   href: '/hr/settings',     icon: 'fa-gear' },
+    { name: 'Dashboard',  href: '/hr/dashboard',  icon: 'fa-gauge' },
+    { name: 'Attendance', href: '/hr/attendance',  icon: 'fa-calendar-check' },
+    { name: 'Leaves',     href: '/hr/leaves',      icon: 'fa-calendar-xmark' },
+    { name: 'Salaries',   href: '/hr/salaries',    icon: 'fa-peso-sign' },
+    { name: 'Settings',   href: '/hr/settings',    icon: 'fa-gear' },
 ]
 </script>
 
@@ -110,6 +110,7 @@ const navItems = [
                     </div>
                 </Transition>
             </main>
+
         </div>
     </div>
 </template>

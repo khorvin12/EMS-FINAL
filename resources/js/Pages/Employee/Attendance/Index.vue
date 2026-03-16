@@ -1,54 +1,20 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { Head, router } from '@inertiajs/vue3';
-import { onMounted, onUnmounted } from 'vue'
 
 const props = defineProps({
-    employee: { type: Object, required: true },
-    todayAttendance: { type: Object, default: null },
-    attendanceHistory: { type: Array, default: () => [] }
+    employee:          { type: Object, required: true },
+    todayAttendance:   { type: Object, default: null },
+    attendanceHistory: { type: Array,  default: () => [] }
 });
 
-const toast = ref(null)
-const processing = ref(false);
-
+const toast       = ref(null)
+const processing  = ref(false);
 const currentTime = ref(new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }));
 const currentDate = ref(new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }));
 
-const canTimeIn = computed(() => !props.todayAttendance || !props.todayAttendance.check_in);
+const canTimeIn  = computed(() => !props.todayAttendance || !props.todayAttendance.check_in);
 const canTimeOut = computed(() => props.todayAttendance && props.todayAttendance.check_in && !props.todayAttendance.check_out);
-
-const timeIn = () => {
-    processing.value = true;
-    router.post('/employee/attendance/record', { type: 'time_in' }, {
-        preserveScroll: true,
-        onSuccess: () => {
-            processing.value = false;
-            toast.value?.addToast('Clocked in successfully!', 'success')
-        },
-        onError: () => {
-            processing.value = false;
-            toast.value?.addToast('Failed to clock in. Please try again.', 'error')
-        },
-        onFinish: () => { processing.value = false; }
-    });
-};
-
-const timeOut = () => {
-    processing.value = true;
-    router.post('/employee/attendance/record', { type: 'time_out' }, {
-        preserveScroll: true,
-        onSuccess: () => {
-            processing.value = false;
-            toast.value?.addToast('Clocked out successfully!', 'success')
-        },
-        onError: () => {
-            processing.value = false;
-            toast.value?.addToast('Failed to clock out. Please try again.', 'error')
-        },
-        onFinish: () => { processing.value = false; }
-    });
-};
 
 let interval;
 onMounted(() => {
@@ -58,6 +24,26 @@ onMounted(() => {
 });
 onUnmounted(() => clearInterval(interval));
 
+const timeIn = () => {
+    processing.value = true;
+    router.post('/employee/attendance/record', { type: 'time_in' }, {
+        preserveScroll: true,
+        onSuccess: () => { processing.value = false; },
+        onError:   () => { processing.value = false; },
+        onFinish:  () => { processing.value = false; }
+    });
+};
+
+const timeOut = () => {
+    processing.value = true;
+    router.post('/employee/attendance/record', { type: 'time_out' }, {
+        preserveScroll: true,
+        onSuccess: () => { processing.value = false; },
+        onError:   () => { processing.value = false; },
+        onFinish:  () => { processing.value = false; }
+    });
+};
+
 const formatTime = (timeString) => {
     if (!timeString) return '--';
     const [hours, minutes] = timeString.toString().split(':');
@@ -65,6 +51,19 @@ const formatTime = (timeString) => {
     const ampm = hour >= 12 ? 'PM' : 'AM';
     const displayHour = hour % 12 || 12;
     return `${displayHour.toString().padStart(2, '0')}:${minutes} ${ampm}`;
+};
+
+const formatDate = (dateString) =>
+    new Date(dateString).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+const getStatusColor = (status) => {
+    const colors = {
+        'present':  'bg-green-500',
+        'late':     'bg-yellow-400',
+        'absent':   'bg-red-500',
+        'on_leave': 'bg-blue-500'
+    };
+    return colors[status] || 'bg-gray-100 text-gray-800';
 };
 </script>
 
@@ -88,7 +87,6 @@ const formatTime = (timeString) => {
                         <p class="text-sm md:text-lg text-gray-600 mb-1">Name</p>
                         <p class="text-lg md:text-2xl font-bold text-gray-900">{{ employee.name }}</p>
                     </div>
-
                     <div class="text-center bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-6 md:p-12">
                         <p class="text-sm md:text-lg text-gray-600 mb-2">Current Time</p>
                         <p class="text-4xl md:text-6xl font-bold text-gray-900">{{ currentTime }}</p>

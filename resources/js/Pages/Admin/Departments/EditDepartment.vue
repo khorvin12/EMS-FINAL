@@ -1,5 +1,5 @@
 <script setup>
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
     department: Object
@@ -13,9 +13,7 @@ const form = useForm({
 
 const updateDepartment = () => {
     form.put(`/editdepartment/${props.department.id}`, {
-        onSuccess: () => {
-            // Redirect handled by controller
-        }
+        onSuccess: () => {}
     });
 };
 </script>
@@ -24,8 +22,14 @@ const updateDepartment = () => {
     <div class="flex items-center justify-center py-24">
 
         <Head title=" | Edit Department" />
-        
+
         <div class="bg-white w-full max-w-sm px-6 py-4 rounded-md shadow-md border-4 border-yellow-300">
+
+            <div class="flex justify-end">
+                <Link href="/departments" class="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                    ← Back
+                </Link>
+            </div>
 
             <h1 class="text-xl font-bold mb-8 text-center">Edit Department</h1>
 
@@ -42,8 +46,7 @@ const updateDepartment = () => {
                     <label for="description">Description</label>
                     <textarea v-model="form.description" rows="5" id="description" placeholder="Description"
                         class="p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"></textarea>
-                    <span v-if="form.errors.description" class="text-red-500 text-sm">{{ form.errors.description
-                    }}</span>
+                    <span v-if="form.errors.description" class="text-red-500 text-sm">{{ form.errors.description }}</span>
                 </div>
 
                 <div class="grid grid-cols-1 mb-6 space-y-1">

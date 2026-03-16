@@ -12,18 +12,17 @@ class LeaveController extends Controller
 {
     public function index()
     {
-        // leaves.employee_id is already users.id (integer FK) — correct
         $leaves = Leave::where('employee_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->paginate(6)
             ->through(function ($leave) {
                 return [
-                    'id' => $leave->id,
+                    'id'         => $leave->id,
                     'start_date' => $leave->start_date->format('Y-m-d'),
-                    'end_date' => $leave->end_date->format('Y-m-d'),
-                    'type' => $leave->type,
-                    'reason' => $leave->reason,
-                    'status' => $leave->status,
+                    'end_date'   => $leave->end_date->format('Y-m-d'),
+                    'type'       => $leave->type,
+                    'reason'     => $leave->reason,
+                    'status'     => $leave->status,
                     'created_at' => $leave->created_at->format('Y-m-d'),
                 ];
             });
@@ -42,19 +41,18 @@ class LeaveController extends Controller
     {
         $validated = $request->validate([
             'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
-            'type' => 'required|string|in:sick,vacation,emergency,personal',
-            'reason' => 'nullable|string',
+            'end_date'   => 'required|date|after_or_equal:start_date',
+            'type'       => 'required|string|in:sick,vacation,emergency,personal',
+            'reason'     => 'required|string|max:255',
         ]);
 
-        // auth()->id() returns users.id — correct
         Leave::create([
             'employee_id' => Auth::id(),
-            'start_date' => $validated['start_date'],
-            'end_date' => $validated['end_date'],
-            'type' => $validated['type'],
-            'reason' => $validated['reason'] ?? null,
-            'status' => 'pending',
+            'start_date'  => $validated['start_date'],
+            'end_date'    => $validated['end_date'],
+            'type'        => $validated['type'],
+            'reason'      => $validated['reason'],
+            'status'      => 'pending',
         ]);
 
         return redirect()->route('employee.leaves')->with('success', 'Leave request submitted successfully!');
@@ -62,19 +60,18 @@ class LeaveController extends Controller
 
     public function show(Leave $leave)
     {
-        // auth()->id() returns users.id — correct
         if ($leave->employee_id !== Auth::id()) {
             abort(403);
         }
 
         return Inertia::render('Employee/Leaves/View', [
             'leave' => [
-                'id' => $leave->id,
+                'id'         => $leave->id,
                 'start_date' => $leave->start_date->format('Y-m-d'),
-                'end_date' => $leave->end_date->format('Y-m-d'),
-                'type' => $leave->type,
-                'reason' => $leave->reason,
-                'status' => $leave->status,
+                'end_date'   => $leave->end_date->format('Y-m-d'),
+                'type'       => $leave->type,
+                'reason'     => $leave->reason,
+                'status'     => $leave->status,
                 'created_at' => $leave->created_at->format('Y-m-d H:i:s'),
             ]
         ]);

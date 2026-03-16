@@ -9,7 +9,6 @@ const form = useForm({
 })
 
 const submit = () => {
-    // Change this line
     form.post('/hr/reset-password');
 };
 </script>
@@ -25,18 +24,14 @@ const submit = () => {
 
             <form @submit.prevent="submit" class="space-y-4">
 
-                <!-- Current Password -->
                 <TextInput name="Old Password" type="password" v-model="form.current_password"
                     :message="form.errors.current_password" />
 
-                <!-- New Password -->
                 <TextInput name="New Password" type="password" v-model="form.password"
                     :message="form.errors.password" />
 
-                <!-- Confirm Password -->
                 <TextInput name="Confirm Password" type="password" v-model="form.password_confirmation" />
 
-                <!-- Button -->
                 <button type="submit" class="w-full bg-green-500 hover:bg-green-600 font-bold py-2 rounded-md mt-4"
                     :disabled="form.processing">
                     Change Password

@@ -1,36 +1,36 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3'
 
-defineProps({
-  employee: {
-    type: Object,
-    required: true
-  }
+const props = defineProps({
+  employee: { type: Object, required: true }
 })
 
-// Format date helper function
+const displayValue = (val) => val || '—'
+
 const formatDate = (dateString) => {
-  if (!dateString) return 'N/A'
-  const date = new Date(dateString)
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+  if (!dateString) return '—'
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric', month: 'long', day: 'numeric'
   })
 }
 
 const employeeFields = [
-  { label: 'Employee ID', value: (emp) => emp.id },
-  { label: 'Name', value: (emp) => `${emp.first_name} ${emp.last_name}` },
-  { label: 'Email', value: (emp) => emp.email },
-  { label: 'Phone', value: (emp) => emp.phone },
-  { label: 'Department', value: (emp) => emp.department?.name ?? 'N/A' },
-  { label: 'Role', value: (emp) => emp.role, class: 'capitalize' },
-  { label: 'Date of Birth', value: (emp) => formatDate(emp.dob) },
-  { label: 'Gender', value: (emp) => emp.gender },
-  { label: 'Civil Status', value: (emp) => emp.civil_status },
-  { label: 'Hire Date', value: (emp) => formatDate(emp.hire_date) },
-  { label: 'Salary', value: (emp) => `₱${Number(emp.salary).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` }
+  { label: 'Employee ID',  value: (e) => e.employee_id },
+  { label: 'Name',         value: (e) => `${e.first_name} ${e.last_name}` },
+  { label: 'Email',        value: (e) => e.email },
+  { label: 'Phone',        value: (e) => displayValue(e.phone) },
+  { label: 'Department',   value: (e) => e.department?.name ?? 'Unassigned' },
+  { label: 'Role',         value: (e) => e.role, class: 'capitalize' },
+  { label: 'Date of Birth',value: (e) => formatDate(e.dob) },
+  { label: 'Gender',       value: (e) => displayValue(e.gender) },
+  { label: 'Civil Status', value: (e) => displayValue(e.civil_status) },
+  { label: 'Hire Date',    value: (e) => formatDate(e.hire_date) },
+  {
+    label: 'Salary',
+    value: (e) => e.salary
+      ? `₱${Number(e.salary).toLocaleString('en-US', { minimumFractionDigits: 2 })}`
+      : '—'
+  }
 ]
 </script>
 
@@ -42,7 +42,7 @@ const employeeFields = [
     <div class="bg-white border-4 border-blue-400 rounded-lg p-6 max-w-3xl w-full shadow-lg">
 
       <div class="flex justify-end items-center gap-4">
-        <Link href="/manageemployees" class="text-blue-500 hover:text-blue-600  transition-colors">
+        <Link href="/manageemployees" class="text-blue-500 hover:text-blue-600 transition-colors">
           ← Back
         </Link>
       </div>
@@ -57,8 +57,6 @@ const employeeFields = [
           </p>
         </div>
       </div>
-
-
 
     </div>
   </div>

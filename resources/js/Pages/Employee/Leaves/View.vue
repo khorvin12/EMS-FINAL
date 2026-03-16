@@ -7,7 +7,7 @@ const props = defineProps({
 
 const getStatusColor = (status) => {
     const colors = {
-        pending: 'bg-yellow-400',
+        pending:  'bg-yellow-400',
         rejected: 'bg-red-500',
         approved: 'bg-green-500',
         accepted: 'bg-green-500'
@@ -15,9 +15,8 @@ const getStatusColor = (status) => {
     return colors[status] || 'bg-gray-400';
 };
 
-const getStatusText = (status) => {
-    return status.charAt(0).toUpperCase() + status.slice(1);
-};
+const getStatusText = (status) =>
+    status.charAt(0).toUpperCase() + status.slice(1);
 </script>
 
 <template>
@@ -29,9 +28,7 @@ const getStatusText = (status) => {
 
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-xl md:text-2xl font-bold">Leave Details</h2>
-                <Link href="/employee/leaves" class="text-2xl font-bold hover:text-red-600 transition">
-                    ×
-                </Link>
+                <Link href="/employee/leaves" class="text-2xl font-bold hover:text-red-600 transition">×</Link>
             </div>
 
             <div class="space-y-4">
@@ -60,6 +57,13 @@ const getStatusText = (status) => {
                     </div>
                 </div>
 
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Leave Type</label>
+                        <p class="text-base md:text-lg capitalize">{{ leave.type || 'N/A' }}</p>
+                    </div>
+                </div>
+
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Reason</label>
                     <p class="text-base md:text-lg font-semibold">{{ leave.reason }}</p>
@@ -67,8 +71,7 @@ const getStatusText = (status) => {
 
                 <div v-if="leave.admin_comment">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Admin Comment</label>
-                    <p class="text-sm md:text-base bg-yellow-50 p-3 rounded border border-yellow-200">{{
-                        leave.admin_comment }}</p>
+                    <p class="text-sm md:text-base bg-yellow-50 p-3 rounded border border-yellow-200">{{ leave.admin_comment }}</p>
                 </div>
             </div>
 

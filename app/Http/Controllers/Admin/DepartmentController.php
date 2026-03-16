@@ -12,6 +12,7 @@ class DepartmentController extends Controller
     public function index()
     {
         $departments = Department::paginate(6);
+
         return Inertia::render('Admin/Departments/ManageDepartment', [
             'departments' => $departments
         ]);
@@ -20,9 +21,9 @@ class DepartmentController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:departments',
+            'name'        => 'required|string|max:255|unique:departments',
             'description' => 'nullable|string',
-            'manager_id' => 'nullable|string'
+            'manager_id'  => 'nullable|string'
         ]);
 
         Department::create($validated);
@@ -48,9 +49,9 @@ class DepartmentController extends Controller
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:departments,name,' . $id,
+            'name'        => 'required|string|max:255|unique:departments,name,' . $id,
             'description' => 'nullable|string',
-            'manager_id' => 'nullable|string'
+            'manager_id'  => 'nullable|string'
         ]);
 
         Department::findOrFail($id)->update($validated);

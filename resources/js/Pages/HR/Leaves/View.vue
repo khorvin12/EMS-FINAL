@@ -13,16 +13,14 @@ const formatDate = (dateString) => {
 const formatDisplayDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
+        year: 'numeric', month: 'long', day: 'numeric'
     });
 };
 
 const approve = () => {
     if (confirm('Are you sure you want to approve this leave request?')) {
         router.post(`/hr/leaves/${props.leave.id}/approve`, {}, {
-            onSuccess: () => { }
+            onSuccess: () => {}
         });
     }
 };
@@ -30,21 +28,19 @@ const approve = () => {
 const reject = () => {
     if (confirm('Are you sure you want to reject this leave request?')) {
         router.post(`/hr/leaves/${props.leave.id}/reject`, {}, {
-            onSuccess: () => { }
+            onSuccess: () => {}
         });
     }
 };
 
-const goBack = () => {
-    router.visit('/hr/leaves');
-};
+const goBack = () => router.visit('/hr/leaves');
 
 const getStatusColor = (status) => {
-    switch (status) {
+    switch (status?.toLowerCase()) {
         case 'approved': return 'bg-green-500';
         case 'rejected': return 'bg-red-500';
-        case 'pending': return 'bg-yellow-500';
-        default: return 'bg-gray-500';
+        case 'pending':  return 'bg-yellow-500';
+        default:         return 'bg-gray-500';
     }
 };
 </script>
@@ -78,7 +74,6 @@ const getStatusColor = (status) => {
                     <p class="text-sm"><strong>Submitted:</strong> {{ formatDisplayDate(leave.created_at) }}</p>
                 </div>
 
-                <!-- From / To -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div class="flex flex-col">
                         <label class="mb-1 text-sm font-medium">From</label>
@@ -92,29 +87,36 @@ const getStatusColor = (status) => {
                     </div>
                 </div>
 
-                <!-- Reason -->
                 <div class="mb-4">
                     <label class="mb-1 block text-sm font-medium">Reason</label>
                     <textarea rows="4" :value="leave.reason || 'No reason provided'" readonly
                         class="w-full p-2 border border-gray-300 rounded-md resize-none bg-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"></textarea>
                 </div>
-
             </div>
 
-            <!-- Approve / Reject -->
             <div class="flex justify-between px-6 md:px-12 pb-6 gap-4">
-                <button @click="approve"
-                    class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold px-4 py-2 rounded-md transition">
-                    Approve
-                </button>
-                <button @click="reject"
-                    class="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold px-4 py-2 rounded-md transition">
-                    Reject
-                </button>
+                <template v-if="leave.status === 'pending'">
+                    <button @click="approve"
+                        class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold px-4 py-2 rounded-md transition">
+                        Approve
+                    </button>
+                    <button @click="reject"
+                        class="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold px-4 py-2 rounded-md transition">
+                        Reject
+                    </button>
+                </template>
+                <template v-else>
+                    <div class="w-full text-center">
+                        <p class="text-lg font-semibold">
+                            This leave request has been {{ leave.status }}
+                        </p>
+                        <button @click="goBack"
+                            class="mt-4 bg-blue-500 hover:bg-blue-400 text-white font-bold px-6 py-2 rounded-md">
+                            Back to List
+                        </button>
+                    </div>
+                </template>
             </div>
-
         </div>
     </div>
 </template>
-
-<style scoped></style>

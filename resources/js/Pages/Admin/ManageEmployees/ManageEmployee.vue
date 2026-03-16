@@ -4,49 +4,35 @@ import { ref, computed } from 'vue'
 import PaginationLinks from '../../Components/PaginationLinks.vue'
 
 const props = defineProps({
-  employees: {
-    type: Object,
-    required: true
-  }
+  employees: { type: Object, required: true }
 })
 
 const search = ref('')
 
+const fullName = (employee) =>
+  `${employee.first_name ?? ''} ${employee.last_name ?? ''}`.trim() || 'N/A'
+
 const filteredEmployees = computed(() => {
   if (!search.value) return props.employees.data
-
   const searchLower = search.value.toLowerCase()
-  return props.employees.data.filter(employee => {
-    const fullName = (employee.first_name + ' ' + employee.last_name).toLowerCase()
-    return fullName.includes(searchLower) || employee.id.toString().includes(search.value)
-  })
+  return props.employees.data.filter(employee =>
+    fullName(employee).toLowerCase().includes(searchLower) ||
+    employee.id.toString().includes(search.value) ||
+    employee.department?.name.toLowerCase().includes(searchLower)
+  )
 })
 
 const tableColumns = [
   { label: 'Employee ID', key: 'id' },
-  { label: 'Name', key: 'name' },
-  { label: 'Department', key: 'department' },
-  { label: 'Action', key: 'actions', align: 'center' }
+  { label: 'Name',        key: 'name' },
+  { label: 'Department',  key: 'department' },
+  { label: 'Action',      key: 'actions', align: 'center' }
 ]
 
 const actionButtons = [
-  {
-    label: 'View',
-    href: (id) => `/view/${id}`,
-    color: 'bg-blue-500 hover:bg-blue-600'
-  },
-  {
-    label: 'Edit',
-    href: (id) => `/edit/${id}`,
-    color: 'bg-yellow-400 hover:bg-yellow-500'
-  },
-  {
-    label: 'Delete',
-    href: (id) => `/delete/${id}`,
-    color: 'bg-red-500 hover:bg-red-600',
-    method: 'delete',
-    as: 'button'
-  }
+  { label: 'View',   href: (id) => `/view/${id}`,   color: 'bg-blue-500 hover:bg-blue-600' },
+  { label: 'Edit',   href: (id) => `/edit/${id}`,   color: 'bg-yellow-400 hover:bg-yellow-500' },
+  { label: 'Delete', href: (id) => `/delete/${id}`, color: 'bg-red-500 hover:bg-red-600', method: 'delete', as: 'button' }
 ]
 </script>
 
@@ -58,19 +44,13 @@ const actionButtons = [
     <h1 class="text-4xl font-bold text-center mb-12">Employee Management</h1>
 
     <div class="flex flex-wrap justify-between mb-8 gap-4">
-      <input v-model="search" type="text" placeholder="Search by Employee ID"
+      <input v-model="search" type="text" placeholder="Search by name or department..."
         class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
-      <div class="flex flex-wrap justify-end gap-3">
-        <a href="/reports/employees" target="_blank"
-          class="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-md">
-          Employee List PDF
-        </a>
-        <Link href="/addnewemployee"
-          class="bg-green-500 hover:bg-green-600 text-white font-semibold rounded-md px-4 py-2">
-          Add Employee
-        </Link>
-      </div>
+      <Link href="/addnewemployee"
+        class="bg-green-500 hover:bg-green-600 text-white font-semibold rounded-md px-4 py-2">
+        Add Employee
+      </Link>
     </div>
 
     <div class="bg-white rounded-lg shadow-lg overflow-x-auto">
@@ -78,28 +58,28 @@ const actionButtons = [
         <thead class="bg-gray-400">
           <tr>
             <th v-for="column in tableColumns" :key="column.key"
-              :class="[column.align === 'center' ? 'text-center' : '']">
+              :class="[column.align === 'center' ? 'text-center' : '', 'p-4']">
               {{ column.label }}
             </th>
           </tr>
         </thead>
-
         <tbody>
           <tr v-for="employee in filteredEmployees" :key="employee.id" class="border-t-4 border-gray-200">
-            <td>{{ 'EMP-' + String(employee.id).padStart(3, '0') }}</td>
-            <td>{{ employee.first_name }} {{ employee.last_name }}</td>
-            <td>{{ employee.department?.name ?? 'N/A' }}</td>
-            <td>
-              <div class="flex justify-center gap-3">
-                <Link v-for="action in actionButtons" :key="action.label" :href="action.href(employee.id)"
-                  :method="action.method" :as="action.as"
-                  :class="[action.color, 'inline-flex items-center justify-center w-24 py-2 rounded-md text-sm font-semibold transition']">
+            <td class="p-4">{{ 'EMP-' + String(employee.id).padStart(3, '0') }}</td>
+            <td class="p-4">{{ fullName(employee) }}</td>
+            <td class="p-4">{{ employee.department?.name ?? 'N/A' }}</td>
+            <td class="p-4">
+              <div class="flex justify-center gap-2">
+                <Link v-for="action in actionButtons" :key="action.label"
+                  :href="action.href(employee.id)"
+                  :method="action.method"
+                  :as="action.as"
+                  :class="[action.color, 'inline-flex items-center justify-center px-4 py-2 rounded-md text-sm font-semibold text-white transition']">
                   {{ action.label }}
                 </Link>
               </div>
             </td>
           </tr>
-
           <tr v-if="filteredEmployees.length === 0">
             <td colspan="4" class="p-8 text-center text-gray-500 border-t-4 border-slate-200">
               No employees found

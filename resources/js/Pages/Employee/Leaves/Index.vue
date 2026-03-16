@@ -24,7 +24,7 @@ const filteredLeaves = computed(() => {
 const getStatusColor = (status) => {
     if (!status) return 'bg-gray-400'
     const colors = {
-        pending: 'bg-yellow-400',
+        pending:  'bg-yellow-400',
         rejected: 'bg-red-500',
         approved: 'bg-green-500',
         accepted: 'bg-green-500'
@@ -68,34 +68,27 @@ const getStatusText = (status) => {
             <table class="min-w-full text-left whitespace-nowrap">
                 <thead class="bg-gray-400 text-black font-medium">
                     <tr>
-                        <th>Serial No</th>
-                        <th>Reason</th>
-                        <th>Date</th>
-                        <th class="text-center">Status</th>
-                        <th class="text-center">Action</th>
+                        <th class="p-4">Serial No</th>
+                        <th class="p-4">Reason</th>
+                        <th class="p-4">Date</th>
+                        <th class="p-4 text-center">Status</th>
+                        <th class="p-4 text-center">Action</th>
                     </tr>
                 </thead>
-
                 <tbody>
-                    <tr v-if="filteredLeaves.length === 0">
-                        <td colspan="5" class="p-8 text-center text-gray-500 border-t-4 border-slate-200">
-                            No results found
-                        </td>
-                    </tr>
-                    <tr v-else v-for="(leave, index) in filteredLeaves" :key="leave.id"
-                        class="border-slate-200 border-t-4">
-                        <td>{{ leave.serialNo ?? 'N/A' }}</td>
-                        <td>{{ leave.reason || 'N/A' }}</td>
-                        <td>{{ leave.start_date }} to {{ leave.end_date }}</td>
-                        <td class="text-center">
+                    <tr v-for="leave in filteredLeaves" :key="leave.id" class="border-slate-200 border-t-4">
+                        <td class="p-4">{{ leave.serialNo ?? 'N/A' }}</td>
+                        <td class="p-4">{{ leave.reason || 'N/A' }}</td>
+                        <td class="p-4">{{ leave.start_date }} to {{ leave.end_date }}</td>
+                        <td class="p-4 text-center">
                             <span :class="getStatusColor(leave.status)"
                                 class="inline-block w-24 text-center py-2 rounded-full text-sm font-semibold transition">
                                 {{ getStatusText(leave.status) }}
                             </span>
                         </td>
-                        <td class="text-center">
+                        <td class="p-4 text-center">
                             <Link :href="`/employee/leaves/${leave.id}`"
-                                class="bg-blue-500 hover:bg-blue-600 inline-flex items-center justify-center w-20 py-2 rounded-md text-sm font-semibold transition">
+                                class="bg-blue-500 hover:bg-blue-600 text-white inline-flex items-center justify-center w-20 py-2 rounded-md text-sm font-semibold transition">
                                 View
                             </Link>
                         </td>
@@ -104,7 +97,7 @@ const getStatusText = (status) => {
             </table>
         </div>
 
-        <div>
+        <div class="mt-6">
             <PaginationLinks :paginator="leaves" />
         </div>
     </div>
