@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @layer base {
     body {
@@ -12,25 +12,14 @@
     input[type="password"],
     input[type="search"],
     input[type="tel"],
-<<<<<<< HEAD
     input[type="url"],
     th {
         @apply p-8;
-=======
-    input[type="url"], 
-    
-    th {
-        @apply p-6;
->>>>>>> Trial2
     }
     td {
         @apply px-6 py-4;
     }
-<<<<<<< HEAD
     .error {
         @apply text-sm text-red-700 font-semibold mt-1;
     }
 }
-=======
-}
->>>>>>> Trial2

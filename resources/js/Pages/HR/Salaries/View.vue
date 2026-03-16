@@ -59,7 +59,7 @@ const generatePayroll = () => {
     });
 };
 
-const goBack = () => router.visit('/hr/salary');
+const goBack = () => router.visit('/hr/salaries');
 </script>
 
 <template>

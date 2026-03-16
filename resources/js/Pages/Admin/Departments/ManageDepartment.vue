@@ -53,7 +53,6 @@ const actionButtons = [
 
 <template>
     <div class="flex flex-col px-6">
-<<<<<<< HEAD
         
         <Head title=" | Department Management" />
 
@@ -65,27 +64,11 @@ const actionButtons = [
 
             <Link href="/adddepartment" class="font-semibold bg-green-500 hover:bg-green-600 text-white rounded-md px-4 py-2 transition whitespace-nowrap">
                 Add Department
-=======
-
-        <h1 class="text-center text-4xl font-bold mb-12">Manage Departments</h1>
-
-        <div class="flex justify-between mb-6">
-            <input v-model="searchQuery" type="text" placeholder="Search by Serial No or Department..."
-                class="border border-gray-300 rounded-lg px-4 py-2 w-80 focus:outline-none focus:ring-2 focus:ring-blue-400" />
-
-            <Link href="/adddepartment"
-                class="text-black font-semibold bg-green-500 hover:bg-green-600 rounded-md px-4 py-2">
-                Add New Department
->>>>>>> Trial2
             </Link>
         </div>
 
         <div class="bg-white rounded-lg shadow-lg overflow-x-auto">
-<<<<<<< HEAD
             <table class="min-w-full text-left transition whitespace-nowrap">
-=======
-            <table class="min-w-full text-left">
->>>>>>> Trial2
                 <thead class="bg-gray-400 text-black font-medium">
                     <tr>
                         <th v-for="column in tableColumns" :key="column.key"
@@ -106,36 +89,20 @@ const actionButtons = [
                         <td>
                             {{ row.manager_id }}
                         </td>
-<<<<<<< HEAD
                         <td class="flex justify-center gap-3">
                             <Link v-for="action in actionButtons" :key="action.label" :href="action.href(row.id)"
                                 :method="action.method" :as="action.as"
                                 :class="[action.color, 'inline-flex items-center justify-center w-24 py-2 rounded-md text-sm font-semibold transition']">
-=======
-                        <td class="flex justify-center gap-2">
-                            <Link v-for="action in actionButtons" :key="action.label" :href="action.href(row.id)"
-                                :method="action.method" :as="action.as"
-                                :class="[action.color, 'px-4 py-2 rounded-md text-sm font-semibold transition']">
->>>>>>> Trial2
                                 {{ action.label }}
                             </Link>
                         </td>
                     </tr>
-<<<<<<< HEAD
                     <tr v-if="filteredDepartments.length === 0">
                         <td colspan="4" class="p-8 text-center text-gray-500 border-t-4 border-slate-200">
                             No departments found
                         </td>
                     </tr>
 
-=======
-
-                    <tr v-if="!departments || departments.length === 0">
-                        <td colspan="4" class="px-6 py-12 text-center text-gray-500">
-                            No departments found.
-                        </td>
-                    </tr>
->>>>>>> Trial2
                 </tbody>
             </table>
         </div>

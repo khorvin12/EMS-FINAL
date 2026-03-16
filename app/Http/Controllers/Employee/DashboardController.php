@@ -13,7 +13,7 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $now = Carbon::now('Asia/Manila');
+        $now  = Carbon::now('Asia/Manila');
 
         // 1. Count present days this month
         $presentDays = DB::table('attendances')
@@ -42,23 +42,31 @@ class DashboardController extends Controller
                         ->diffInHours(Carbon::parse($record->check_out), true) - 1), 2);
                 }
                 return [
-                    'id' => $record->id,
-                    'date' => $record->date,
-                    'check_in' => $record->check_in,
+                    'id'        => $record->id,
+                    'date'      => $record->date,
+                    'check_in'  => $record->check_in,
                     'check_out' => $record->check_out,
-                    'status' => $record->status,
-                    'hours' => $hours,
+                    'status'    => $record->status,
+                    'hours'     => $hours,
                 ];
             });
 
-        // 4. Estimated salary (example)
-        $estimatedSalary = $presentDays * 1000; // adjust per your logic
+        // 4. Estimated salary — use actual payroll if generated, else gross salary
+        $currentMonth = $now->format('F Y');
+        $payroll = DB::table('payrolls')
+            ->where('employee_id', $user->id)
+            ->where('month', $currentMonth)
+            ->first();
+
+        $estimatedSalary = $payroll
+            ? floatval($payroll->net_salary)
+            : floatval($user->salary ?? 0);
 
         return Inertia::render('Employee/Dashboard', [
-            'presentDays' => $presentDays,
-            'pendingLeaves' => $pendingLeaves,
+            'presentDays'       => $presentDays,
+            'pendingLeaves'     => $pendingLeaves,
             'attendanceHistory' => $attendanceHistory,
-            'estimatedSalary' => $estimatedSalary,
+            'estimatedSalary'   => $estimatedSalary,
         ]);
     }
 }

@@ -4,19 +4,22 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Leave;
-use App\Mail\LeaveStatusMail;
 use Inertia\Inertia;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 
 class ManageLeavesController extends Controller
 {
+    /**
+     * Display all leave requests with statistics
+     * Works for both Admin and HR roles
+     */
     public function index()
     {
         $leaves = $this->getFormattedLeaves();
-        $stats  = $this->getLeaveStats();
+        $stats = $this->getLeaveStats();
 
+        // Determine which view to render based on user role
         $user = Auth::user();
         $view = $user->role === 'hr'
             ? 'HR/Leaves/Index'
@@ -24,13 +27,20 @@ class ManageLeavesController extends Controller
 
         return Inertia::render($view, [
             'leaves' => $leaves,
-            'stats'  => $stats
+            'stats' => $stats
         ]);
     }
 
+    /**
+     * Show individual leave for review
+     * Works for both Admin and HR roles
+     */
     public function review(Leave $leave)
     {
         $user = Auth::user();
+
+        // Use different views for HR and Admin
+        // HR uses 'View.vue', Admin uses 'LeavesReview'
         $view = $user->role === 'hr'
             ? 'HR/Leaves/View'
             : 'Admin/ManageLeaves/LeavesReview';
@@ -40,65 +50,58 @@ class ManageLeavesController extends Controller
         ]);
     }
 
+    /**
+     * Approve a leave request
+     * Works for both Admin and HR roles
+     */
     public function approve(Leave $leave)
     {
-        $leave->load('user');
-
         $leave->update([
-            'status'      => 'approved',
-            'approved_by' => Auth::user()->id,
-            'approved_at' => now()
+            'status' => 'approved',
         ]);
 
-        Mail::to($leave->user->email)->send(new LeaveStatusMail(
-            $leave->user->first_name,
-            'approved',
-            $leave->start_date->format('M d, Y'),
-            $leave->end_date->format('M d, Y'),
-            $leave->type ?? 'N/A',
-            $leave->admin_comment,
-        ));
-
-        $user  = Auth::user();
+        $user = Auth::user();
         $route = $user->role === 'hr'
             ? 'hr.leaves.index'
             : 'admin.manageleaves.index';
 
-        return redirect()->route($route)->with('success', 'Leave approved successfully');
+        return redirect()
+            ->route($route)
+            ->with('success', 'Leave approved successfully');
     }
 
+    /**
+     * Reject a leave request
+     * Works for both Admin and HR roles
+     */
     public function reject(Leave $leave)
     {
-        $leave->load('user');
-
         $leave->update([
-            'status'      => 'rejected',
-            'rejected_by' => Auth::user()->id,
-            'rejected_at' => now()
+            'status' => 'rejected',
         ]);
 
-        Mail::to($leave->user->email)->send(new LeaveStatusMail(
-            $leave->user->first_name,
-            'rejected',
-            $leave->start_date->format('M d, Y'),
-            $leave->end_date->format('M d, Y'),
-            $leave->type ?? 'N/A',
-            $leave->admin_comment,
-        ));
-
-        $user  = Auth::user();
+        $user = Auth::user();
         $route = $user->role === 'hr'
             ? 'hr.leaves.index'
             : 'admin.manageleaves.index';
 
-        return redirect()->route($route)->with('success', 'Leave rejected successfully');
+        return redirect()
+            ->route($route)
+            ->with('success', 'Leave rejected successfully');
     }
 
+    /**
+     * Get leave statistics for AJAX requests
+     */
     public function getStats()
     {
         return response()->json($this->getLeaveStats());
     }
 
+    /**
+     * Get all leaves with formatted data
+     * Both Admin and HR can see ALL leave requests
+     */
     private function getFormattedLeaves()
     {
         $paginator = Leave::with('user')
@@ -113,35 +116,39 @@ class ManageLeavesController extends Controller
         return $paginator;
     }
 
+    /**
+     * Format individual leave data
+     */
     private function formatLeaveData(Leave $leave)
     {
         return [
-            'id'          => $leave->id,
-            'user'        => [
-                'name'  => $leave->user
+            'id' => $leave->id,
+            'user' => [
+                'name' => $leave->user
                     ? $leave->user->first_name . ' ' . $leave->user->last_name
                     : 'Unknown User',
                 'email' => $leave->user?->email ?? 'N/A',
-                'id'    => $leave->user?->id,
+                'id' => $leave->user?->id,
             ],
-            'reason'      => $leave->reason,
-            'type'        => $leave->type ?? 'N/A',
-            'start_date'  => optional($leave->start_date)?->format('Y-m-d'),
-            'end_date'    => optional($leave->end_date)?->format('Y-m-d'),
-            'status'      => $leave->status,
-            'created_at'  => optional($leave->created_at)?->format('Y-m-d H:i:s'),
-            'approved_by' => $leave->approved_by ?? null,
-            'rejected_by' => $leave->rejected_by ?? null,
+            'reason' => $leave->reason,
+            'start_date' => optional($leave->start_date)?->format('Y-m-d'),
+            'end_date' => optional($leave->end_date)?->format('Y-m-d'),
+            'status' => $leave->status,
+            'created_at' => optional($leave->created_at)?->format('Y-m-d H:i:s'),
         ];
     }
 
+    /**
+     * Get leave request statistics
+     * Shows counts for all statuses
+     */
     private function getLeaveStats()
     {
         $allLeaves = Leave::all();
 
         return [
-            'all'      => $allLeaves->count(),
-            'pending'  => $allLeaves->where('status', 'pending')->count(),
+            'all' => $allLeaves->count(),
+            'pending' => $allLeaves->where('status', 'pending')->count(),
             'approved' => $allLeaves->where('status', 'approved')->count(),
             'rejected' => $allLeaves->where('status', 'rejected')->count(),
         ];

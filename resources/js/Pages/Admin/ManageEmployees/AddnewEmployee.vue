@@ -9,7 +9,6 @@ const props = defineProps({
 const form = useForm({
   first_name: '',
   last_name: '',
-  employee_id: '',
   email: '',
   phone: '',
   department_id: '',
@@ -21,61 +20,25 @@ const form = useForm({
   salary: ''
 })
 
-const isHRorAdmin = computed(() => form.role === 'hr' || form.role === 'admin')
-
-function isRequired(fieldName) {
-  const optionalForHR = ['department_id', 'phone', 'dob', 'gender', 'civil_status', 'hire_date', 'salary', 'employee_id']
-  if (isHRorAdmin.value && optionalForHR.includes(fieldName)) return false
-  return true
-}
-
 function submit() {
   form.post('/employees', {
     preserveScroll: true,
-    onSuccess: () => {}
+    onSuccess: () => { }
   })
 }
 
 const formFields = [
-  { name: 'first_name',   label: 'First Name',    type: 'text',   placeholder: 'First Name' },
-  { name: 'last_name',    label: 'Last Name',      type: 'text',   placeholder: 'Last Name' },
-  { name: 'employee_id',  label: 'Employee ID',    type: 'text',   placeholder: 'Enter ID' },
-  { name: 'email',        label: 'Email',          type: 'email',  placeholder: 'Enter Email' },
-  { name: 'phone',        label: 'Phone',          type: 'text',   placeholder: 'Enter Phone' },
-  {
-    name: 'department_id',
-    label: 'Department',
-    type: 'select',
-    options: computed(() => props.departments),
-    placeholder: 'Select Department'
-  },
-  { name: 'dob', label: 'Date of Birth', type: 'date' },
-  {
-    name: 'gender',
-    label: 'Gender',
-    type: 'select',
-    options: ['Male', 'Female'],
-    placeholder: 'Select Gender'
-  },
-  {
-    name: 'civil_status',
-    label: 'Civil Status',
-    type: 'select',
-    options: ['Single', 'Married'],
-    placeholder: 'Select Status'
-  },
-  {
-    name: 'role',
-    label: 'Role',
-    type: 'select',
-    options: [
-      { value: 'employee', label: 'Employee' },
-      { value: 'hr',       label: 'HR' },
-      { value: 'admin',    label: 'Admin' }
-    ]
-  },
-  { name: 'hire_date', label: 'Hire Date',  type: 'date' },
-  { name: 'salary',    label: 'Salary',     type: 'number', placeholder: 'Enter Salary' }
+  { name: 'first_name',   label: 'First Name',   type: 'text',   placeholder: 'First Name' },
+  { name: 'last_name',    label: 'Last Name',    type: 'text',   placeholder: 'Last Name' },
+  { name: 'email',        label: 'Email',        type: 'email',  placeholder: 'Enter Email' },
+  { name: 'phone',        label: 'Phone',        type: 'text',   placeholder: 'Enter Phone' },
+  { name: 'department_id',label: 'Department',   type: 'select', options: computed(() => props.departments), placeholder: 'Select Department' },
+  { name: 'dob',          label: 'Date of Birth',type: 'date' },
+  { name: 'gender',       label: 'Gender',       type: 'select', options: ['Male', 'Female'], placeholder: 'Select Gender' },
+  { name: 'civil_status', label: 'Civil Status', type: 'select', options: ['Single', 'Married'], placeholder: 'Select Status' },
+  { name: 'role',         label: 'Role',         type: 'select', options: [{ value: 'employee', label: 'Employee' }, { value: 'hr', label: 'HR' }, { value: 'admin', label: 'Admin' }] },
+  { name: 'hire_date',    label: 'Hire Date',    type: 'date' },
+  { name: 'salary',       label: 'Salary',       type: 'number', placeholder: 'Enter Salary' }
 ]
 </script>
 
@@ -96,31 +59,21 @@ const formFields = [
       </ul>
     </div>
 
-    <form @submit.prevent="submit" class="grid grid-cols-2 gap-4">
+    <form @submit.prevent="submit" class="grid grid-cols-2 gap-6">
 
       <div v-for="field in formFields" :key="field.name">
-        <label class="text-sm font-semibold">
-          {{ field.label }}
-          <span v-if="!isRequired(field.name)" class="text-gray-400 font-normal text-xs">(optional)</span>
-        </label>
+        <label class="text-sm font-semibold">{{ field.label }}</label>
 
-        <input
-          v-if="['text', 'email', 'number', 'date'].includes(field.type)"
+        <input v-if="['text', 'email', 'number', 'date'].includes(field.type)"
           :type="field.type"
           v-model="form[field.name]"
           :placeholder="field.placeholder"
-          class="w-full mt-1 border rounded px-3 py-2 focus:outline-none focus:border-blue-400"
-          :class="{ 'border-red-500': form.errors[field.name] }"
-          :required="isRequired(field.name)"
-        />
+          class="w-full mt-1 border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+          :class="{ 'border-red-500': form.errors[field.name] }" />
 
-        <select
-          v-else-if="field.type === 'select'"
-          v-model="form[field.name]"
-          class="w-full mt-1 border rounded px-3 py-2 focus:outline-none focus:border-blue-400"
-          :class="{ 'border-red-500': form.errors[field.name] }"
-          :required="isRequired(field.name)"
-        >
+        <select v-else-if="field.type === 'select'" v-model="form[field.name]"
+          class="w-full mt-1 border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+          :class="{ 'border-red-500': form.errors[field.name] }">
           <option v-if="field.placeholder" value="">{{ field.placeholder }}</option>
 
           <template v-if="field.name === 'department_id'">
@@ -141,6 +94,10 @@ const formFields = [
             </option>
           </template>
         </select>
+
+        <p v-if="form.errors[field.name]" class="text-red-500 text-xs mt-1">
+          {{ form.errors[field.name] }}
+        </p>
       </div>
 
       <div class="col-span-2 mt-6">
