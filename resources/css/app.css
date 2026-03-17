@@ -14,7 +14,7 @@
     input[type="tel"],
     input[type="url"],
     th {
-        @apply p-8;
+        @apply p-6;
     }
     td {
         @apply px-6 py-4;
