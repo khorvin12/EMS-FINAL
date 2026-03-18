@@ -201,6 +201,9 @@ Route::middleware(['auth', HRMiddleware::class])
 
         // HR Settings Routes
         Route::inertia('/settings', 'HR/Settings/Index')->name('settings');
+        Route::get('/reports/attendance', [App\Http\Controllers\HR\ReportController::class, 'attendancePdf'])->name('reports.attendance');
+        Route::get('/reports/payroll', [App\Http\Controllers\HR\ReportController::class, 'payrollPdf'])->name('reports.payroll');
+        Route::get('/reports/employees', [App\Http\Controllers\HR\ReportController::class, 'employeesPdf'])->name('reports.employees');
 
         // Change Password
         Route::post('/reset-password', [AuthController::class, 'changePassword'])->name('password.reset');
