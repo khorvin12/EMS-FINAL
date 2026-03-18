@@ -14,7 +14,7 @@ const searchQuery = ref('');
 
 const filteredSalaries = computed(() => {
     const offset = (props.salaries.current_page - 1) * props.salaries.per_page;
-    
+
     let result = props.salaries.data.map((s, index) => ({
         ...s,
         serialNo: offset + index + 1
@@ -24,9 +24,9 @@ const filteredSalaries = computed(() => {
         result = result.filter(s =>
             s.serialNo.toString().includes(searchQuery.value) ||
             s.employee_id.toString().includes(searchQuery.value) ||
-            s.employee_name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-            s.role.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-            s.department.toLowerCase().includes(searchQuery.value.toLowerCase())
+            (s.employee_name || '').toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            (s.role || '').toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            (s.department || '').toLowerCase().includes(searchQuery.value.toLowerCase())
         );
     }
 
@@ -80,10 +80,10 @@ const formatCurrency = (value) => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(salary, index) in filteredSalaries" :key="salary.data"
+                    <tr v-for="(salary) in filteredSalaries" :key="salary.data"
                         class="border-t-4 border-gray-200">
                         <td>{{ salary.serialNo }}</td>
-                        <td>{{ salary.employee_id }}</td>
+                        <td>{{ 'EMP-' + String(salary.employee_id).padStart(3, '0') }}</td>
                         <td>{{ salary.employee_name }}</td>
                         <td class="text-center">
                             <span :class="{

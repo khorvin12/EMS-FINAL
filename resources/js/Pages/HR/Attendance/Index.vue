@@ -16,7 +16,7 @@ const dateTo = ref('');
 
 const filteredAttendances = computed(() => {
     const offset = (props.attendanceHistory.current_page - 1) * props.attendanceHistory.per_page;
-    
+
     return props.attendanceHistory.data
         .map((attendance, index) => ({ ...attendance, serialNo: offset + index + 1 }))
         .filter(attendance => {
@@ -118,7 +118,7 @@ const Tablecolumns = [
 
 <template>
     <div class="flex flex-col px-4 md:px-6">
-        
+
         <Head title=" | Attendance Management" />
 
         <h1 class="text-center text-2xl md:text-4xl font-bold mb-6 md:mb-12">Attendance Management</h1>
@@ -131,22 +131,24 @@ const Tablecolumns = [
                 class="border border-gray-300 rounded-lg px-4 py-2 w-56 focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
             <!-- Date Filters -->
-            <div class="flex flex-col sm:flex-row items-end sm:items-center gap-2">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                 <div class="flex items-center gap-2">
                     <label class="text-sm text-gray-600 whitespace-nowrap">From</label>
                     <input type="date" v-model="dateFrom"
                         class="border border-gray-300 rounded-lg w-36 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
                 </div>
+                
                 <div class="flex items-center gap-2">
                     <label class="text-sm text-gray-600 whitespace-nowrap">To</label>
                     <input type="date" v-model="dateTo"
                         class="border border-gray-300 rounded-lg w-36 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+
+                    <!-- Clear Button next to To Date -->
+                    <button @click="searchQuery = ''; dateFrom = ''; dateTo = '';"
+                        class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition">
+                        Clear
+                    </button>
                 </div>
-                <!-- Clear Button -->
-                <button @click="searchQuery = ''; dateFrom = ''; dateTo = '';"
-                    class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition">
-                    Clear
-                </button>
             </div>
 
             <!-- Generate Report Button -->
