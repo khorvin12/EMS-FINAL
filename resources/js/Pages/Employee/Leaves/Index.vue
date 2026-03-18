@@ -56,7 +56,7 @@ const getStatusText = (status) => {
         </div>
 
         <div v-if="!filteredLeaves || filteredLeaves.length === 0"
-            class="bg-white rounded-lg shadow-lg p-12 text-center whitespace-nowrap">
+            class="bg-white rounded-lg shadow-lg p-12 text-center">
             <p class="text-gray-500 text-lg mb-4">No leave requests yet</p>
             <Link href="/employee/leaves/create"
                 class="bg-green-500 hover:bg-green-600 text-white rounded-md px-6 py-2 inline-block">
