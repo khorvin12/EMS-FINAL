@@ -24,7 +24,12 @@ const props = defineProps({
         <Head title=" | Dashboard" />
 
         <!-- Title Contents -->
-        <h1 class="text-4xl font-bold mb-12">Dashboard Overview</h1>
+        <div class="mb-6 md:mb-12">
+            <h1 class="text-2xl md:text-4xl font-bold">Dashboard Overview</h1>
+            <p class="text-sm text-gray-500 mt-1">Employee Summary and Leave Details</p>
+        </div>
+
+        <h2 class="text-3xl font-bold mb-8 text-center">Employee Summary</h2>
 
         <!-- Dashboard Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-36 justify-items-center">

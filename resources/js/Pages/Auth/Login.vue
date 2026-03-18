@@ -28,8 +28,10 @@ export default {
 
 <template>
   <Transition name="fade" appear>
-    <div class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-green-200 to-blue-200 font-sans">
-      <h1 class="text-4xl font-bold text-blue-700 mb-8 drop-shadow">
+    <div
+      class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-green-200 to-blue-200 font-sans">
+
+      <h1 class="text-2xl sm:text-4xl font-bold text-blue-700 mb-8 drop-shadow text-center">
         EMPLOYEE MANAGEMENT
       </h1>
 
@@ -63,6 +65,12 @@ export default {
 </template>
 
 <style scoped>
-.fade-enter-active { transition: opacity 0.4s ease, transform 0.4s ease; }
-.fade-enter-from   { opacity: 0; transform: translateY(16px); }
+.fade-enter-active {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.fade-enter-from {
+  opacity: 0;
+  transform: translateY(16px);
+}
 </style>
