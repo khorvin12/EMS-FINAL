@@ -1,21 +1,20 @@
 <script setup>
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
-    department: Object
+    department: Object,
+    employees:  Array
 });
 
 const form = useForm({
-    name: props.department.name,
+    name:        props.department.name,
     description: props.department.description || '',
-    manager_id: props.department.manager_id || ''
+    manager_id:  props.department.manager_id  || ''
 });
 
 const updateDepartment = () => {
     form.put(`/editdepartment/${props.department.id}`, {
-        onSuccess: () => {
-            // Redirect handled by controller
-        }
+        onSuccess: () => {}
     });
 };
 </script>
@@ -24,32 +23,43 @@ const updateDepartment = () => {
     <div class="flex items-center justify-center py-24">
 
         <Head title=" | Edit Department" />
-        
+
         <div class="bg-white w-full max-w-sm px-6 py-4 rounded-md shadow-md border-4 border-yellow-300">
+
+            <div class="flex justify-end">
+                <Link href="/departments" class="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                    ← Back
+                </Link>
+            </div>
 
             <h1 class="text-xl font-bold mb-8 text-center">Edit Department</h1>
 
             <form @submit.prevent="updateDepartment">
+
                 <div class="grid grid-cols-1 mb-6 space-y-1">
-                    <label for="departmentName">Department Name</label>
-                    <input type="text" v-model="form.name" id="departmentName" placeholder="Department Name"
-                        class="p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+                    <label>Department Name</label>
+                    <input type="text" v-model="form.name" placeholder="Department Name"
+                        class="p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
                         required />
                     <span v-if="form.errors.name" class="text-red-500 text-sm">{{ form.errors.name }}</span>
                 </div>
 
                 <div class="grid grid-cols-1 mb-6 space-y-1">
-                    <label for="description">Description</label>
-                    <textarea v-model="form.description" rows="5" id="description" placeholder="Description"
-                        class="p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"></textarea>
-                    <span v-if="form.errors.description" class="text-red-500 text-sm">{{ form.errors.description
-                    }}</span>
+                    <label>Description</label>
+                    <textarea v-model="form.description" rows="3" placeholder="Description"
+                        class="p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"></textarea>
+                    <span v-if="form.errors.description" class="text-red-500 text-sm">{{ form.errors.description }}</span>
                 </div>
 
                 <div class="grid grid-cols-1 mb-6 space-y-1">
-                    <label for="managerId">Manager ID</label>
-                    <input type="text" v-model="form.manager_id" id="managerId" placeholder="Manager ID (Optional)"
-                        class="p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400" />
+                    <label>Department Manager <span class="text-gray-400 text-xs">(optional)</span></label>
+                    <select v-model="form.manager_id"
+                        class="p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        <option value="">-- Select Manager --</option>
+                        <option v-for="emp in employees" :key="emp.id" :value="emp.id">
+                            {{ emp.name }}
+                        </option>
+                    </select>
                     <span v-if="form.errors.manager_id" class="text-red-500 text-sm">{{ form.errors.manager_id }}</span>
                 </div>
 
@@ -60,6 +70,7 @@ const updateDepartment = () => {
                         {{ form.processing ? 'Updating...' : 'Update' }}
                     </button>
                 </div>
+
             </form>
         </div>
     </div>

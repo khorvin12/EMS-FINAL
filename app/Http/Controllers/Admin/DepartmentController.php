@@ -5,13 +5,23 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Department;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class DepartmentController extends Controller
 {
     public function index()
     {
-        $departments = Department::paginate(6);
+        $departments = DB::table('departments')
+            ->leftJoin('users', 'departments.manager_id', '=', 'users.id')
+            ->select(
+                'departments.id',
+                'departments.name',
+                'departments.manager_id',
+                DB::raw("CONCAT(users.first_name, ' ', users.last_name) as manager_name")
+            )
+            ->paginate(6);
+
         return Inertia::render('Admin/Departments/ManageDepartment', [
             'departments' => $departments
         ]);
@@ -20,9 +30,9 @@ class DepartmentController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:departments',
+            'name'        => 'required|string|max:255|unique:departments',
             'description' => 'nullable|string',
-            'manager_id' => 'nullable|string'
+            'manager_id'  => 'nullable|exists:users,id'
         ]);
 
         Department::create($validated);
@@ -41,21 +51,35 @@ class DepartmentController extends Controller
     {
         $department = Department::findOrFail($id);
         return Inertia::render('Admin/Departments/EditDepartment', [
-            'department' => $department
+            'department' => $department,
+            'employees'  => $this->getEmployees()
         ]);
     }
 
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:departments,name,' . $id,
+            'name'        => 'required|string|max:255|unique:departments,name,' . $id,
             'description' => 'nullable|string',
-            'manager_id' => 'nullable|string'
+            'manager_id'  => 'nullable|exists:users,id'
         ]);
 
         Department::findOrFail($id)->update($validated);
 
         return redirect()->route('admin.departments')
             ->with('success', 'Department updated successfully!');
+    }
+
+    private function getEmployees()
+    {
+        return DB::table('users')
+            ->where('role', 'employee')
+            ->select('id', 'first_name', 'last_name')
+            ->orderBy('first_name')
+            ->get()
+            ->map(fn($u) => [
+                'id'   => $u->id,
+                'name' => $u->first_name . ' ' . $u->last_name
+            ]);
     }
 }

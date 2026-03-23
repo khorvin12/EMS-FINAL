@@ -57,8 +57,20 @@ Route::middleware(['auth', AdminMiddleware::class])
         Route::get('/departments', [DepartmentController::class, 'index'])
             ->name('departments');
 
-        Route::inertia('/adddepartment', 'Admin/Departments/AddDepartment')
-            ->name('adddepartment');
+Route::get('/adddepartment', function () {
+    $employees = DB::table('users')
+        ->where('role', 'employee')
+        ->select('id', 'first_name', 'last_name')
+        ->orderBy('first_name')
+        ->get()
+        ->map(fn($u) => [
+            'id'   => $u->id,
+            'name' => $u->first_name . ' ' . $u->last_name
+        ]);
+    return Inertia::render('Admin/Departments/AddDepartment', [
+        'employees' => $employees
+    ]);
+})->name('adddepartment');
 
         Route::post('/adddepartment', [DepartmentController::class, 'store']);
 
