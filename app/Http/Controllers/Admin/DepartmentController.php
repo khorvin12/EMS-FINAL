@@ -12,7 +12,7 @@ class DepartmentController extends Controller
 {
     public function index()
     {
-        $rankMap = Department::orderBy('id', 'asc')
+        $rankMap = Department::orderBy('id', 'desc')
             ->pluck('id')
             ->values()
             ->flip()
@@ -20,7 +20,7 @@ class DepartmentController extends Controller
 
         $total = Department::count();
 
-        $query = Department::orderBy('id', 'desc'); // ← newest first
+        $query = Department::orderBy('id', 'desc');
 
         if (request()->filled('search')) {
             $search = request('search');
