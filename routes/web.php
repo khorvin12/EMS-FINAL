@@ -34,7 +34,7 @@ use App\Http\Middleware\HRMiddleware;
 Route::get('/', fn() => Inertia::render('Auth/Login'))->name('login');
 
 // Handle login
-Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
+Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
 
 // Handle logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -46,6 +46,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 */
 
 Route::middleware(['auth', AdminMiddleware::class])
+    ->prefix('admin')
     ->name('admin.')
     ->group(function () {
 
@@ -57,7 +58,7 @@ Route::middleware(['auth', AdminMiddleware::class])
         Route::get('/departments', [DepartmentController::class, 'index'])
             ->name('departments');
 
-        Route::inertia('/adddepartment', 'Admin/Departments/AddDepartment')
+        Route::get('/adddepartment', [DepartmentController::class, 'create'])
             ->name('adddepartment');
 
         Route::post('/adddepartment', [DepartmentController::class, 'store']);
@@ -65,8 +66,10 @@ Route::middleware(['auth', AdminMiddleware::class])
         Route::get('/editdepartment/{id}', [DepartmentController::class, 'edit'])
             ->name('editdepartment');
 
+        // Update Department
         Route::put('/editdepartment/{id}', [DepartmentController::class, 'update']);
 
+        // Delete Department
         Route::delete('/departments/{id}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
 
 
@@ -75,11 +78,8 @@ Route::middleware(['auth', AdminMiddleware::class])
             ->name('manageemployees');
 
         // Add New Employee form
-        Route::get('/addnewemployee', [EmployeeController::class, 'create'])
-            ->name('addnewemployee');
-
-        Route::get('/employees/create', [EmployeeController::class, 'create'])
-            ->name('employees.create');
+        Route::get('/employee/create', [EmployeeController::class, 'create'])
+            ->name('employee.create');
 
         Route::get('/view/{id}', [EmployeeController::class, 'show'])
             ->name('view');
@@ -106,7 +106,7 @@ Route::middleware(['auth', AdminMiddleware::class])
 
         // Admin Leaves Management
         Route::get('/manageleaves/leaves', [ManageLeavesController::class, 'index'])
-            ->name('manageleaves.index');
+            ->name('admin.manageleaves');
 
         Route::get('/manageleaves/leaves/review/{leave}', [ManageLeavesController::class, 'review'])
             ->name('manageleaves.review');

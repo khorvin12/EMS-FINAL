@@ -12,7 +12,15 @@ class AttendanceController extends Controller
 {
     public function index()
     {
-        $attendanceHistory = DB::table('attendances')
+        // Build stable serial numbers based on full unfiltered dataset
+        $rankMap = DB::table('attendances')
+            ->orderBy('attendances.id', 'desc')
+            ->pluck('id')
+            ->values()
+            ->flip()
+            ->map(fn($i) => $i + 1);
+
+        $query = DB::table('attendances')
             ->join('users', 'attendances.employee_id', '=', 'users.id')
             ->select(
                 'attendances.id',
@@ -23,10 +31,32 @@ class AttendanceController extends Controller
                 'attendances.status',
                 DB::raw("CONCAT(users.first_name, ' ', users.last_name) as employee_name")
             )
-            ->orderBy('attendances.date', 'desc')
-            ->paginate(6)
-            ->withQueryString();
-        $attendanceHistory->getCollection()->transform(function ($attendance) {
+            ->orderBy('attendances.id', 'asc');
+
+        if (request()->filled('search')) {
+            $search = request('search');
+
+            $matchingIds = $rankMap->filter(fn($serial) => str_contains((string)$serial, $search))->keys();
+
+            $query->where(function ($q) use ($search, $matchingIds) {
+                $q->where(DB::raw("CONCAT(users.first_name, ' ', users.last_name)"), 'like', "%{$search}%")
+                  ->orWhere('attendances.status', 'like', "%{$search}%")
+                  ->orWhere('attendances.employee_id', 'like', "%{$search}%")
+                  ->orWhereIn('attendances.id', $matchingIds);
+            });
+        }
+
+        if (request()->filled('date_from')) {
+            $query->where('attendances.date', '>=', request('date_from'));
+        }
+
+        if (request()->filled('date_to')) {
+            $query->where('attendances.date', '<=', request('date_to'));
+        }
+
+        $attendanceHistory = $query->paginate(6)->withQueryString();
+
+        $attendanceHistory->getCollection()->transform(function ($attendance) use ($rankMap) {
             $hours = 0;
             if ($attendance->check_in && $attendance->check_out) {
                 $start = Carbon::parse($attendance->check_in);
@@ -35,6 +65,7 @@ class AttendanceController extends Controller
             }
             return [
                 'id' => $attendance->id,
+                'serial_no' => $rankMap[$attendance->id] ?? null,
                 'employee_id' => $attendance->employee_id,
                 'employee_name' => $attendance->employee_name,
                 'date' => $attendance->date,
@@ -47,6 +78,7 @@ class AttendanceController extends Controller
 
         return Inertia::render('HR/Attendance/Index', [
             'attendanceHistory' => $attendanceHistory,
+            'filters' => request()->only(['search', 'date_from', 'date_to']),
         ]);
     }
 

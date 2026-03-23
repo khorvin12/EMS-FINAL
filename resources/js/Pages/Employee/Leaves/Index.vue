@@ -1,28 +1,36 @@
 <script setup>
-import { ref, computed } from 'vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { ref, watch } from 'vue';
+import { Head, Link, router } from '@inertiajs/vue3';
 import PaginationLinks from '../../Components/PaginationLinks.vue';
 
 const props = defineProps({
-    leaves: Object
+    leaves: Object,
+    filters: Object
 });
 
-const searchTerm = ref('');
+const searchTerm = ref(props.filters?.search ?? '');
 
-const filteredLeaves = computed(() => {
-    const offset = (props.leaves.current_page - 1) * props.leaves.per_page;
-    const data = (props.leaves?.data || []).map((leave, index) => ({
-        ...leave,
-        serialNo: offset + index + 1
-    }));
-    if (!searchTerm.value) return data;
-    return data.filter(leave =>
-        leave.serialNo.toString().includes(searchTerm.value)
-    );
+let searchTimeout = null;
+
+watch(searchTerm, () => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        router.get('/employee/leaves', {
+            search: searchTerm.value || undefined,
+            page: 1,
+        }, {
+            preserveState: true,
+            preserveScroll: true,
+            replace: true,
+            only: ['leaves', 'filters'],
+        });
+    }, 500);
 });
+
+const filteredLeaves = () => props.leaves?.data || [];
 
 const getStatusColor = (status) => {
-    if (!status) return 'bg-gray-400'
+    if (!status) return 'bg-gray-400';
     const colors = {
         pending: 'bg-yellow-400',
         rejected: 'bg-red-500',
@@ -33,7 +41,7 @@ const getStatusColor = (status) => {
 };
 
 const getStatusText = (status) => {
-    if (!status) return 'Unknown'
+    if (!status) return 'Unknown';
     return status.charAt(0).toUpperCase() + status.slice(1);
 };
 </script>
@@ -50,12 +58,12 @@ const getStatusText = (status) => {
                 class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
             <Link href="/employee/leaves/create"
-                class="font-semibold bg-green-500 hover:bg-green-600 rounded-md px-4 py-2">
+                class="font-semibold bg-green-500 hover:bg-green-600 text-white rounded-md px-4 py-2">
                 Add Leave
             </Link>
         </div>
 
-        <div v-if="!filteredLeaves || filteredLeaves.length === 0"
+        <div v-if="filteredLeaves().length === 0"
             class="bg-white rounded-lg shadow-lg p-12 text-center">
             <p class="text-gray-500 text-lg mb-4">No leave requests yet</p>
             <Link href="/employee/leaves/create"
@@ -77,14 +85,14 @@ const getStatusText = (status) => {
                 </thead>
 
                 <tbody>
-                    <tr v-if="filteredLeaves.length === 0">
+                    <tr v-if="filteredLeaves().length === 0">
                         <td colspan="5" class="p-8 text-center text-gray-500 border-t-4 border-slate-200">
                             No results found
                         </td>
                     </tr>
-                    <tr v-else v-for="(leave, index) in filteredLeaves" :key="leave.id"
+                    <tr v-else v-for="leave in filteredLeaves()" :key="leave.id"
                         class="border-slate-200 border-t-4">
-                        <td>{{ leave.serialNo ?? 'N/A' }}</td>
+                        <td>{{ leave.serial_no ?? 'N/A' }}</td>
                         <td>{{ leave.reason || 'N/A' }}</td>
                         <td>{{ leave.start_date }} to {{ leave.end_date }}</td>
                         <td class="text-center">

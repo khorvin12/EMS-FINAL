@@ -43,14 +43,13 @@ const formFields = [
 ];
 
 function submit() {
-    form.put(`/edit/${props.employee.id}`, {
+    form.put(`/admin/edit/${props.employee.id}`, {
         preserveScroll: true,
         onSuccess: () => {
-            showSuccess.value = true;
+            showSuccess.value = true
             setTimeout(() => {
-                showSuccess.value = false;
-                form.get("/manageemployees");
-            }, 2000);
+                showSuccess.value = false
+            }, 2000)
         },
     });
 }

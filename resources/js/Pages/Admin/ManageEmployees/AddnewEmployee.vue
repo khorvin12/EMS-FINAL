@@ -21,7 +21,7 @@ const form = useForm({
 })
 
 function submit() {
-  form.post('/employees', {
+  form.post('/admin/employees', {
     preserveScroll: true,
     onSuccess: () => { }
   })

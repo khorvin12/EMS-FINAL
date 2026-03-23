@@ -1,6 +1,10 @@
 <script setup>
 import { Head, useForm } from '@inertiajs/vue3';
 
+const props = defineProps({
+    users: Array
+});
+
 const form = useForm({
     name: '',
     description: '',
@@ -8,7 +12,7 @@ const form = useForm({
 });
 
 const submitDepartment = () => {
-    form.post('/adddepartment', {
+    form.post('/admin/adddepartment', {
         onSuccess: () => {
             form.reset();
         }
@@ -43,9 +47,14 @@ const submitDepartment = () => {
                 </div>
 
                 <div class="grid grid-cols-1 mb-6 space-y-1">
-                    <label for="managerId">Manager ID</label>
-                    <input type="text" v-model="form.manager_id" id="managerId" placeholder="Manager ID (Optional)"
-                        class="p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400" />
+                    <label for="managerId">Manager</label>
+                    <select v-model="form.manager_id" id="managerId"
+                        class="p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        <option value="">-- No Manager --</option>
+                        <option v-for="user in users" :key="user.id" :value="user.id">
+                            {{ user.first_name }} {{ user.last_name }} ({{ 'EMP-' + String(user.id).padStart(3, '0') }})
+                        </option>
+                    </select>
                     <span v-if="form.errors.manager_id" class="text-red-500 text-sm">{{ form.errors.manager_id }}</span>
                 </div>
 

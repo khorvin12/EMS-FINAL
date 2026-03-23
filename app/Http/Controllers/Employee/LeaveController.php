@@ -12,24 +12,51 @@ class LeaveController extends Controller
 {
     public function index()
     {
-        // leaves.employee_id is already users.id (integer FK) — correct
-        $leaves = Leave::where('employee_id', Auth::id())
-            ->orderBy('created_at', 'desc')
-            ->paginate(6)
-            ->through(function ($leave) {
-                return [
-                    'id' => $leave->id,
-                    'start_date' => $leave->start_date->format('Y-m-d'),
-                    'end_date' => $leave->end_date->format('Y-m-d'),
-                    'type' => $leave->type,
-                    'reason' => $leave->reason,
-                    'status' => $leave->status,
-                    'created_at' => $leave->created_at->format('Y-m-d'),
-                ];
+        $userId = Auth::id();
+
+        $rankMap = Leave::where('employee_id', $userId)
+            ->orderBy('id', 'desc')
+            ->pluck('id')
+            ->values()
+            ->flip()
+            ->map(fn($i) => $i + 1);
+
+        $total = $rankMap->count();
+
+        $query = Leave::where('employee_id', $userId)->orderBy('id', 'desc');
+
+        if (request()->filled('search')) {
+            $search = request('search');
+            $matchingIds = $rankMap->filter(function ($ascSerial, $id) use ($total, $search) {
+                $descSerial = $total - $ascSerial + 1;
+                return str_contains((string) $descSerial, $search);
+            })->keys();
+
+            $query->where(function ($q) use ($search, $matchingIds) {
+                $q->where('reason', 'like', "%{$search}%")
+                    ->orWhere('status', 'like', "%{$search}%")
+                    ->orWhereIn('id', $matchingIds);
             });
+        }
+
+        $leaves = $query->paginate(6)->withQueryString();
+
+        $leaves->getCollection()->transform(function ($leave) use ($rankMap, $total) {
+            return [
+                'id' => $leave->id,
+                'serial_no' => $total - $rankMap[$leave->id] + 1,
+                'start_date' => $leave->start_date->format('Y-m-d'),
+                'end_date' => $leave->end_date->format('Y-m-d'),
+                'type' => $leave->type,
+                'reason' => $leave->reason,
+                'status' => $leave->status,
+                'created_at' => $leave->created_at->format('Y-m-d'),
+            ];
+        });
 
         return Inertia::render('Employee/Leaves/Index', [
-            'leaves' => $leaves
+            'leaves' => $leaves,
+            'filters' => request()->only(['search']),
         ]);
     }
 
@@ -70,12 +97,12 @@ class LeaveController extends Controller
         return Inertia::render('Employee/Leaves/View', [
             'leave' => [
                 'id' => $leave->id,
-                'start_date' => $leave->start_date->format('Y-m-d'),
-                'end_date' => $leave->end_date->format('Y-m-d'),
+                'start_date' => \Carbon\Carbon::parse($leave->start_date)->format('Y-m-d'),
+                'end_date' => \Carbon\Carbon::parse($leave->end_date)->format('Y-m-d'),
                 'type' => $leave->type,
                 'reason' => $leave->reason,
                 'status' => $leave->status,
-                'created_at' => $leave->created_at->format('Y-m-d H:i:s'),
+                'created_at' => \Carbon\Carbon::parse($leave->created_at)->format('Y-m-d H:i:s'),
             ]
         ]);
     }

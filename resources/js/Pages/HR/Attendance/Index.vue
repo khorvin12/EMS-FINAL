@@ -1,37 +1,59 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
+import { Head, Link, router } from '@inertiajs/vue3';
+import { ref, computed, watch } from 'vue';
 import PaginationLinks from '../../Components/PaginationLinks.vue';
 
 const props = defineProps({
     attendanceHistory: {
         type: Object,
         default: () => ({ data: [], current_page: 1, last_page: 1, total: 0 })
-    }
+    },
+    filters: Object
 });
 
-const searchQuery = ref('');
-const dateFrom = ref('');
-const dateTo = ref('');
+const searchQuery = ref(props.filters?.search ?? '');
+const dateFrom = ref(props.filters?.date_from ?? '');
+const dateTo = ref(props.filters?.date_to ?? '');
+
+let searchTimeout = null;
+
+const triggerFetch = (isSearch = false) => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        router.get(
+            '/hr/attendance',
+            {
+                search: searchQuery.value || undefined,
+                date_from: dateFrom.value || undefined,
+                date_to: dateTo.value || undefined,
+                page: 1,
+            },
+            {
+                preserveState: true,
+                preserveScroll: true,
+                replace: true,
+                only: ['attendanceHistory', 'filters'],
+            }
+        );
+    }, isSearch ? 500 : 0);
+};
+
+const clearFilters = () => {
+    searchQuery.value = '';
+    dateFrom.value = '';
+    dateTo.value = '';
+    triggerFetch();
+};
+
+watch(searchQuery, () => triggerFetch(true));
+watch(dateFrom, () => triggerFetch(false));
+watch(dateTo, () => triggerFetch(false));
 
 const filteredAttendances = computed(() => {
-    const offset = (props.attendanceHistory.current_page - 1) * props.attendanceHistory.per_page;
-
-    return props.attendanceHistory.data
-        .map((attendance, index) => ({ ...attendance, serialNo: offset + index + 1 }))
-        .filter(attendance => {
-            const matchesSearch =
-                attendance.employee_id?.toString().includes(searchQuery.value) ||
-                attendance.employee_name?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-                attendance.status?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-                attendance.serialNo.toString() === searchQuery.value;
-
-            const attendanceDate = attendance.date?.substring(0, 10);
-            const matchesFrom = !dateFrom.value || attendanceDate >= dateFrom.value;
-            const matchesTo = !dateTo.value || attendanceDate <= dateTo.value;
-
-            return matchesSearch && matchesFrom && matchesTo;
-        });
+    return props.attendanceHistory.data.map(attendance => ({
+        ...attendance,
+        serialNo: attendance.serial_no, // ← from server, always correct
+    }));
 });
 
 const pdfUrl = computed(() => {
@@ -53,9 +75,7 @@ const formatTime = (time) => {
 const formatDate = (date) => {
     if (!date) return '--';
     return new Date(date).toLocaleDateString('en-US', {
-        month: 'numeric',
-        day: 'numeric',
-        year: 'numeric'
+        month: 'numeric', day: 'numeric', year: 'numeric'
     });
 };
 
@@ -83,24 +103,12 @@ const getHours = (checkIn, checkOut) => {
         const timeOut = new Date(`2000-01-01 ${checkOut}`);
         const hours = (timeOut - timeIn) / (1000 * 60 * 60) - 1;
         return Math.max(0, Math.round(hours));
-    } catch (e) {
-        return 0;
-    }
+    } catch (e) { return 0; }
 };
 
 const actionButtons = [
-    {
-        label: 'Edit',
-        href: (id) => `/hr/attendance/${id}/edit`,
-        color: 'bg-yellow-400 hover:bg-yellow-500'
-    },
-    {
-        label: 'Delete',
-        href: (id) => `/hr/attendance/${id}`,
-        color: 'bg-red-500 hover:bg-red-600',
-        method: 'delete',
-        as: 'button'
-    }
+    { label: 'Edit', href: (id) => `/hr/attendance/${id}/edit`, color: 'bg-yellow-400 hover:bg-yellow-500' },
+    { label: 'Delete', href: (id) => `/hr/attendance/${id}`, color: 'bg-red-500 hover:bg-red-600', method: 'delete', as: 'button' }
 ];
 
 const Tablecolumns = [
@@ -137,14 +145,14 @@ const Tablecolumns = [
                     <input type="date" v-model="dateFrom"
                         class="border border-gray-300 rounded-lg w-36 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
                 </div>
-                
+
                 <div class="flex items-center gap-2">
                     <label class="text-sm text-gray-600 whitespace-nowrap">To</label>
                     <input type="date" v-model="dateTo"
                         class="border border-gray-300 rounded-lg w-36 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
                     <!-- Clear Button next to To Date -->
-                    <button @click="searchQuery = ''; dateFrom = ''; dateTo = '';"
+                    <button @click="clearFilters"
                         class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition">
                         Clear
                     </button>

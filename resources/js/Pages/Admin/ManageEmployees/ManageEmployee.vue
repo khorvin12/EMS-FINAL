@@ -1,52 +1,76 @@
-<script setup>
-import { Head, Link } from '@inertiajs/vue3'
-import { ref, computed } from 'vue'
+<script setup lang="ts">
+import { Head, Link, router } from '@inertiajs/vue3'
+import { ref, computed, watch } from 'vue'
 import PaginationLinks from '../../Components/PaginationLinks.vue'
 
-const props = defineProps({
-  employees: {
-    type: Object,
-    required: true
-  }
-})
+interface Employee {
+    id: number
+    first_name: string
+    last_name: string
+    department?: { name: string }
+}
 
-const search = ref('')
+interface PaginatedEmployees {
+    data: Employee[]
+    current_page: number
+    last_page: number
+    per_page: number
+    total: number
+    links: any[]
+}
 
-const filteredEmployees = computed(() => {
-  if (!search.value) return props.employees.data
+const props = defineProps<{
+    employees: PaginatedEmployees
+    filters: { search?: string }
+}>()
 
-  const searchLower = search.value.toLowerCase()
-  return props.employees.data.filter(employee => {
-    const fullName = (employee.first_name + ' ' + employee.last_name).toLowerCase()
-    return fullName.includes(searchLower) || employee.id.toString().includes(search.value)
-  })
-})
+const search = ref(props.filters?.search ?? '')
+
+let searchTimeout: ReturnType<typeof setTimeout> | null = null
+
+const triggerFetch = () => {
+    clearTimeout(searchTimeout ?? undefined)
+    searchTimeout = setTimeout(() => {
+        router.get(
+            '/admin/manageemployees',
+            {
+                search: search.value || undefined,
+                page: 1
+            },
+            {
+                preserveState: true,
+                preserveScroll: true,
+                replace: true,
+                only: ['employees', 'filters']
+            }
+        )
+    }, 500)
+}
+
+watch(search, triggerFetch)
+
+const employeeTableData = computed(() =>
+    (props.employees?.data ?? []).map((employee: any) => ({
+        id: employee.id,
+        serial_no: employee.serial_no,
+        first_name: employee.first_name,
+        last_name: employee.last_name,
+        department: employee.department?.name ?? 'N/A'
+    }))
+)
 
 const tableColumns = [
-  { label: 'Employee ID', key: 'id' },
-  { label: 'Name', key: 'name' },
-  { label: 'Department', key: 'department' },
-  { label: 'Action', key: 'actions', align: 'center' }
+    { label: 'Serial No', key: 'serial_no' },
+    { label: 'Employee ID', key: 'id' },
+    { label: 'Name', key: 'name' },
+    { label: 'Department', key: 'department' },
+    { label: 'Action', key: 'actions', align: 'center' }
 ]
 
 const actionButtons = [
-  {
-    label: 'View',
-    href: (id) => `/view/${id}`,
-    color: 'bg-blue-500 hover:bg-blue-600'
-  },
-  {
-    label: 'Edit',
-    href: (id) => `/edit/${id}`,
-    color: 'bg-yellow-400 hover:bg-yellow-500'
-  },
-  {
-    label: 'Delete',
-    href: (id) => `/delete/${id}`,
-    color: 'bg-red-500 hover:bg-red-600',
-    method: 'delete',
-    as: 'button'
-  }
+    { label: 'View', href: (id: number) => `/admin/view/${id}`, color: 'bg-blue-500 hover:bg-blue-600', method: undefined, as: undefined },
+    { label: 'Edit', href: (id: number) => `/admin/edit/${id}`, color: 'bg-yellow-400 hover:bg-yellow-500', method: undefined, as: undefined },
+    { label: 'Delete', href: (id: number) => `/admin/delete/${id}`, color: 'bg-red-500 hover:bg-red-600', method: 'delete' as const, as: 'button' as const }
 ]
 </script>
 
@@ -58,15 +82,15 @@ const actionButtons = [
     <h1 class="text-4xl font-bold text-center mb-12">Employee Management</h1>
 
     <div class="flex flex-wrap justify-between mb-8 gap-4">
-      <input v-model="search" type="text" placeholder="Search by Employee ID"
+      <input v-model="search" type="text" placeholder="Search by EMP ID"
         class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
       <div class="flex flex-wrap justify-end gap-3">
-        <a href="/reports/employees" target="_blank"
+        <a href="/admin/reports/employee" target="_blank"
           class="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-md">
           Employee List PDF
         </a>
-        <Link href="/addnewemployee"
+        <Link href="/admin/employee/create"
           class="bg-green-500 hover:bg-green-600 text-white font-semibold rounded-md px-4 py-2">
           Add Employee
         </Link>
@@ -85,14 +109,14 @@ const actionButtons = [
         </thead>
 
         <tbody>
-          <tr v-for="employee in filteredEmployees" :key="employee.id" class="border-t-4 border-gray-200">
+          <tr v-for="employee in employeeTableData" :key="employee.id" class="border-t-4 border-gray-200">
             <td>{{ 'EMP-' + String(employee.id).padStart(3, '0') }}</td>
             <td>{{ employee.first_name }} {{ employee.last_name }}</td>
-            <td>{{ employee.department?.name ?? 'N/A' }}</td>
+            <td>{{ employee.department }}</td>
             <td>
               <div class="flex justify-center gap-3">
                 <Link v-for="action in actionButtons" :key="action.label" :href="action.href(employee.id)"
-                  :method="action.method" :as="action.as"
+                  :method="(action.method as any)" :as="(action.as as any)"
                   :class="[action.color, 'inline-flex items-center justify-center w-24 py-2 rounded-md text-sm font-semibold transition']">
                   {{ action.label }}
                 </Link>
@@ -100,7 +124,7 @@ const actionButtons = [
             </td>
           </tr>
 
-          <tr v-if="filteredEmployees.length === 0">
+          <tr v-if="employeeTableData.length === 0">
             <td colspan="4" class="p-8 text-center text-gray-500 border-t-4 border-slate-200">
               No employees found
             </td>

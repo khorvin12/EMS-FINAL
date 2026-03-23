@@ -21,11 +21,11 @@ router.on('start', () => { isLoading.value = true; showContent.value = false })
 router.on('finish', () => { isLoading.value = false; showContent.value = true })
 
 const navItems = [
-    { name: 'Dashboard',   href: '/dashboard',          icon: 'fa-gauge' },
-    { name: 'Employees',   href: '/manageemployees',     icon: 'fa-users' },
-    { name: 'Departments', href: '/departments',         icon: 'fa-building' },
-    { name: 'Leaves',      href: '/manageleaves/leaves', icon: 'fa-calendar-xmark' },
-    { name: 'Settings',    href: '/settings',            icon: 'fa-gear' },
+    { name: 'Dashboard',   href: '/admin/dashboard',          icon: 'fa-gauge' },
+    { name: 'Employees',   href: '/admin/manageemployees',     icon: 'fa-users' },
+    { name: 'Departments', href: '/admin/departments',         icon: 'fa-building' },
+    { name: 'Leaves',      href: '/admin/manageleaves/leaves', icon: 'fa-calendar-xmark' },
+    { name: 'Settings',    href: '/admin/settings',            icon: 'fa-gear' },
 ]
 </script>
 

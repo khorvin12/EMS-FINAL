@@ -1,36 +1,40 @@
 <script setup>
-import { ref, computed } from 'vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { ref, computed, watch } from 'vue';
+import { Head, Link, router } from '@inertiajs/vue3';
 import PaginationLinks from '../../Components/PaginationLinks.vue';
 
 const props = defineProps({
-    salaries: {
-        type: Object,
-        required: true
-    }
+    salaries: { type: Object, required: true },
+    filters: Object
 });
 
-const searchQuery = ref('');
+const searchQuery = ref(props.filters?.search ?? '');
+
+let searchTimeout = null;
+
+const triggerFetch = () => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        router.get(
+            '/hr/salary',
+            { search: searchQuery.value || undefined, page: 1 },
+            {
+                preserveState: true,
+                preserveScroll: true,
+                replace: true,
+                only: ['salaries', 'filters'],
+            }
+        );
+    }, 500);
+};
+
+watch(searchQuery, triggerFetch);
 
 const filteredSalaries = computed(() => {
-    const offset = (props.salaries.current_page - 1) * props.salaries.per_page;
-
-    let result = props.salaries.data.map((s, index) => ({
+    return props.salaries.data.map(s => ({
         ...s,
-        serialNo: offset + index + 1
+        serialNo: s.serial_no,
     }));
-
-    if (searchQuery.value) {
-        result = result.filter(s =>
-            s.serialNo.toString().includes(searchQuery.value) ||
-            s.employee_id.toString().includes(searchQuery.value) ||
-            (s.employee_name || '').toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-            (s.role || '').toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-            (s.department || '').toLowerCase().includes(searchQuery.value.toLowerCase())
-        );
-    }
-
-    return result;
 });
 
 const formatCurrency = (value) => {

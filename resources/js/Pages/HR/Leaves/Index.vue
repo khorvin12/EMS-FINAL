@@ -1,53 +1,55 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
+import { Head, Link, router } from '@inertiajs/vue3';
+import { ref, computed, watch } from 'vue';
 import PaginationLinks from '../../Components/PaginationLinks.vue';
 
 const props = defineProps({
     leaves: Object,
-    stats: Object
+    stats: Object,
+    filters: Object
 });
 
-const searchQuery = ref('');
-const dateFilter = ref('');
-const activeTab = ref('all'); // 'all' | 'pending' | 'approved' | 'rejected'
+const searchQuery = ref(props.filters?.search ?? '');
+const activeTab = ref(props.filters?.status ?? 'all');
 
-// Tab counts derived from raw leaves (always reflect full data)
+let searchTimeout = null;
+
+const triggerFetch = (isSearch = false) => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        router.get(
+            '/hr/leaves',
+            {
+                search: searchQuery.value || undefined,
+                status: activeTab.value !== 'all' ? activeTab.value : undefined,
+                page: 1
+            },
+            {
+                preserveState: true,
+                preserveScroll: true,
+                replace: true,
+                only: ['leaves', 'stats', 'filters']
+            }
+        );
+    }, isSearch ? 500 : 0);
+};
+
+watch(searchQuery, () => triggerFetch(true));
+watch(activeTab, () => triggerFetch(false));
+
+const leavesWithSerial = computed(() => {
+    return (props.leaves.data || []).map(l => ({
+        ...l,
+        serialNo: l.serial_no,
+    }));
+});
+
 const tabCounts = computed(() => ({
     all: props.stats?.all ?? 0,
     pending: props.stats?.pending ?? 0,
     approved: props.stats?.approved ?? 0,
     rejected: props.stats?.rejected ?? 0,
 }));
-
-const filteredLeaves = computed(() => {
-    const offset = (props.leaves.current_page - 1) * props.leaves.per_page;
-
-    let result = (props.leaves.data || []).map((l, index) => ({
-        ...l,
-        serialNo: offset + index + 1  // fix here
-    }));
-
-    if (activeTab.value !== 'all') {
-        result = result.filter(l => l.status === activeTab.value);
-    }
-
-    if (searchQuery.value) {
-        const q = searchQuery.value.toLowerCase();
-        result = result.filter(l =>
-            l.user.name.toLowerCase().includes(q) ||
-            l.serialNo.toString() === q
-        );
-    }
-
-    if (dateFilter.value) {
-        result = result.filter(l =>
-            l.start_date <= dateFilter.value && l.end_date >= dateFilter.value
-        );
-    }
-
-    return result;
-});
 
 const tabs = computed(() => [
     { key: 'all', label: 'All', count: tabCounts.value.all },
@@ -57,17 +59,14 @@ const tabs = computed(() => [
 ]);
 
 const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric', month: 'short', day: 'numeric'
+    });
 };
 
 const getStatusColor = (status) => {
-    switch (status) {
-        case 'approved': return 'bg-green-500';
-        case 'rejected': return 'bg-red-500';
-        case 'pending': return 'bg-yellow-400';
-        default: return 'bg-gray-500';
-    }
+    const map = { approved: 'bg-green-500', rejected: 'bg-red-500', pending: 'bg-yellow-400' };
+    return map[status] ?? 'bg-gray-500';
 };
 
 const getTabStyle = (key) => {
@@ -89,7 +88,7 @@ const getTabStyle = (key) => {
         <div class="flex flex-wrap justify-between mb-8 gap-4">
 
             <!-- Search input -->
-            <input v-model="searchQuery" type="text" placeholder="Search by Serial No"
+            <input v-model="searchQuery" type="search" placeholder="Search by Serial No"
                 class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
             <!-- Status tabs -->
@@ -107,7 +106,7 @@ const getTabStyle = (key) => {
                 <thead class="bg-gray-400 text-black font-medium">
                     <tr>
                         <th>Serial No</th>
-                        <th>Employee</th>
+                        <th>Name</th>
                         <th>Reason</th>
                         <th>Start Date</th>
                         <th>End Date</th>
@@ -116,11 +115,13 @@ const getTabStyle = (key) => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-if="filteredLeaves.length === 0">
-                        <td colspan="7" class="text-center p-8 text-gray-500 border-t-4 border-slate-200">No leave
-                            requests found</td>
+                    <tr v-if="leavesWithSerial.length === 0">
+                        <td colspan="7" class="text-center p-8 text-gray-500 border-t-4 border-slate-200">
+                            No leave requests found
+                        </td>
                     </tr>
-                    <tr v-for="(leave) in filteredLeaves" :key="leave.id" class="border-slate-200 border-t-4">
+                    <tr v-for="leave in leavesWithSerial" :key="leave.id" class="border-slate-200 border-t-4">
+                        <!-- ← was filteredLeaves -->
                         <td>{{ leave.serialNo }}</td>
                         <td>{{ leave.user.name }}</td>
                         <td>{{ leave.reason || 'N/A' }}</td>

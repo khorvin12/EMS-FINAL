@@ -21,12 +21,12 @@ const showSuccess = ref<'approved' | 'rejected' | null>(null)
 
 const handleApprove = () => {
     if (confirm('Are you sure you want to approve this leave?')) {
-        router.post(`/manageleaves/leaves/${props.leave.id}/approve`, {}, {
+        router.post(`/admin/manageleaves/leaves/${props.leave.id}/approve`, {}, {
             onSuccess: () => {
                 showSuccess.value = 'approved'
                 setTimeout(() => {
                     showSuccess.value = null
-                    router.visit('/manageleaves/leaves')
+                    router.visit('/admin/manageleaves/leaves')
                 }, 2000)
             }
         })
@@ -35,12 +35,12 @@ const handleApprove = () => {
 
 const handleReject = () => {
     if (confirm('Are you sure you want to reject this leave?')) {
-        router.post(`/manageleaves/leaves/${props.leave.id}/reject`, {}, {
+        router.post(`/admin/manageleaves/leaves/${props.leave.id}/reject`, {}, {
             onSuccess: () => {
                 showSuccess.value = 'rejected'
                 setTimeout(() => {
                     showSuccess.value = null
-                    router.visit('/manageleaves/leaves')
+                    router.visit('/admin/manageleaves/leaves')
                 }, 2000)
             }
         })
@@ -60,7 +60,7 @@ const handleReject = () => {
 
             <!-- Header -->
             <div class="flex justify-end mb-4">
-                <Link href="/manageleaves/leaves">
+                <Link href="/admin/manageleaves/leaves">
                     <button class="text-2xl font-bold hover:text-red-600 transition">
                         ×
                     </button>

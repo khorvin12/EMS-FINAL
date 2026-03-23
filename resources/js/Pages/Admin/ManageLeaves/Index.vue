@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Head, Link } from '@inertiajs/vue3'
-import { ref, computed } from 'vue'
+import { Head, Link, router } from '@inertiajs/vue3'
+import { ref, computed, watch } from 'vue'
 import PaginationLinks from '../../Components/PaginationLinks.vue'
 
 interface Leave {
@@ -22,6 +22,7 @@ interface PaginatedLeaves {
 }
 
 interface Stats {
+    all: number
     pending: number
     approved: number
     rejected: number
@@ -32,30 +33,39 @@ const props = defineProps<{
     stats: Stats
 }>()
 
-const selectedFilter = ref<'all' | 'pending' | 'approved' | 'rejected'>('all')
-const searchQuery = ref('')
+const selectedFilter = ref<'all' | 'pending' | 'approved' | 'rejected'>(
+    (new URLSearchParams(window.location.search).get('status') as any) ?? 'all'
+)
+const searchQuery = ref(new URLSearchParams(window.location.search).get('search') ?? '')
 
+let searchTimeout: ReturnType<typeof setTimeout> | null = null
 
-
-const filteredLeaves = computed(() => {
-    let result = selectedFilter.value === 'all'
-        ? props.leaves.data
-        : props.leaves.data.filter(l => l.status === selectedFilter.value)
-
-    // Actually use searchQuery
-    if (searchQuery.value) {
-        const q = searchQuery.value.toLowerCase()
-        result = result.filter(l =>
-            l.id.toString().includes(q) ||
-            l.user.name.toLowerCase().includes(q)
+const triggerFetch = (isSearch = false) => {
+    clearTimeout(searchTimeout ?? undefined)
+    searchTimeout = setTimeout(() => {
+        router.get(
+            '/admin/manageleaves/leaves',
+            {
+                search: searchQuery.value || undefined,
+                status: selectedFilter.value,
+                page: 1
+            },
+            {
+                preserveState: true,
+                preserveScroll: true,
+                replace: true,
+                only: ['leaves', 'stats']
+            }
         )
-    }
+    }, isSearch ? 500 : 0)
+}
 
-    return result
-})
+watch(searchQuery, () => triggerFetch(true))
+watch(selectedFilter, () => triggerFetch(false))
+
 
 const filterButtons = computed(() => [
-    { label: 'All', value: 'all' as const, count: props.leaves.total, color: 'bg-blue-600' },
+    { label: 'All', value: 'all' as const, count: props.stats.all, color: 'bg-blue-600' },
     { label: 'Pending', value: 'pending' as const, count: props.stats.pending, color: 'bg-yellow-500' },
     { label: 'Approved', value: 'approved' as const, count: props.stats.approved, color: 'bg-green-500' },
     { label: 'Rejected', value: 'rejected' as const, count: props.stats.rejected, color: 'bg-red-500' }
@@ -71,15 +81,15 @@ const getStatusConfig = (status: string) => statusConfig[status] || { color: 'bg
 
 const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
-        year: 'numeric', month: 'short', day: 'numeric'
+        year: 'numeric', month: 'numeric', day: 'numeric'
     })
 }
 
 const leaveTableData = computed(() => {
-    const offset = (props.leaves.current_page - 1) * props.leaves.per_page;
+    const offset = (props.leaves.current_page - 1) * props.leaves.per_page
 
-    return filteredLeaves.value.map((leave, index) => ({
-        number: offset + index + 1,
+    return props.leaves.data.map((leave, index) => ({
+        number: leave.id,
         employee: leave.user.name,
         reason: leave.reason,
         start_date: formatDate(leave.start_date),
@@ -91,7 +101,7 @@ const leaveTableData = computed(() => {
 
 const emptyStateMessage = computed(() =>
     selectedFilter.value === 'all'
-        ? 'No leave requests submitted yet'
+        ? 'No leave requests found'
         : `No ${selectedFilter.value} leave requests`
 )
 </script>
@@ -163,7 +173,7 @@ const emptyStateMessage = computed(() =>
                             </td>
 
                             <td class="px-6 py-4 text-center border-b border-gray-200">
-                                <Link :href="`/manageleaves/leaves/review/${row.id}`">
+                                <Link :href="`/admin/manageleaves/leaves/review/${row.id}`">
                                     <button
                                         class="w-24 bg-blue-500 hover:bg-blue-600 text-center py-2 rounded-md text-sm font-semibold transition">
                                         Review

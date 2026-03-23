@@ -20,7 +20,7 @@ const formatDate = (dateString) => {
 }
 
 const employeeFields = [
-  { label: 'Employee ID', value: (emp) => emp.id },
+  { label: 'Employee ID', value: (emp) => 'EMP-' + String(emp.id).padStart(3, '0') },
   { label: 'Name', value: (emp) => `${emp.first_name} ${emp.last_name}` },
   { label: 'Email', value: (emp) => emp.email },
   { label: 'Phone', value: (emp) => emp.phone },
@@ -42,7 +42,7 @@ const employeeFields = [
     <div class="bg-white border-4 border-blue-400 rounded-lg p-6 max-w-3xl w-full shadow-lg">
 
       <div class="flex justify-end items-center gap-4">
-        <Link href="/manageemployees" class="text-blue-500 hover:text-blue-600  transition-colors">
+        <Link href="/admin/manageemployees" class="text-blue-500 hover:text-blue-600  transition-colors">
           ← Back
         </Link>
       </div>
@@ -57,8 +57,6 @@ const employeeFields = [
           </p>
         </div>
       </div>
-
-
 
     </div>
   </div>

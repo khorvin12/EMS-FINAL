@@ -19,7 +19,6 @@ class ManageLeavesController extends Controller
         $leaves = $this->getFormattedLeaves();
         $stats = $this->getLeaveStats();
 
-        // Determine which view to render based on user role
         $user = Auth::user();
         $view = $user->role === 'hr'
             ? 'HR/Leaves/Index'
@@ -27,7 +26,8 @@ class ManageLeavesController extends Controller
 
         return Inertia::render($view, [
             'leaves' => $leaves,
-            'stats' => $stats
+            'stats' => $stats,
+            'filters' => request()->only(['search', 'status']), // ← add this line
         ]);
     }
 
@@ -63,13 +63,11 @@ class ManageLeavesController extends Controller
         ]);
 
         $user = Auth::user();
-        $route = $user->role === 'hr'
-            ? 'hr.leaves.index'
-            : 'admin.manageleaves.index';
+        $url = $user->role === 'hr'
+            ? '/hr/manageleaves/leaves'
+            : '/admin/manageleaves/leaves';
 
-        return redirect()
-            ->route($route)
-            ->with('success', 'Leave approved successfully');
+        return redirect($url)->with('success', 'Leave approved successfully');
     }
 
     /**
@@ -85,13 +83,11 @@ class ManageLeavesController extends Controller
         ]);
 
         $user = Auth::user();
-        $route = $user->role === 'hr'
-            ? 'hr.leaves.index'
-            : 'admin.manageleaves.index';
+        $url = $user->role === 'hr'
+            ? '/hr/manageleaves/leaves'
+            : '/admin/manageleaves/leaves';
 
-        return redirect()
-            ->route($route)
-            ->with('success', 'Leave rejected successfully');
+        return redirect($url)->with('success', 'Leave rejected successfully');
     }
 
     /**
@@ -108,13 +104,39 @@ class ManageLeavesController extends Controller
      */
     private function getFormattedLeaves()
     {
-        $paginator = Leave::with('user')
-            ->orderBy('created_at', 'desc')
-            ->paginate(6)
-            ->withQueryString();
+        // Build a stable rank map: leave_id => serial_no based on full unfiltered dataset
+        $rankMap = Leave::orderBy('id', 'asc')
+            ->pluck('id')
+            ->values()
+            ->flip()
+            ->map(fn($i) => $i + 1); // 1-based ascending (oldest=1, newest=highest)
 
-        $paginator->getCollection()->transform(function ($leave) {
-            return $this->formatLeaveData($leave);
+        $query = Leave::with('user')->orderBy('id', 'desc'); // newest first
+
+        $status = request('status');
+        if ($status && $status !== 'all') {
+            $query->where('status', $status);
+        }
+
+        if (request()->filled('search')) {
+            $search = request('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('id', 'like', "%{$search}%")
+                    ->orWhere('reason', 'like', "%{$search}%")
+                    ->orWhereHas(
+                        'user',
+                        fn($u) =>
+                        $u->where('first_name', 'like', "%{$search}%")
+                            ->orWhere('last_name', 'like', "%{$search}%")
+                    );
+            });
+        }
+
+        $paginator = $query->paginate(6)->withQueryString();
+        $paginator->getCollection()->transform(function ($leave) use ($rankMap) {
+            $data = $this->formatLeaveData($leave);
+            $data['serial_no'] = $rankMap[$leave->id] ?? null; // ← stable serial
+            return $data;
         });
 
         return $paginator;
@@ -150,13 +172,27 @@ class ManageLeavesController extends Controller
      */
     private function getLeaveStats()
     {
-        $allLeaves = Leave::all();
+        $query = Leave::query();
+
+        if (request()->filled('search')) {
+            $search = request('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('id', 'like', "%{$search}%")
+                    ->orWhere('reason', 'like', "%{$search}%")
+                    ->orWhereHas(
+                        'user',
+                        fn($u) =>
+                        $u->where('first_name', 'like', "%{$search}%")
+                            ->orWhere('last_name', 'like', "%{$search}%")
+                    );
+            });
+        }
 
         return [
-            'all' => $allLeaves->count(),
-            'pending' => $allLeaves->where('status', 'pending')->count(),
-            'approved' => $allLeaves->where('status', 'approved')->count(),
-            'rejected' => $allLeaves->where('status', 'rejected')->count(),
+            'all' => (clone $query)->count(),
+            'pending' => (clone $query)->where('status', 'pending')->count(),
+            'approved' => (clone $query)->where('status', 'approved')->count(),
+            'rejected' => (clone $query)->where('status', 'rejected')->count(),
         ];
     }
 }
