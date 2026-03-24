@@ -84,7 +84,7 @@ class ManageLeavesController extends Controller
 
         $user = Auth::user();
         $url = $user->role === 'hr'
-            ? '/hr/manageleaves/leaves'
+            ? '/hr/leaves'
             : '/admin/manageleaves/leaves';
 
         return redirect($url)->with('success', 'Leave rejected successfully');
