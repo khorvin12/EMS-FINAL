@@ -5,5 +5,5 @@ aptPkgs = ["libatomic1"]
 [phases.build]
 cmds = ["php --version", "composer install --no-dev --optimize-autoloader --ignore-platform-reqs", "npm ci", "npm run build"]
 
-[start]
-cmd = "php artisan serve --host=0.0.0.0 --port=$PORT"
+[deploy]
+runCommand = "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"
