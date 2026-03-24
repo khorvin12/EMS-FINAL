@@ -1,2 +1,5 @@
 [phases.setup]
 aptPkgs = ["libatomic1"]
+
+[variables]
+PHP_VERSION = "8.4"
