@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["php84", "php84Extensions.pdo", "php84Extensions.pdo_mysql", "php84Extensions.mbstring", "php84Extensions.tokenizer", "php84Extensions.xml", "php84Extensions.ctype", "php84Extensions.fileinfo", "php84Extensions.curl", "php84Extensions.zip", "php84Extensions.bcmath", "php84Packages.composer", "nodejs", "nodePackages.npm"]
+nixPkgs = ["php84", "php84Extensions.pdo", "php84Extensions.pdo_mysql", "php84Extensions.mysqlnd", "php84Extensions.mbstring", "php84Extensions.tokenizer", "php84Extensions.xml", "php84Extensions.ctype", "php84Extensions.fileinfo", "php84Extensions.curl", "php84Extensions.zip", "php84Extensions.bcmath", "php84Packages.composer", "nodejs", "nodePackages.npm"]
 aptPkgs = ["libatomic1"]
 
 [phases.build]
