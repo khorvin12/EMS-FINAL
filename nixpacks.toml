@@ -1,3 +1,6 @@
 [phases.setup]
 nixPkgs = ["php84", "php84Extensions.pdo", "php84Extensions.pdo_mysql", "php84Extensions.mbstring", "php84Extensions.tokenizer", "php84Extensions.xml", "php84Extensions.ctype", "php84Extensions.fileinfo", "composer"]
 aptPkgs = ["libatomic1"]
+
+[phases.build]
+cmds = ["composer install --no-dev --optimize-autoloader", "npm ci", "npm run build"]
