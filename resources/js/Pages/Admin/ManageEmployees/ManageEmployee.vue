@@ -60,7 +60,6 @@ const employeeTableData = computed(() =>
 )
 
 const tableColumns = [
-    { label: 'Serial No', key: 'serial_no' },
     { label: 'Employee ID', key: 'id' },
     { label: 'Name', key: 'name' },
     { label: 'Department', key: 'department' },
