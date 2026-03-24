@@ -5,4 +5,4 @@ aptPkgs = ['libatomic1', 'npm', 'nodejs']
 cmds = ['npm install', 'npm run build', 'composer install --no-dev --optimize-autoloader']
 
 [start]
-cmd = 'php artisan serve --host=0.0.0.0 --port=$PORT'
+cmd = 'php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT'
