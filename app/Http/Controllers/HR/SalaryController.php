@@ -18,22 +18,11 @@ class SalaryController extends Controller
     {
         $currentMonth = Carbon::now()->format('F Y');
 
-        // Build stable serial numbers
-        $rankMap = DB::table('users')
-            ->whereNotNull('salary')
-            ->where('salary', '>', 0)
-            ->where('role', 'employee')
-            ->orderBy('id')
-            ->pluck('id')
-            ->values()
-            ->flip()
-            ->map(fn($i) => $i + 1);
-
-        $query = DB::table('users')
+        $salaries = DB::table('users')
             ->leftJoin('departments', 'users.department_id', '=', 'departments.id')
             ->leftJoin('payrolls', function ($join) use ($currentMonth) {
                 $join->on('users.id', '=', 'payrolls.employee_id')
-                    ->where('payrolls.month', '=', $currentMonth);
+                     ->where('payrolls.month', '=', $currentMonth);
             })
             ->select(
                 'users.id',
@@ -46,45 +35,27 @@ class SalaryController extends Controller
             ->whereNotNull('users.salary')
             ->where('users.salary', '>', 0)
             ->where('users.role', 'employee')
-            ->orderBy('users.id', 'desc');
+            ->orderBy('users.id')
+            ->paginate(6)
+            ->withQueryString();
 
-        if (request()->filled('search')) {
-            $search = request('search');
-
-            $numericSearch = ltrim(str_replace('EMP-', '', strtoupper($search)), '0') ?: '0';
-
-            $matchingIds = $rankMap->filter(fn($serial) => str_contains((string) $serial, $search))->keys();
-
-            $query->where(function ($q) use ($search, $numericSearch, $matchingIds) {
-                $q->where(DB::raw("CONCAT(users.first_name, ' ', users.last_name)"), 'like', "%{$search}%")
-                    ->orWhere('departments.name', 'like', "%{$search}%")
-                    ->orWhere('users.role', 'like', "%{$search}%")
-                    ->orWhere('users.id', '=', $numericSearch) // ← exact match after stripping zeros
-                    ->orWhereIn('users.id', $matchingIds);
-            });
-        }
-
-        $salaries = $query->paginate(6)->withQueryString();
-
-        $salaries->getCollection()->transform(function ($user) use ($rankMap) {
+        $salaries->getCollection()->transform(function ($user) {
             $salary = floatval($user->salary ?? 0);
             $netSalary = $user->net_salary ? floatval($user->net_salary) : $salary;
 
             return [
-                'id' => $user->id,
-                'serial_no' => $rankMap[$user->id] ?? null,
-                'employee_id' => $user->id,
+                'id'            => $user->id,
+                'employee_id'   => $user->id,
                 'employee_name' => $user->name,
-                'role' => $user->role,
-                'department' => $user->department ?? 'Not Assigned',
-                'full_salary' => $salary,
-                'net_salary' => $netSalary,
+                'role'          => $user->role,
+                'department'    => $user->department ?? 'Not Assigned',
+                'full_salary'   => $salary,
+                'net_salary'    => $netSalary,
             ];
         });
 
         return Inertia::render('HR/Salaries/Index', [
-            'salaries' => $salaries,
-            'filters' => request()->only(['search']),
+            'salaries' => $salaries
         ]);
     }
 
@@ -97,10 +68,10 @@ class SalaryController extends Controller
                 ->with('error', 'Employee not found');
         }
 
-        $currentMonth = Carbon::now()->format('F Y');
+        $currentMonth    = Carbon::now()->format('F Y');
         $currentMonthNum = Carbon::now()->month;
-        $currentYear = Carbon::now()->year;
-        $workingDays = 22;
+        $currentYear     = Carbon::now()->year;
+        $workingDays     = 22;
 
         $stats = $this->calculateAttendanceStats($userId, $currentMonthNum, $currentYear, $workingDays);
 
@@ -111,20 +82,20 @@ class SalaryController extends Controller
 
         return Inertia::render('HR/Salaries/View', [
             'employee' => [
-                'id' => $user->id,
+                'id'          => $user->id,
                 'employee_id' => $user->id,
-                'name' => $user->name,
-                'department' => $user->department ?? 'Not Assigned',
+                'name'        => $user->name,
+                'department'  => $user->department ?? 'Not Assigned',
             ],
             'salary' => [
                 'full_salary' => floatval($user->salary ?? 0),
             ],
-            'attendance' => $stats,
+            'attendance'       => $stats,
             'payrollGenerated' => $payroll !== null,
-            'payroll' => $payroll ? [
+            'payroll'          => $payroll ? [
                 'basic_salary' => $payroll->basic_salary,
-                'deductions' => $payroll->deductions,
-                'net_salary' => $payroll->net_salary,
+                'deductions'   => $payroll->deductions,
+                'net_salary'   => $payroll->net_salary,
                 'overtime_pay' => $payroll->overtime_pay ?? 0,
             ] : null,
         ]);
@@ -139,22 +110,22 @@ class SalaryController extends Controller
                 ->with('error', 'Employee not found');
         }
 
-        $grossSalary = floatval($user->salary ?? 0);
+        $grossSalary     = floatval($user->salary ?? 0);
         $currentMonthNum = Carbon::now()->month;
-        $currentYear = Carbon::now()->year;
-        $currentMonth = Carbon::now()->format('F Y');
-        $workingDays = 22;
+        $currentYear     = Carbon::now()->year;
+        $currentMonth    = Carbon::now()->format('F Y');
+        $workingDays     = 22;
 
-        $stats = $this->calculateAttendanceStats($userId, $currentMonthNum, $currentYear, $workingDays, true);
-        $dailyRate = $grossSalary / $workingDays;
-        $hourlyRate = $dailyRate / 8;
+        $stats       = $this->calculateAttendanceStats($userId, $currentMonthNum, $currentYear, $workingDays, true);
+        $dailyRate   = $grossSalary / $workingDays;
+        $hourlyRate  = $dailyRate / 8;
 
-        $absenceDeduction = round($dailyRate * $stats['absences'], 2);
-        $lateDeduction = round(($stats['total_late_minutes'] / 60) * $hourlyRate, 2);
+        $absenceDeduction  = round($dailyRate * $stats['absences'], 2);
+        $lateDeduction     = round(($stats['total_late_minutes'] / 60) * $hourlyRate, 2);
         $undertimeDeduction = round($stats['undertime_hours'] * $hourlyRate, 2);
-        $overtimePay = round($stats['overtime_hours'] * ($hourlyRate * 1.25), 2);
-        $totalDeductions = $absenceDeduction + $lateDeduction + $undertimeDeduction;
-        $netSalary = $grossSalary - $totalDeductions + $overtimePay;
+        $overtimePay       = round($stats['overtime_hours'] * ($hourlyRate * 1.25), 2);
+        $totalDeductions   = $absenceDeduction + $lateDeduction + $undertimeDeduction;
+        $netSalary         = $grossSalary - $totalDeductions + $overtimePay;
 
         $now = Carbon::now();
 
@@ -169,52 +140,52 @@ class SalaryController extends Controller
                 ->where('employee_id', $userId)
                 ->where('month', $currentMonth)
                 ->update([
-                    'basic_salary' => $grossSalary,
-                    'deductions' => $totalDeductions,
-                    'net_salary' => $netSalary,
-                    'present_days' => $stats['present_days'],
-                    'absences' => $stats['absences'],
-                    'late_count' => $stats['late_count'],
+                    'basic_salary'       => $grossSalary,
+                    'deductions'         => $totalDeductions,
+                    'net_salary'         => $netSalary,
+                    'present_days'       => $stats['present_days'],
+                    'absences'           => $stats['absences'],
+                    'late_count'         => $stats['late_count'],
                     'total_late_minutes' => $stats['total_late_minutes'],
                     'total_hours_worked' => $stats['total_hours_worked'],
-                    'expected_hours' => 176,
-                    'undertime_hours' => $stats['undertime_hours'],
+                    'expected_hours'     => 176,
+                    'undertime_hours'    => $stats['undertime_hours'],
                     'total_working_days' => $workingDays,
-                    'absence_deduction' => $absenceDeduction,
-                    'late_deduction' => $lateDeduction,
-                    'undertime_deduction' => $undertimeDeduction,
-                    'overtime_hours' => $stats['overtime_hours'],
-                    'overtime_pay' => $overtimePay,
-                    'generated_by' => Auth::id(),
-                    'generated_at' => $now,
-                    'year' => $currentYear,
-                    'updated_at' => $now,
+                    'absence_deduction'  => $absenceDeduction,
+                    'late_deduction'     => $lateDeduction,
+                    'undertime_deduction'=> $undertimeDeduction,
+                    'overtime_hours'     => $stats['overtime_hours'],
+                    'overtime_pay'       => $overtimePay,
+                    'generated_by'       => Auth::id(),
+                    'generated_at'       => $now,
+                    'year'               => $currentYear,
+                    'updated_at'         => $now,
                 ]);
         } else {
             DB::table('payrolls')->insert([
-                'employee_id' => $userId,
-                'month' => $currentMonth,
-                'basic_salary' => $grossSalary,
-                'deductions' => $totalDeductions,
-                'net_salary' => $netSalary,
-                'present_days' => $stats['present_days'],
-                'absences' => $stats['absences'],
-                'late_count' => $stats['late_count'],
+                'employee_id'        => $userId,
+                'month'              => $currentMonth,
+                'basic_salary'       => $grossSalary,
+                'deductions'         => $totalDeductions,
+                'net_salary'         => $netSalary,
+                'present_days'       => $stats['present_days'],
+                'absences'           => $stats['absences'],
+                'late_count'         => $stats['late_count'],
                 'total_late_minutes' => $stats['total_late_minutes'],
                 'total_hours_worked' => $stats['total_hours_worked'],
-                'expected_hours' => 176,
-                'undertime_hours' => $stats['undertime_hours'],
+                'expected_hours'     => 176,
+                'undertime_hours'    => $stats['undertime_hours'],
                 'total_working_days' => $workingDays,
-                'absence_deduction' => $absenceDeduction,
-                'late_deduction' => $lateDeduction,
-                'undertime_deduction' => $undertimeDeduction,
-                'overtime_hours' => $stats['overtime_hours'],
-                'overtime_pay' => $overtimePay,
-                'generated_by' => Auth::id(),
-                'generated_at' => $now,
-                'year' => $currentYear,
-                'created_at' => $now,
-                'updated_at' => $now,
+                'absence_deduction'  => $absenceDeduction,
+                'late_deduction'     => $lateDeduction,
+                'undertime_deduction'=> $undertimeDeduction,
+                'overtime_hours'     => $stats['overtime_hours'],
+                'overtime_pay'       => $overtimePay,
+                'generated_by'       => Auth::id(),
+                'generated_at'       => $now,
+                'year'               => $currentYear,
+                'created_at'         => $now,
+                'updated_at'         => $now,
             ]);
         }
 
@@ -246,26 +217,25 @@ class SalaryController extends Controller
             ->whereYear('date', $year)
             ->get();
 
-        $markedAbsences = $records->where('status', 'absent')->count();
-        $daysWithRecords = $records->count();
-        $daysWithoutRecords = max(0, $workingDays - $daysWithRecords);
-        $totalAbsences = $markedAbsences + $daysWithoutRecords;
+        $markedAbsences      = $records->where('status', 'absent')->count();
+        $daysWithRecords     = $records->count();
+        $daysWithoutRecords  = max(0, $workingDays - $daysWithRecords);
+        $totalAbsences       = $markedAbsences + $daysWithoutRecords;
 
-        $lateCount = 0;
-        $totalLateMinutes = 0;
-        $totalHoursWorked = 0;
-        $undertimeHours = 0;
-        $overtimeHours = 0;
-        $presentDays = 0;
+        $lateCount           = 0;
+        $totalLateMinutes    = 0;
+        $totalHoursWorked    = 0;
+        $undertimeHours      = 0;
+        $overtimeHours       = 0;
+        $presentDays         = 0;
 
         foreach ($records->where('status', '!=', 'absent') as $record) {
-            if (!$record->check_in || !$record->check_out)
-                continue;
+            if (!$record->check_in || !$record->check_out) continue;
 
             $presentDays++;
-            $scheduleStart = Carbon::parse($record->date . ' ' . self::SCHEDULE_START);
-            $checkIn = Carbon::parse($record->date . ' ' . $record->check_in);
-            $checkOut = Carbon::parse($record->date . ' ' . $record->check_out);
+            $scheduleStart  = Carbon::parse($record->date . ' ' . self::SCHEDULE_START);
+            $checkIn        = Carbon::parse($record->date . ' ' . $record->check_in);
+            $checkOut       = Carbon::parse($record->date . ' ' . $record->check_out);
 
             // Late minutes
             if ($checkIn->greaterThan($scheduleStart)) {
@@ -280,14 +250,14 @@ class SalaryController extends Controller
 
             // Hours worked (minus 1 hour break)
             $workedMinutes = $checkIn->diffInMinutes($checkOut) - 60;
-            $workedHours = max(0, round($workedMinutes / 60, 2));
+            $workedHours   = max(0, round($workedMinutes / 60, 2));
 
             if ($workedHours >= 8.0) {
                 $totalHoursWorked += 8.0;
-                $overtimeHours += round($workedHours - 8.0, 2);
+                $overtimeHours    += round($workedHours - 8.0, 2);
             } else {
                 $totalHoursWorked += $workedHours;
-                $undertimeHours += max(0, 8.0 - $workedHours);
+                $undertimeHours   += max(0, 8.0 - $workedHours);
             }
 
             if ($updateRecords) {
@@ -296,15 +266,15 @@ class SalaryController extends Controller
         }
 
         return [
-            'absences' => $totalAbsences,
-            'late_count' => $lateCount,
+            'absences'           => $totalAbsences,
+            'late_count'         => $lateCount,
             'total_late_minutes' => (int) round($totalLateMinutes),
             'total_hours_worked' => round($totalHoursWorked, 2),
-            'expected_hours' => 176,
-            'undertime_hours' => round($undertimeHours, 2),
-            'overtime_hours' => round($overtimeHours, 2),
-            'overtime_pay' => 0, // calculated in generatePayroll
-            'present_days' => $presentDays,
+            'expected_hours'     => 176,
+            'undertime_hours'    => round($undertimeHours, 2),
+            'overtime_hours'     => round($overtimeHours, 2),
+            'overtime_pay'       => 0, // calculated in generatePayroll
+            'present_days'       => $presentDays,
             'total_working_days' => $workingDays,
         ];
     }

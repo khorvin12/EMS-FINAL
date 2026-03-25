@@ -13,9 +13,8 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $now = Carbon::now('Asia/Manila');
+        $now  = Carbon::now('Asia/Manila');
 
-        // 1. Count present days this month
         $presentDays = DB::table('attendances')
             ->where('employee_id', $user->id)
             ->whereMonth('date', $now->month)
@@ -23,13 +22,11 @@ class DashboardController extends Controller
             ->where('status', 'present')
             ->count();
 
-        // 2. Count pending leaves
         $pendingLeaves = DB::table('leaves')
             ->where('employee_id', $user->id)
             ->where('status', 'pending')
             ->count();
 
-        // 3. Get last 5 attendance records
         $attendanceHistory = DB::table('attendances')
             ->where('employee_id', $user->id)
             ->orderBy('date', 'desc')
@@ -42,23 +39,31 @@ class DashboardController extends Controller
                         ->diffInHours(Carbon::parse($record->check_out), true) - 1), 2);
                 }
                 return [
-                    'id' => $record->id,
-                    'date' => $record->date,
-                    'check_in' => $record->check_in,
+                    'id'        => $record->id,
+                    'date'      => $record->date,
+                    'check_in'  => $record->check_in,
                     'check_out' => $record->check_out,
-                    'status' => $record->status,
-                    'hours' => $hours,
+                    'status'    => $record->status,
+                    'hours'     => $hours,
                 ];
             });
 
-        // 4. Estimated salary (example)
-        $estimatedSalary = $presentDays * 1000; // adjust per your logic
+        // Use net_salary from payroll if generated, otherwise use gross salary from user record
+        $currentMonth = $now->format('F Y');
+        $payroll = DB::table('payrolls')
+            ->where('employee_id', $user->id)
+            ->where('month', $currentMonth)
+            ->first();
+
+        $estimatedSalary = $payroll
+            ? floatval($payroll->net_salary)
+            : floatval($user->salary ?? 0);
 
         return Inertia::render('Employee/Dashboard', [
-            'presentDays' => $presentDays,
-            'pendingLeaves' => $pendingLeaves,
+            'presentDays'       => $presentDays,
+            'pendingLeaves'     => $pendingLeaves,
             'attendanceHistory' => $attendanceHistory,
-            'estimatedSalary' => $estimatedSalary,
+            'estimatedSalary'   => $estimatedSalary,
         ]);
     }
 }
