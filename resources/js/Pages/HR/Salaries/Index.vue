@@ -86,7 +86,7 @@ const formatCurrency = (value) => {
                 <tbody>
                     <tr v-for="(salary) in filteredSalaries" :key="salary.data"
                         class="border-t-4 border-gray-200">
-                        <td>{{ salary.serialNo }}</td>
+                        <td>{{ salary.serial_no }}</td>
                         <td>{{ 'EMP-' + String(salary.employee_id).padStart(3, '0') }}</td>
                         <td>{{ salary.employee_name }}</td>
                         <td class="text-center">

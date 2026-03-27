@@ -96,16 +96,6 @@ const getStatusText = (status) => {
         .join(' ');
 };
 
-const getHours = (checkIn, checkOut) => {
-    if (!checkIn || !checkOut) return 0;
-    try {
-        const timeIn = new Date(`2000-01-01 ${checkIn}`);
-        const timeOut = new Date(`2000-01-01 ${checkOut}`);
-        const hours = (timeOut - timeIn) / (1000 * 60 * 60) - 1;
-        return Math.max(0, Math.round(hours));
-    } catch (e) { return 0; }
-};
-
 const actionButtons = [
     { label: 'Edit', href: (id) => `/hr/attendance/${id}/edit`, color: 'bg-yellow-400 hover:bg-yellow-500' },
     { label: 'Delete', href: (id) => `/hr/attendance/${id}`, color: 'bg-red-500 hover:bg-red-600', method: 'delete', as: 'button' }
@@ -187,7 +177,7 @@ const Tablecolumns = [
                         <td>{{ formatDate(attendance.date) }}</td>
                         <td>{{ formatTime(attendance.check_in) }}</td>
                         <td>{{ formatTime(attendance.check_out) }}</td>
-                        <td>{{ getHours(attendance.check_in, attendance.check_out) }}</td>
+                        <td>{{ attendance.hours }}</td>
                         <td class="text-center">
                             <span :class="getStatusClass(attendance.status)"
                                 class="inline-block w-24 text-center py-2 rounded-full text-sm font-semibold transition">

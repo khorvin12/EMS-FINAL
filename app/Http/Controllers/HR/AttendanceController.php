@@ -14,7 +14,7 @@ class AttendanceController extends Controller
     {
         // Build stable serial numbers based on full unfiltered dataset
         $rankMap = DB::table('attendances')
-            ->orderBy('attendances.id', 'desc')
+            ->orderBy('attendances.id', 'asc')
             ->pluck('id')
             ->values()
             ->flip()
@@ -31,7 +31,7 @@ class AttendanceController extends Controller
                 'attendances.status',
                 DB::raw("CONCAT(users.first_name, ' ', users.last_name) as employee_name")
             )
-            ->orderBy('attendances.id', 'asc');
+            ->orderBy('attendances.id', 'desc');
 
         if (request()->filled('search')) {
             $search = request('search');
