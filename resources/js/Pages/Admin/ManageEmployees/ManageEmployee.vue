@@ -2,6 +2,9 @@
 import { Head, Link } from '@inertiajs/vue3'
 import { ref, computed } from 'vue'
 import PaginationLinks from '../../Components/PaginationLinks.vue'
+import AdminLayout from '../../../Layouts/AdminLayout.vue'
+
+defineOptions({ layout: AdminLayout })
 
 const props = defineProps({
   employees: {

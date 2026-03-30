@@ -17,7 +17,6 @@ class Leave extends Model
         'type',
         'reason',
         'status',
-        'admin_comment',
     ];
 
 protected $casts = [

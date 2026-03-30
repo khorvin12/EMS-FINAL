@@ -65,11 +65,6 @@ const getStatusText = (status) => {
                     <p class="text-base md:text-lg font-semibold">{{ leave.reason }}</p>
                 </div>
 
-                <div v-if="leave.admin_comment">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Admin Comment</label>
-                    <p class="text-sm md:text-base bg-yellow-50 p-3 rounded border border-yellow-200">{{
-                        leave.admin_comment }}</p>
-                </div>
             </div>
 
             <div class="mt-6">
