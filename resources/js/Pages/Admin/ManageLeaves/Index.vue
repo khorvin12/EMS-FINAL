@@ -148,7 +148,7 @@ const emptyStateMessage = computed(() =>
                     <thead class="bg-gray-400">
                         <tr>
                             <th>Serial No</th>
-                            <th>Employee</th>
+                            <th>Name</th>
                             <th>Reason</th>
                             <th>Start Date</th>
                             <th>End Date</th>

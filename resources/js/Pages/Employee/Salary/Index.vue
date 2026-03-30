@@ -144,25 +144,24 @@ const formatCurrency = (value) => {
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6">
             <div
                 class="bg-white rounded-xl shadow-sm p-6 md:p-8 border-l-4 border-green-500 hover:shadow-md transition-all hover:-translate-y-1 duration-300">
-                <p class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 opacity-70">Gross Salary</p>
-                <p class="text-2xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-2 leading-none">₱{{
+                <p class="text-sm font-semibold text-gray-500 uppercase tracking-normal mb-3 opacity-70">Gross Salary</p>
+                <p class="text-xl md:text-2xl lg:text-3xl font-extrabold text-gray-900 mb-2 leading-tight break-all">₱{{
                     formatCurrency(calculatedSalary.gross) }}</p>
                 <p class="text-sm text-gray-500 opacity-70 font-medium">Base salary + allowances</p>
             </div>
 
             <div
                 class="bg-white rounded-xl shadow-sm p-6 md:p-8 border-l-4 border-red-500 hover:shadow-md transition-all hover:-translate-y-1 duration-300">
-                <p class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 opacity-70">Total Deductions
-                </p>
-                <p class="text-2xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-2 leading-none">₱{{
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-normal mb-3 opacity-70">Total Deductions</p>
+                <p class="text-xl md:text-2xl lg:text-3xl font-extrabold text-gray-900 mb-2 leading-tight break-all">₱{{
                     formatCurrency(calculatedSalary.deductions) }}</p>
                 <p class="text-sm text-gray-500 opacity-70 font-medium">See breakdown below</p>
             </div>
 
             <div
                 class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 md:p-8 text-white hover:shadow-xl transition-all hover:-translate-y-1 duration-300">
-                <p class="text-sm font-semibold uppercase tracking-wide mb-3 opacity-90">Net Salary</p>
-                <p class="text-2xl md:text-4xl lg:text-5xl font-extrabold mb-2 leading-none">₱{{
+                <p class="text-sm font-semibold uppercase mb-3 tracking-normal opacity-90">Net Salary</p>
+                <p class="text-xl md:text-2xl lg:text-3xl font-extrabold mb-2 leading-tight break-all">₱{{
                     formatCurrency(calculatedSalary.net) }}</p>
                 <p class="text-sm opacity-90 font-medium">Take-home pay this month</p>
             </div>
