@@ -10,7 +10,7 @@ const form = useForm({
 
 const submit = () => {
     // Change this line
-    form.post('/reset-password');
+    form.post('/admin/reset-password');
 };
 </script>
 
