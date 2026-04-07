@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('type')->default('sick'); // sick, vacation, emergency, personal
             $table->text('reason')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
-            $table->text('admin_comment')->nullable();
             $table->timestamps();
 
             $table->foreign('employee_id')->references('id')->on('users')->onDelete('cascade');
