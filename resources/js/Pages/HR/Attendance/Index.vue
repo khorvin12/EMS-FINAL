@@ -1,37 +1,59 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
+import { Head, Link, router } from '@inertiajs/vue3';
+import { ref, computed, watch } from 'vue';
 import PaginationLinks from '../../Components/PaginationLinks.vue';
 
 const props = defineProps({
     attendanceHistory: {
         type: Object,
         default: () => ({ data: [], current_page: 1, last_page: 1, total: 0 })
-    }
+    },
+    filters: Object
 });
 
-const searchQuery = ref('');
-const dateFrom = ref('');
-const dateTo = ref('');
+const searchQuery = ref(props.filters?.search ?? '');
+const dateFrom = ref(props.filters?.date_from ?? '');
+const dateTo = ref(props.filters?.date_to ?? '');
+
+let searchTimeout = null;
+
+const triggerFetch = (isSearch = false) => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        router.get(
+            '/hr/attendance',
+            {
+                search: searchQuery.value || undefined,
+                date_from: dateFrom.value || undefined,
+                date_to: dateTo.value || undefined,
+                page: 1,
+            },
+            {
+                preserveState: true,
+                preserveScroll: true,
+                replace: true,
+                only: ['attendanceHistory', 'filters'],
+            }
+        );
+    }, isSearch ? 500 : 0);
+};
+
+const clearFilters = () => {
+    searchQuery.value = '';
+    dateFrom.value = '';
+    dateTo.value = '';
+    triggerFetch();
+};
+
+watch(searchQuery, () => triggerFetch(true));
+watch(dateFrom, () => triggerFetch(false));
+watch(dateTo, () => triggerFetch(false));
 
 const filteredAttendances = computed(() => {
-    const offset = (props.attendanceHistory.current_page - 1) * props.attendanceHistory.per_page;
-    
-    return props.attendanceHistory.data
-        .map((attendance, index) => ({ ...attendance, serialNo: offset + index + 1 }))
-        .filter(attendance => {
-            const matchesSearch =
-                attendance.employee_id?.toString().includes(searchQuery.value) ||
-                attendance.employee_name?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-                attendance.status?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-                attendance.serialNo.toString() === searchQuery.value;
-
-            const attendanceDate = attendance.date?.substring(0, 10);
-            const matchesFrom = !dateFrom.value || attendanceDate >= dateFrom.value;
-            const matchesTo = !dateTo.value || attendanceDate <= dateTo.value;
-
-            return matchesSearch && matchesFrom && matchesTo;
-        });
+    return props.attendanceHistory.data.map(attendance => ({
+        ...attendance,
+        serialNo: attendance.serial_no, // ← from server, always correct
+    }));
 });
 
 const pdfUrl = computed(() => {
@@ -53,9 +75,7 @@ const formatTime = (time) => {
 const formatDate = (date) => {
     if (!date) return '--';
     return new Date(date).toLocaleDateString('en-US', {
-        month: 'numeric',
-        day: 'numeric',
-        year: 'numeric'
+        month: 'numeric', day: 'numeric', year: 'numeric'
     });
 };
 
@@ -76,32 +96,34 @@ const getStatusText = (status) => {
         .join(' ');
 };
 
-const getHours = (checkIn, checkOut) => {
-    if (!checkIn || !checkOut) return 0;
-    try {
-        const timeIn = new Date(`2000-01-01 ${checkIn}`);
-        const timeOut = new Date(`2000-01-01 ${checkOut}`);
-        const hours = (timeOut - timeIn) / (1000 * 60 * 60) - 1;
-        return Math.max(0, Math.round(hours));
-    } catch (e) {
-        return 0;
-    }
+const actionButtons = [
+    { label: 'Edit', href: (id) => `/hr/attendance/${id}/edit`, color: 'bg-yellow-400 hover:bg-yellow-500' },
+];
+
+// --- Delete confirmation modal ---
+const showDeleteModal = ref(false);
+const attendanceToDelete = ref(null);
+
+const confirmDelete = (attendance) => {
+    attendanceToDelete.value = attendance;
+    showDeleteModal.value = true;
 };
 
-const actionButtons = [
-    {
-        label: 'Edit',
-        href: (id) => `/hr/attendance/${id}/edit`,
-        color: 'bg-yellow-400 hover:bg-yellow-500'
-    },
-    {
-        label: 'Delete',
-        href: (id) => `/hr/attendance/${id}`,
-        color: 'bg-red-500 hover:bg-red-600',
-        method: 'delete',
-        as: 'button'
+const cancelDelete = () => {
+    showDeleteModal.value = false;
+    attendanceToDelete.value = null;
+};
+
+const proceedDelete = () => {
+    if (attendanceToDelete.value) {
+        router.delete(`/hr/attendance/${attendanceToDelete.value.id}`, {
+            onFinish: () => {
+                showDeleteModal.value = false;
+                attendanceToDelete.value = null;
+            }
+        });
     }
-];
+};
 
 const Tablecolumns = [
     { label: 'Serial No', key: 'serial_no' },
@@ -118,7 +140,7 @@ const Tablecolumns = [
 
 <template>
     <div class="flex flex-col px-4 md:px-6">
-        
+
         <Head title=" | Attendance Management" />
 
         <h1 class="text-center text-2xl md:text-4xl font-bold mb-6 md:mb-12">Attendance Management</h1>
@@ -131,22 +153,24 @@ const Tablecolumns = [
                 class="border border-gray-300 rounded-lg px-4 py-2 w-56 focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
             <!-- Date Filters -->
-            <div class="flex flex-col sm:flex-row items-end sm:items-center gap-2">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                 <div class="flex items-center gap-2">
                     <label class="text-sm text-gray-600 whitespace-nowrap">From</label>
                     <input type="date" v-model="dateFrom"
                         class="border border-gray-300 rounded-lg w-36 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
                 </div>
+
                 <div class="flex items-center gap-2">
                     <label class="text-sm text-gray-600 whitespace-nowrap">To</label>
                     <input type="date" v-model="dateTo"
                         class="border border-gray-300 rounded-lg w-36 p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+
+                    <!-- Clear Button next to To Date -->
+                    <button @click="clearFilters"
+                        class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition">
+                        Clear
+                    </button>
                 </div>
-                <!-- Clear Button -->
-                <button @click="searchQuery = ''; dateFrom = ''; dateTo = '';"
-                    class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition">
-                    Clear
-                </button>
             </div>
 
             <!-- Generate Report Button -->
@@ -177,7 +201,7 @@ const Tablecolumns = [
                         <td>{{ formatDate(attendance.date) }}</td>
                         <td>{{ formatTime(attendance.check_in) }}</td>
                         <td>{{ formatTime(attendance.check_out) }}</td>
-                        <td>{{ getHours(attendance.check_in, attendance.check_out) }}</td>
+                        <td>{{ attendance.hours }}</td>
                         <td class="text-center">
                             <span :class="getStatusClass(attendance.status)"
                                 class="inline-block w-24 text-center py-2 rounded-full text-sm font-semibold transition">
@@ -186,10 +210,13 @@ const Tablecolumns = [
                         </td>
                         <td class="flex justify-center gap-3">
                             <Link v-for="action in actionButtons" :key="action.label" :href="action.href(attendance.id)"
-                                :method="action.method" :as="action.as"
                                 :class="[action.color, 'inline-flex items-center justify-center w-24 py-2 rounded-md text-sm font-semibold transition']">
                                 {{ action.label }}
                             </Link>
+                            <button @click="confirmDelete(attendance)"
+                                class="bg-red-500 hover:bg-red-600 inline-flex items-center justify-center w-24 py-2 rounded-md text-sm font-semibold transition text-white cursor-pointer">
+                                Delete
+                            </button>
                         </td>
                     </tr>
 
@@ -206,5 +233,41 @@ const Tablecolumns = [
         <div class="mt-6">
             <PaginationLinks :paginator="attendanceHistory" />
         </div>
+
+        <!-- Delete Confirmation Modal -->
+        <Teleport to="body">
+            <div v-if="showDeleteModal"
+                class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+                <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
+                    <div class="flex justify-center mb-5">
+                        <div class="bg-red-100 rounded-full p-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <h2 class="text-2xl font-bold text-center text-gray-900 mb-2">Delete Attendance Record</h2>
+                    <p class="text-center text-gray-500 mb-1">Are you sure you want to delete the record for</p>
+                    <p class="text-center font-semibold text-gray-800 text-lg mb-1">
+                        {{ attendanceToDelete?.employee_name }}
+                    </p>
+                    <p class="text-center text-sm text-gray-500 mb-2">
+                        {{ attendanceToDelete ? formatDate(attendanceToDelete.date) : '' }}
+                    </p>
+                    <p class="text-center text-sm text-red-500 mb-8">This action cannot be undone.</p>
+                    <div class="flex gap-3">
+                        <button @click="cancelDelete"
+                            class="flex-1 px-6 py-3 rounded-xl border-2 border-gray-200 text-gray-700 font-semibold hover:bg-gray-50 transition">
+                            Cancel
+                        </button>
+                        <button @click="proceedDelete"
+                            class="flex-1 px-6 py-3 rounded-xl bg-red-500 hover:bg-red-600 text-white font-semibold transition shadow-md hover:shadow-lg">
+                            Yes, Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </Teleport>
     </div>
 </template>

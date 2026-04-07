@@ -67,7 +67,7 @@ const formatTime = (timeString) => {
         class="bg-white text-center rounded-xl shadow-sm p-8 border-l-4 border-blue-500 hover:shadow-md transition-all hover:-translate-y-1 duration-300 overflow-hidden">
         <p class="text-xs md:text-sm text-gray-500 uppercase font-bold tracking-tight">Estimated Salary</p>
         <p class="text-lg md:text-3xl font-extrabold text-gray-900 mb-2 leading-none mt-2">
-          ₱{{ estimatedSalary?.toLocaleString() ?? '0.00' }}
+          ₱{{ Number(estimatedSalary ?? 0).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
         </p>
       </div>
     </div>
