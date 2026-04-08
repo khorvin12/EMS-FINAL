@@ -91,11 +91,11 @@ const tableColumns = [
         class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
       <div class="flex flex-wrap justify-end gap-3">
-        <a href="/admin/reports/employee" target="_blank"
+        <a href="/admin/reports/employees" target="_blank"
           class="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-md">
           Employee List PDF
         </a>
-        <Link href="/admin/employee/create"
+        <Link href="/admin/employees/create"
           class="bg-green-500 hover:bg-green-600 text-white font-semibold rounded-md px-4 py-2">
           Add Employee
         </Link>
