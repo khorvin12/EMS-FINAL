@@ -26,6 +26,28 @@ const props = defineProps<{
 
 const search = ref(props.filters?.search ?? '')
 
+// ✅ Confirm modal state
+const showConfirmModal = ref(false)
+const employeeToDelete = ref<number | null>(null)
+
+const confirmDelete = (id: number) => {
+    employeeToDelete.value = id
+    showConfirmModal.value = true
+}
+
+const handleDelete = () => {
+    if (employeeToDelete.value !== null) {
+        router.delete(`/admin/delete/${employeeToDelete.value}`)
+    }
+    showConfirmModal.value = false
+    employeeToDelete.value = null
+}
+
+const cancelDelete = () => {
+    showConfirmModal.value = false
+    employeeToDelete.value = null
+}
+
 let searchTimeout: ReturnType<typeof setTimeout> | null = null
 
 const triggerFetch = () => {
@@ -33,16 +55,8 @@ const triggerFetch = () => {
     searchTimeout = setTimeout(() => {
         router.get(
             '/admin/manageemployees',
-            {
-                search: search.value || undefined,
-                page: 1
-            },
-            {
-                preserveState: true,
-                preserveScroll: true,
-                replace: true,
-                only: ['employees', 'filters']
-            }
+            { search: search.value || undefined, page: 1 },
+            { preserveState: true, preserveScroll: true, replace: true, only: ['employees', 'filters'] }
         )
     }, 500)
 }
@@ -52,7 +66,6 @@ watch(search, triggerFetch)
 const employeeTableData = computed(() =>
     (props.employees?.data ?? []).map((employee: any) => ({
         id: employee.id,
-        serial_no: employee.serial_no,
         first_name: employee.first_name,
         last_name: employee.last_name,
         department: employee.department?.name ?? 'N/A'
@@ -65,17 +78,10 @@ const tableColumns = [
     { label: 'Department', key: 'department' },
     { label: 'Action', key: 'actions', align: 'center' }
 ]
-
-const actionButtons = [
-    { label: 'View', href: (id: number) => `/admin/view/${id}`, color: 'bg-blue-500 hover:bg-blue-600', method: undefined, as: undefined },
-    { label: 'Edit', href: (id: number) => `/admin/edit/${id}`, color: 'bg-yellow-400 hover:bg-yellow-500', method: undefined, as: undefined },
-    { label: 'Delete', href: (id: number) => `/admin/delete/${id}`, color: 'bg-red-500 hover:bg-red-600', method: 'delete' as const, as: 'button' as const }
-]
 </script>
 
 <template>
   <div class="flex flex-col px-6">
-
     <Head title=" | Employee Management" />
 
     <h1 class="text-4xl font-bold text-center mb-12">Employee Management</h1>
@@ -114,11 +120,21 @@ const actionButtons = [
             <td>{{ employee.department }}</td>
             <td>
               <div class="flex justify-center gap-3">
-                <Link v-for="action in actionButtons" :key="action.label" :href="action.href(employee.id)"
-                  :method="(action.method as any)" :as="(action.as as any)"
-                  :class="[action.color, 'inline-flex items-center justify-center w-24 py-2 rounded-md text-sm font-semibold transition']">
-                  {{ action.label }}
+                <!-- View -->
+                <Link :href="`/admin/view/${employee.id}`"
+                  class="bg-blue-500 hover:bg-blue-600 inline-flex items-center justify-center w-24 py-2 rounded-md text-sm font-semibold text-white transition">
+                  View
                 </Link>
+                <!-- Edit -->
+                <Link :href="`/admin/edit/${employee.id}`"
+                  class="bg-yellow-400 hover:bg-yellow-500 inline-flex items-center justify-center w-24 py-2 rounded-md text-sm font-semibold text-white transition">
+                  Edit
+                </Link>
+                <!-- Delete triggers modal instead of direct delete -->
+                <button @click="confirmDelete(employee.id)"
+                  class="bg-red-500 hover:bg-red-600 inline-flex items-center justify-center w-24 py-2 rounded-md text-sm font-semibold text-white transition">
+                  Delete
+                </button>
               </div>
             </td>
           </tr>
@@ -135,5 +151,39 @@ const actionButtons = [
     <div class="mt-6">
       <PaginationLinks :paginator="employees" />
     </div>
+
+    <!--  Confirmation Modal -->
+    <Teleport to="body">
+      <div v-if="showConfirmModal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+        <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-sm mx-4 text-center">
+          <!-- Icon -->
+          <div class="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-red-100">
+            <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" stroke-width="2"
+              viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+            </svg>
+          </div>
+
+          <h2 class="text-xl font-bold text-gray-800 mb-2">Delete Employee</h2>
+          <p class="text-gray-500 mb-6">
+            Are you sure you want to delete this employee? <br>
+            <span class="text-red-500 font-medium">This action cannot be undone.</span>
+          </p>
+
+          <div class="flex gap-3 justify-center">
+            <button @click="cancelDelete"
+              class="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 font-semibold hover:bg-gray-100 transition">
+              Cancel
+            </button>
+            <button @click="handleDelete"
+              class="px-6 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white font-semibold transition">
+              Yes, Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>

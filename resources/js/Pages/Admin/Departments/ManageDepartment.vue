@@ -25,6 +25,28 @@ const props = defineProps<{
 
 const searchQuery = ref(props.filters?.search ?? '')
 
+// ✅ Confirm modal state
+const showConfirmModal = ref(false)
+const departmentToDelete = ref<number | null>(null)
+
+const confirmDelete = (id: number) => {
+    departmentToDelete.value = id
+    showConfirmModal.value = true
+}
+
+const handleDelete = () => {
+    if (departmentToDelete.value !== null) {
+        router.delete(`/admin/departments/${departmentToDelete.value}`)
+    }
+    showConfirmModal.value = false
+    departmentToDelete.value = null
+}
+
+const cancelDelete = () => {
+    showConfirmModal.value = false
+    departmentToDelete.value = null
+}
+
 let searchTimeout: ReturnType<typeof setTimeout> | null = null
 
 const triggerFetch = (isSearch = false) => {
@@ -32,16 +54,8 @@ const triggerFetch = (isSearch = false) => {
     searchTimeout = setTimeout(() => {
         router.get(
             '/admin/departments',
-            {
-                search: searchQuery.value || undefined,
-                page: 1
-            },
-            {
-                preserveState: true,
-                preserveScroll: true,
-                replace: true,
-                only: ['departments', 'filters']
-            }
+            { search: searchQuery.value || undefined, page: 1 },
+            { preserveState: true, preserveScroll: true, replace: true, only: ['departments', 'filters'] }
         )
     }, isSearch ? 500 : 0)
 }
@@ -63,28 +77,10 @@ const DepartmentDataTable = computed(() => {
         manager_id: dept.manager_id || 'N/A'
     }))
 })
-
-const actionButtons = [
-    {
-        label: 'Edit',
-        href: (id: number) => `/admin/editdepartment/${id}`,
-        color: 'bg-yellow-400 hover:bg-yellow-500',
-        method: undefined,
-        as: undefined
-    },
-    {
-        label: 'Delete',
-        href: (id: number) => `/admin/departments/${id}`,
-        color: 'bg-red-500 hover:bg-red-600',
-        method: 'delete' as const,
-        as: 'button' as const
-    }
-]
 </script>
 
 <template>
     <div class="flex flex-col px-6">
-
         <Head title=" | Department Management" />
 
         <h1 class="text-center text-4xl font-bold mb-12">Department Management</h1>
@@ -112,29 +108,30 @@ const actionButtons = [
 
                 <tbody>
                     <tr v-for="row in DepartmentDataTable" :key="row.id" class="border-t-4 border-slate-200">
-                        <td>
-                            {{ row.serial_no }}
-                        </td>
-                        <td>
-                            {{ row.name }}
-                        </td>
+                        <td>{{ row.serial_no }}</td>
+                        <td>{{ row.name }}</td>
                         <td>
                             {{ row.manager_id === 'N/A' ? 'N/A' : 'EMP-' + String(row.manager_id).padStart(3, '0') }}
                         </td>
                         <td class="flex justify-center gap-3">
-                            <Link v-for="action in actionButtons" :key="action.label" :href="action.href(row.id)"
-                                :method="action.method" :as="action.as"
-                                :class="[action.color, 'inline-flex items-center justify-center w-24 py-2 rounded-md text-sm font-semibold transition']">
-                                {{ action.label }}
+                            <!-- Edit -->
+                            <Link :href="`/admin/editdepartment/${row.id}`"
+                                class="bg-yellow-400 hover:bg-yellow-500 inline-flex items-center justify-center w-24 py-2 rounded-md text-sm font-semibold text-white transition">
+                                Edit
                             </Link>
+                            <!-- ✅ Delete triggers modal -->
+                            <button @click="confirmDelete(row.id)"
+                                class="bg-red-500 hover:bg-red-600 inline-flex items-center justify-center w-24 py-2 rounded-md text-sm font-semibold text-white transition">
+                                Delete
+                            </button>
                         </td>
                     </tr>
+
                     <tr v-if="DepartmentDataTable.length === 0">
                         <td colspan="4" class="p-8 text-center text-gray-500 border-t-4 border-slate-200">
                             No departments found
                         </td>
                     </tr>
-
                 </tbody>
             </table>
         </div>
@@ -142,5 +139,39 @@ const actionButtons = [
         <div class="mt-6">
             <PaginationLinks :paginator="departments" />
         </div>
+
+        <!-- ✅ Confirmation Modal -->
+        <Teleport to="body">
+            <div v-if="showConfirmModal"
+                class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+                <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-sm mx-4 text-center">
+                    <!-- Icon -->
+                    <div class="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-red-100">
+                        <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                        </svg>
+                    </div>
+
+                    <h2 class="text-xl font-bold text-gray-800 mb-2">Delete Department</h2>
+                    <p class="text-gray-500 mb-6">
+                        Are you sure you want to delete this department? <br>
+                        <span class="text-red-500 font-medium">This action cannot be undone.</span>
+                    </p>
+
+                    <div class="flex gap-3 justify-center">
+                        <button @click="cancelDelete"
+                            class="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 font-semibold hover:bg-gray-100 transition">
+                            Cancel
+                        </button>
+                        <button @click="handleDelete"
+                            class="px-6 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white font-semibold transition">
+                            Yes, Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </Teleport>
     </div>
 </template>
