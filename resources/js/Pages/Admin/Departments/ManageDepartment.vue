@@ -119,7 +119,7 @@ const DepartmentDataTable = computed(() => {
                                 class="bg-yellow-400 hover:bg-yellow-500 inline-flex items-center justify-center w-24 py-2 rounded-md text-sm font-semibold text-white transition">
                                 Edit
                             </Link>
-                            <!-- ✅ Delete triggers modal -->
+                            <!--  Delete triggers modal -->
                             <button @click="confirmDelete(row.id)"
                                 class="bg-red-500 hover:bg-red-600 inline-flex items-center justify-center w-24 py-2 rounded-md text-sm font-semibold text-white transition">
                                 Delete
@@ -140,19 +140,12 @@ const DepartmentDataTable = computed(() => {
             <PaginationLinks :paginator="departments" />
         </div>
 
-        <!-- ✅ Confirmation Modal -->
+        <!--  Confirmation Modal -->
         <Teleport to="body">
             <div v-if="showConfirmModal"
                 class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
                 <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-sm mx-4 text-center">
-                    <!-- Icon -->
-                    <div class="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-red-100">
-                        <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" stroke-width="2"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-                        </svg>
-                    </div>
+
 
                     <h2 class="text-xl font-bold text-gray-800 mb-2">Delete Department</h2>
                     <p class="text-gray-500 mb-6">
