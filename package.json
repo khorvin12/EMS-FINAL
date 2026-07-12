@@ -19,5 +19,8 @@
         "@inertiajs/vue3": "^2.2.18",
         "@vitejs/plugin-vue": "^6.0.5",
         "vue": "^3.5.27"
+    },
+    "allowScripts": {
+        "esbuild@0.28.1": true
     }
 }
