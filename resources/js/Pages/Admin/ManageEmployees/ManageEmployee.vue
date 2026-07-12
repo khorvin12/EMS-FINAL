@@ -141,7 +141,7 @@ const tableColumns = [
 
           <tr v-if="employeeTableData.length === 0">
             <td colspan="4" class="p-8 text-center text-gray-500 border-t-4 border-slate-200">
-              No employees found
+              No employees foundgit commit -m "your message here"
             </td>
           </tr>
         </tbody>
